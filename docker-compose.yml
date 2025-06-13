@@ -1,0 +1,38 @@
+services:
+  jedi:
+    container_name: jedi_backend
+    build:
+      context: ./jedi
+    ports:
+      - 8080:8080
+    #volumes:
+    # - ./jedi/src:/jedi/src
+    logging:
+      options:
+        max-size: 10m
+    networks:
+      - jedi-network
+
+
+  psql:
+    container_name: psql
+    image: postgres:alpine3.19
+    ports:
+      - 5432:5432
+    volumes:
+      - ./docker/postgres-data:/var/lib/postgresql/data
+      #./docker/initdb:/docker-entrypoint-initdb.d
+    environment:
+      POSTGRES_USER: admin
+      POSTGRES_DB: jedi_db
+      POSTGRES_PASSWORD: 123456
+    restart: unless-stopped
+    logging:
+      options:
+        max-size: 10m
+    networks:
+      - jedi-network
+
+networks:
+  jedi-network:
+    driver: bridge
