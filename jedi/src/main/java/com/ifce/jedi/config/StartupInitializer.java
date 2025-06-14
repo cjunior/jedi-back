@@ -54,8 +54,8 @@ public class StartupInitializer {
                         "Curso online com formação personalizada para você empreender de forma inteligente e estratégica",
                         List.of(new BannerItemUrlDto(
                                 "https://res.cloudinary.com/dp98r2imm/image/upload/v1749910911/bannerInicial_xcwltm.jpg",
-                                "Saiba mais",
-                                "" // a principio vou deixar vazio mas o cliente manda o que ele quiser que seja iniciado.
+                                "ASSISTA AO MANIFESTO",
+                                ""
                         ))
                 );
                 bannerService.createBanner(bannerDto);
