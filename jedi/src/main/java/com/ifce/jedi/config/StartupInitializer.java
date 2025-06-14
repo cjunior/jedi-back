@@ -1,10 +1,10 @@
 package com.ifce.jedi.config;
 
 import com.ifce.jedi.dto.Banner.BannerDto;
+import com.ifce.jedi.dto.Banner.BannerItemUrlDto;
 import com.ifce.jedi.dto.Header.HeaderDto;
 import com.ifce.jedi.model.UserRole;
 import com.ifce.jedi.model.User;
-import com.ifce.jedi.repository.BannerRepository;
 import com.ifce.jedi.repository.UserRepository;
 import com.ifce.jedi.service.BannerService;
 import com.ifce.jedi.service.HeaderService;
@@ -52,7 +52,11 @@ public class StartupInitializer {
                 BannerDto bannerDto = new BannerDto(
                         "Bem-vindo ao Projeto Jedi!",
                         "Transformando o futuro da educação pública.",
-                        List.of() // terei que inicializar com a imagem do vercel quando o bucket estiver funcionando
+                        List.of(new BannerItemUrlDto(
+                                "https://res.cloudinary.com/dp98r2imm/image/upload/v1749910911/bannerInicial_xcwltm.jpg",
+                                "Saiba mais",
+                                "" // a principio vou deixar vazio mas o cliente manda o que ele quiser que seja iniciado.
+                        ))
                 );
                 bannerService.createBanner(bannerDto);
                 System.out.println("Banner padrão criado com sucesso.");

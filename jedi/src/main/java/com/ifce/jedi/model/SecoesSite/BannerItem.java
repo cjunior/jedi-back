@@ -12,6 +12,8 @@ public class BannerItem {
     private String imgUrl;
     private String buttonText;
     private String buttonUrl;
+    private String cloudinaryPublicId;
+
 
     @ManyToOne
     @JoinColumn(name = "banner_id")
@@ -62,5 +64,13 @@ public class BannerItem {
 
     public void setBanner(Banner banner) {
         this.banner = banner;
+    }
+
+    public String getCloudinaryPublicId() {
+        return cloudinaryPublicId;
+    }
+
+    public void setCloudinaryPublicId(String publicId) {
+        this.cloudinaryPublicId = publicId;
     }
 }

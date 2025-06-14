@@ -3,9 +3,13 @@ package com.ifce.jedi.controllers;
 import com.ifce.jedi.dto.Banner.*;
 import com.ifce.jedi.service.BannerService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
+
+import java.io.IOException;
 
 @RestController
 @RequestMapping("/banner")
@@ -26,17 +30,35 @@ public class BannerController {
         return ResponseEntity.ok(bannerService.updateBanner(dto));
     }
 
-    @PostMapping("/slides/add")
+    @PostMapping(value = "/slides/add", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     @PreAuthorize("hasRole('ADMIN')")
-    public ResponseEntity<BannerItemResponseDto> addSlide(@RequestBody BannerItemDto dto) {
-        return ResponseEntity.ok(bannerService.addSlide(dto));
+    public ResponseEntity<BannerItemResponseDto> addSlide(
+            @RequestPart("file") MultipartFile file,
+            @RequestPart("buttonText") String buttonText,
+            @RequestPart(value = "buttonUrl", required = false) String buttonUrl) throws IOException {
+
+        BannerItemDto dto = new BannerItemDto(buttonText, buttonUrl);
+        return ResponseEntity.ok(bannerService.addSlide(file, dto));
     }
 
-    @PutMapping("/slide/{slideId}")
+
+    @PutMapping(value ="/slide/{slideId}", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<BannerItemResponseDto> updateSlide(
             @PathVariable Long slideId,
-            @RequestBody BannerItemDto dto) {
-        return ResponseEntity.ok(bannerService.updateSlide(slideId, dto));
+            @RequestPart(name = "file", required = false) MultipartFile file,
+            @RequestPart("buttonText") String buttonText,
+            @RequestPart(value = "buttonUrl", required = false) String buttonUrl) throws IOException {
+
+        BannerItemDto dto = new BannerItemDto(buttonText, buttonUrl);
+        return ResponseEntity.ok(bannerService.updateSlide(slideId, file, dto));
+    }
+
+
+    @DeleteMapping("/slide/{slideId}")
+    @PreAuthorize("hasRole('ADMIN')")
+    public ResponseEntity<BannerResponseDto> deleteSlide(
+            @PathVariable Long slideId) throws IOException {
+        return ResponseEntity.ok(bannerService.deleteSlide(slideId));
     }
 }

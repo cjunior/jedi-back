@@ -7,7 +7,9 @@ import com.ifce.jedi.repository.BannerRepository;
 import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
 
+import java.io.IOException;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -16,6 +18,8 @@ public class BannerService {
 
     @Autowired
     private BannerRepository bannerRepository;
+    @Autowired
+    private CloudinaryService cloudinaryService;
 
     @Transactional
     public BannerResponseDto createBanner(BannerDto dto) {
@@ -52,21 +56,29 @@ public class BannerService {
     }
 
     @Transactional
-    public BannerItemResponseDto updateSlide(Long slideId, BannerItemDto dto) {
-        Banner banner = bannerRepository.findAll().stream().findFirst().orElseThrow(
-                () -> new RuntimeException("Banner não encontrado.")
-        );
+    public BannerItemResponseDto updateSlide(Long slideId, MultipartFile file, BannerItemDto dto) throws IOException {
+        Banner banner = bannerRepository.findAll().stream().findFirst()
+                .orElseThrow(() -> new RuntimeException("Banner não encontrado."));
 
         BannerItem item = banner.getItems().stream()
                 .filter(s -> s.getId().equals(slideId))
                 .findFirst()
                 .orElseThrow(() -> new RuntimeException("Slide não encontrado."));
 
-        item.setImgUrl(dto.imgUrl());
+        if (file != null && !file.isEmpty()) {
+            if (item.getCloudinaryPublicId() != null) {
+                cloudinaryService.deleteImage(item.getCloudinaryPublicId());
+            }
+            var uploadResult = cloudinaryService.uploadImage(file);
+            item.setImgUrl(uploadResult.get("url"));
+            item.setCloudinaryPublicId(uploadResult.get("public_id"));
+        }
+
         item.setButtonText(dto.buttonText());
         item.setButtonUrl(dto.buttonUrl());
 
-        bannerRepository.save(banner); // cascata garante update no slide
+        bannerRepository.save(banner);
+
         return new BannerItemResponseDto(
                 item.getId(),
                 item.getImgUrl(),
@@ -74,6 +86,7 @@ public class BannerService {
                 item.getButtonUrl()
         );
     }
+
 
 
     @Transactional
@@ -85,12 +98,15 @@ public class BannerService {
     }
 
     @Transactional
-    public BannerItemResponseDto addSlide(BannerItemDto dto) {
+    public BannerItemResponseDto addSlide(MultipartFile file, BannerItemDto dto) throws IOException {
         Banner banner = bannerRepository.findAll().stream().findFirst()
                 .orElseThrow(() -> new RuntimeException("Banner não encontrado"));
 
         BannerItem item = new BannerItem();
-        item.setImgUrl(dto.imgUrl());
+
+        var uploadResult = cloudinaryService.uploadImage(file);
+        item.setImgUrl(uploadResult.get("url"));
+        item.setCloudinaryPublicId(uploadResult.get("public_id"));
         item.setButtonText(dto.buttonText());
         item.setButtonUrl(dto.buttonUrl());
         item.setBanner(banner);
@@ -101,6 +117,25 @@ public class BannerService {
         return new BannerItemResponseDto(
                 item.getId(), item.getImgUrl(), item.getButtonText(), item.getButtonUrl()
         );
+    }
+
+    @Transactional
+    public BannerResponseDto deleteSlide(long id) throws IOException {
+        Banner banner = bannerRepository.findAll().stream()
+                .findFirst()
+                .orElseThrow(() -> new RuntimeException("Banner não encontrado"));
+
+        BannerItem itemToRemove = banner.getItems().stream()
+                .filter(item -> item.getId() == id)
+                .findFirst()
+                .orElseThrow(() -> new RuntimeException("Slide não encontrado"));
+
+        cloudinaryService.deleteImage(itemToRemove.getCloudinaryPublicId());
+        banner.getItems().remove(itemToRemove);
+
+        bannerRepository.save(banner);
+
+        return toResponse(banner);
     }
 
     private BannerResponseDto toResponse(Banner banner) {

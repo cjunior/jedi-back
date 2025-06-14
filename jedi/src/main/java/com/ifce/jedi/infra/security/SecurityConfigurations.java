@@ -43,6 +43,7 @@ public class SecurityConfigurations {
                         .requestMatchers(HttpMethod.PUT, "/header/update").hasRole("ADMIN")
                         .requestMatchers(HttpMethod.POST, "/banner/slides/add").hasRole("ADMIN")
                         .requestMatchers(HttpMethod.PUT, "/banner/slide/{slideId}").hasRole("ADMIN")
+                        .requestMatchers(HttpMethod.DELETE, "/banner/slide/{slideId}").hasRole("ADMIN")
                         .requestMatchers(HttpMethod.PUT, "/banner/update").hasRole("ADMIN")
                         .requestMatchers(HttpMethod.GET, "/header").permitAll()
                         .requestMatchers(HttpMethod.GET, "/banner/get").permitAll()
