@@ -50,8 +50,8 @@ public class StartupInitializer {
             }
             if (bannerService.getBanner() == null) {
                 BannerDto bannerDto = new BannerDto(
-                        "Bem-vindo ao Projeto Jedi!",
-                        "Transformando o futuro da educação pública.",
+                        "DÊ UM PLAY NO SEU FUTURO",
+                        "Curso online com formação personalizada para você empreender de forma inteligente e estratégica",
                         List.of(new BannerItemUrlDto(
                                 "https://res.cloudinary.com/dp98r2imm/image/upload/v1749910911/bannerInicial_xcwltm.jpg",
                                 "Saiba mais",
