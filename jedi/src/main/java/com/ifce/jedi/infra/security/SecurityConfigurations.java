@@ -41,7 +41,11 @@ public class SecurityConfigurations {
                         .requestMatchers(HttpMethod.POST, "/auth/login").permitAll()
                         .requestMatchers(HttpMethod.POST, "/auth/register").hasRole("ADMIN")
                         .requestMatchers(HttpMethod.PUT, "/header/update").hasRole("ADMIN")
+                        .requestMatchers(HttpMethod.POST, "/banner/slides/add").hasRole("ADMIN")
+                        .requestMatchers(HttpMethod.PUT, "/banner/slide/{slideId}").hasRole("ADMIN")
+                        .requestMatchers(HttpMethod.PUT, "/banner/update").hasRole("ADMIN")
                         .requestMatchers(HttpMethod.GET, "/header").permitAll()
+                        .requestMatchers(HttpMethod.GET, "/banner/get").permitAll()
                         .anyRequest().authenticated())
                 .addFilterBefore(securityFilter, UsernamePasswordAuthenticationFilter.class)
                 .build();
