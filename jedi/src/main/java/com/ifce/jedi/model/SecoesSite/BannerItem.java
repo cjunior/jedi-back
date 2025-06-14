@@ -1,5 +1,6 @@
 package com.ifce.jedi.model.SecoesSite;
 
+import com.ifce.jedi.model.SecoesSite.Banner.Banner;
 import jakarta.persistence.Entity;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
