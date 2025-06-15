@@ -1,8 +1,8 @@
 package com.ifce.jedi.service;
 
 import com.ifce.jedi.dto.Team.*;
-import com.ifce.jedi.model.SecoesSite.Team;
-import com.ifce.jedi.model.SecoesSite.TeamItem;
+import com.ifce.jedi.model.SecoesSite.Team.Team;
+import com.ifce.jedi.model.SecoesSite.Team.TeamItem;
 import com.ifce.jedi.repository.TeamRepository;
 import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
