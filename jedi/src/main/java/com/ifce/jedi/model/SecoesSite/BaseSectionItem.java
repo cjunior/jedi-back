@@ -10,9 +10,6 @@ public abstract class BaseSectionItem {
     private Long id;
     private String imgUrl;
     private String cloudinaryPublicId;
-    @ManyToOne
-    @JoinColumn(name = "banner_id")
-    private Banner banner;
 
     public Long getId() {
         return id;
@@ -24,14 +21,6 @@ public abstract class BaseSectionItem {
 
     public void setImgUrl(String imgUrl) {
         this.imgUrl = imgUrl;
-    }
-
-    public Banner getBanner() {
-        return banner;
-    }
-
-    public void setBanner(Banner banner) {
-        this.banner = banner;
     }
 
     public String getCloudinaryPublicId() {

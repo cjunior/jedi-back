@@ -3,11 +3,14 @@ package com.ifce.jedi.config;
 import com.ifce.jedi.dto.Banner.BannerDto;
 import com.ifce.jedi.dto.Banner.BannerItemUrlDto;
 import com.ifce.jedi.dto.Header.HeaderDto;
+import com.ifce.jedi.dto.Team.TeamDto;
+import com.ifce.jedi.dto.Team.TeamItemUrlDto;
 import com.ifce.jedi.model.UserRole;
 import com.ifce.jedi.model.User;
 import com.ifce.jedi.repository.UserRepository;
 import com.ifce.jedi.service.BannerService;
 import com.ifce.jedi.service.HeaderService;
+import com.ifce.jedi.service.TeamService;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -19,7 +22,7 @@ import java.util.List;
 public class StartupInitializer {
 
     @Bean
-    public CommandLineRunner initDefaultAdmin(UserRepository userRepository, PasswordEncoder passwordEncoder, HeaderService headerService, BannerService bannerService) {
+    public CommandLineRunner initDefaultAdmin(UserRepository userRepository, PasswordEncoder passwordEncoder) {
         return args -> {
             String email = "admin@example.com";
 
@@ -33,10 +36,15 @@ public class StartupInitializer {
             } else {
                 System.out.println("Usuário admin já existe.");
             }
+        };
+    }
 
+    @Bean
+    public CommandLineRunner initDefaultHeader(HeaderService headerService) {
+        return args -> {
             if (headerService.getHeader() == null) {
                 HeaderDto headerDto = new HeaderDto(
-                        "https://exemplo.com/logo.png", //preciso mudar depois para a url do bucket
+                        "https://res.cloudinary.com/dp98r2imm/image/upload/v1749996488/d750ae3dcaf62a93289de01f9b7384e86d42784e_kmfia6.png",
                         "O Projeto",
                         "Conteúdo",
                         "Ajuda",
@@ -48,6 +56,12 @@ public class StartupInitializer {
             } else {
                 System.out.println("Header já existe.");
             }
+        };
+    }
+
+    @Bean
+    public CommandLineRunner initDefaultBanner(BannerService bannerService){
+        return args -> {
             if (bannerService.getBanner() == null) {
                 BannerDto bannerDto = new BannerDto(
                         "DÊ UM PLAY NO SEU FUTURO",
@@ -66,5 +80,21 @@ public class StartupInitializer {
         };
     }
 
-
+    @Bean
+    public CommandLineRunner initDefaultBannerTeam(TeamService teamService){
+        return args -> {
+            if (teamService.getTeam() == null) {
+                TeamDto teamDto = new TeamDto(
+                        "Equipe",
+                        List.of(new TeamItemUrlDto(
+                                        "https://res.cloudinary.com/dp98r2imm/image/upload/v1749910911/bannerInicial_xcwltm.jpg"),
+                                new TeamItemUrlDto("https://res.cloudinary.com/dp98r2imm/image/upload/v1749945082/fotoend2_ajfnzd.png"))
+                );
+                teamService.createTeam(teamDto);
+                System.out.println("BannerEquipe padrão criado com sucesso.");
+            } else {
+                System.out.println("BannerEquipe já existe.");
+            }
+        };
+    }
 }
