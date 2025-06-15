@@ -1,10 +1,10 @@
 package com.ifce.jedi.controllers;
 
-import com.ifce.jedi.dto.AuthenticatorDto;
-import com.ifce.jedi.dto.LoginResponseDto;
-import com.ifce.jedi.dto.RegisterDto;
+import com.ifce.jedi.dto.Authenticator.AuthenticatorDto;
+import com.ifce.jedi.dto.Authenticator.LoginResponseDto;
+import com.ifce.jedi.dto.Authenticator.RegisterDto;
 import com.ifce.jedi.infra.security.TokenService;
-import com.ifce.jedi.model.User;
+import com.ifce.jedi.model.User.User;
 import com.ifce.jedi.repository.UserRepository;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;

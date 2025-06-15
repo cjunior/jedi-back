@@ -1,4 +1,4 @@
-package com.ifce.jedi.dto;
+package com.ifce.jedi.dto.PreInscricao;
 
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;

@@ -1,8 +1,8 @@
 package com.ifce.jedi.controllers;
 
-import com.ifce.jedi.dto.PreInscricaoComplementarDto;
-import com.ifce.jedi.dto.PreInscricaoDto;
-import com.ifce.jedi.model.PreInscricao;
+import com.ifce.jedi.dto.PreInscricao.PreInscricaoComplementarDto;
+import com.ifce.jedi.dto.PreInscricao.PreInscricaoDto;
+import com.ifce.jedi.model.User.PreInscricao;
 import com.ifce.jedi.service.EmailService;
 import com.ifce.jedi.service.PreInscricaoService;
 import jakarta.validation.Valid;

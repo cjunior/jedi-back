@@ -1,9 +1,6 @@
-package com.ifce.jedi.model;
+package com.ifce.jedi.model.User;
 
-import com.ifce.jedi.dto.PreInscricaoDto;
 import jakarta.persistence.*;
-import jakarta.validation.constraints.Email;
-import jakarta.validation.constraints.NotBlank;
 import org.hibernate.annotations.GenericGenerator;
 
 import java.time.LocalDate;

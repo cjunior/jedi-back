@@ -1,6 +1,6 @@
 package com.ifce.jedi.repository;
 
-import com.ifce.jedi.model.PreInscricao;
+import com.ifce.jedi.model.User.PreInscricao;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 import java.util.Optional;
