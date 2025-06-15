@@ -1,5 +1,6 @@
-package com.ifce.jedi.model.SecoesSite;
+package com.ifce.jedi.model.SecoesSite.Banner;
 
+import com.ifce.jedi.model.SecoesSite.BaseSectionItem;
 import jakarta.persistence.Entity;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
@@ -7,7 +8,7 @@ import jakarta.persistence.Table;
 
 @Entity
 @Table(name = "banner_item")
-public class BannerItem extends BaseSectionItem{
+public class BannerItem extends BaseSectionItem {
     private String buttonText;
     private String buttonUrl;
     @ManyToOne

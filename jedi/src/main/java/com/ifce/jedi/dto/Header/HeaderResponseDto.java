@@ -1,6 +1,6 @@
 package com.ifce.jedi.dto.Header;
 
-import com.ifce.jedi.model.SecoesSite.Header;
+import com.ifce.jedi.model.SecoesSite.Header.Header;
 
 import java.util.UUID;
 

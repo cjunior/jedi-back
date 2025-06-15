@@ -1,4 +1,4 @@
-package com.ifce.jedi.model.SecoesSite;
+package com.ifce.jedi.model.SecoesSite.Banner;
 
 import jakarta.persistence.*;
 

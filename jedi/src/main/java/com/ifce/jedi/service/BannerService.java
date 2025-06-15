@@ -1,8 +1,8 @@
 package com.ifce.jedi.service;
 
 import com.ifce.jedi.dto.Banner.*;
-import com.ifce.jedi.model.SecoesSite.Banner;
-import com.ifce.jedi.model.SecoesSite.BannerItem;
+import com.ifce.jedi.model.SecoesSite.Banner.Banner;
+import com.ifce.jedi.model.SecoesSite.Banner.BannerItem;
 import com.ifce.jedi.repository.BannerRepository;
 import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;

@@ -1,4 +1,4 @@
-package com.ifce.jedi.model.SecoesSite;
+package com.ifce.jedi.model.SecoesSite.Header;
 
 import jakarta.persistence.*;
 import org.hibernate.annotations.GenericGenerator;
