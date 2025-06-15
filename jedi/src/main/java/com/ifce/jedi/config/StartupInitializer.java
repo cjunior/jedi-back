@@ -3,6 +3,7 @@ package com.ifce.jedi.config;
 import com.ifce.jedi.dto.Banner.BannerDto;
 import com.ifce.jedi.dto.Banner.BannerItemUrlDto;
 import com.ifce.jedi.dto.Header.HeaderDto;
+import com.ifce.jedi.dto.Header.HeaderUrlDto;
 import com.ifce.jedi.dto.Team.TeamDto;
 import com.ifce.jedi.dto.Team.TeamItemUrlDto;
 import com.ifce.jedi.model.UserRole;
