@@ -41,7 +41,7 @@ public class PreInscricao {
 
     @Lob
     @Column(name =  "proof_of_adress")
-    private byte[] proofoOfAdressUrl;
+    private byte[] proofOfAdress;
 
     @Column(name = "continuation_token", unique = true)
     private String continuationToken;
@@ -99,8 +99,8 @@ public class PreInscricao {
         return document;
     }
 
-    public byte[] getProofoOfAdressUrl() {
-        return proofoOfAdressUrl;
+    public byte[] getProofOfAdress() {
+        return proofOfAdress;
     }
 
     public String getContinuationToken() {
@@ -147,8 +147,8 @@ public class PreInscricao {
         this.document = document;
     }
 
-    public void setProofoOfAdressUrl(byte[] proofoOfAdressUrl) {
-        this.proofoOfAdressUrl = proofoOfAdressUrl;
+    public void setProofOfAdress(byte[] proofoOfAdressUrl) {
+        this.proofOfAdress = proofoOfAdressUrl;
     }
 
     public void setContinuationToken(String continuationToken) {

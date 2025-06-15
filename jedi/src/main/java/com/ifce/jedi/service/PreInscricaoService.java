@@ -53,7 +53,7 @@ public class PreInscricaoService {
             preInscricao.setCpf(preInscricaoComplementarDto.getCpf());
             preInscricao.setRg(preInscricaoComplementarDto.getRg());
             preInscricao.setDocument(preInscricaoComplementarDto.getDocument().getBytes());
-            preInscricao.setProofoOfAdressUrl(preInscricaoComplementarDto.getProofoOfAdress().getBytes());
+            preInscricao.setProofOfAdress(preInscricaoComplementarDto.getProofOfAdress().getBytes());
 
             preInscricaoRepository.save(preInscricao);
         } catch (Exception e) {

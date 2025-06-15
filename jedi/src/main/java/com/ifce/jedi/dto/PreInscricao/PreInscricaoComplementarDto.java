@@ -24,7 +24,7 @@ public class PreInscricaoComplementarDto {
         private MultipartFile document;
 
         @NotNull
-        private MultipartFile proofoOfAdress;
+        private MultipartFile proofOfAdress;
 
         // Construtor vazio (requerido pelo Spring)
         public PreInscricaoComplementarDto() {
@@ -71,11 +71,11 @@ public class PreInscricaoComplementarDto {
                 this.document = document;
         }
 
-        public MultipartFile getProofoOfAdress() {
-                return proofoOfAdress;
+        public MultipartFile getProofOfAdress() {
+                return proofOfAdress;
         }
 
-        public void setProofoOfAdress(MultipartFile proofoOfAdress) {
-                this.proofoOfAdress = proofoOfAdress;
+        public void setProofOfAdress(MultipartFile proofOfAdress) {
+                this.proofOfAdress = proofOfAdress;
         }
 }
