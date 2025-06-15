@@ -47,7 +47,6 @@ public class StartupInitializer {
             if (headerService.getHeader() == null) {
                 var logoUrl = "https://res.cloudinary.com/dp98r2imm/image/upload/v1749996488/d750ae3dcaf62a93289de01f9b7384e86d42784e_kmfia6.png";
                 String publicId = "d750ae3dcaf62a93289de01f9b7384e86d42784e_kmfia6";
-
                 HeaderUrlDto headerUrlDto = new HeaderUrlDto(
                         logoUrl,
                         publicId,
