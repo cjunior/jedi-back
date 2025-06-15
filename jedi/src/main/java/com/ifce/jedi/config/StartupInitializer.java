@@ -3,12 +3,14 @@ package com.ifce.jedi.config;
 import com.ifce.jedi.dto.Banner.BannerDto;
 import com.ifce.jedi.dto.Banner.BannerItemUrlDto;
 import com.ifce.jedi.dto.Header.HeaderDto;
+import com.ifce.jedi.dto.Header.HeaderUrlDto;
 import com.ifce.jedi.dto.Team.TeamDto;
 import com.ifce.jedi.dto.Team.TeamItemUrlDto;
 import com.ifce.jedi.model.UserRole;
 import com.ifce.jedi.model.User;
 import com.ifce.jedi.repository.UserRepository;
 import com.ifce.jedi.service.BannerService;
+import com.ifce.jedi.service.CloudinaryService;
 import com.ifce.jedi.service.HeaderService;
 import com.ifce.jedi.service.TeamService;
 import org.springframework.boot.CommandLineRunner;
@@ -40,18 +42,21 @@ public class StartupInitializer {
     }
 
     @Bean
-    public CommandLineRunner initDefaultHeader(HeaderService headerService) {
+    public CommandLineRunner initDefaultHeader(CloudinaryService cloudinaryService,HeaderService headerService) {
         return args -> {
             if (headerService.getHeader() == null) {
-                HeaderDto headerDto = new HeaderDto(
-                        "https://res.cloudinary.com/dp98r2imm/image/upload/v1749996488/d750ae3dcaf62a93289de01f9b7384e86d42784e_kmfia6.png",
+                var logoUrl = "https://res.cloudinary.com/dp98r2imm/image/upload/v1749996488/d750ae3dcaf62a93289de01f9b7384e86d42784e_kmfia6.png";
+                String publicId = "d750ae3dcaf62a93289de01f9b7384e86d42784e_kmfia6";
+                HeaderUrlDto headerUrlDto = new HeaderUrlDto(
+                        logoUrl,
+                        publicId,
                         "O Projeto",
                         "Conteúdo",
                         "Ajuda",
                         "#RedeJED",
                         "Entrar"
                 );
-                headerService.createHeader(headerDto);
+                headerService.createHeader(headerUrlDto);
                 System.out.println("Header padrão criado com sucesso.");
             } else {
                 System.out.println("Header já existe.");
