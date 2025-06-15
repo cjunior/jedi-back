@@ -21,6 +21,15 @@ public class Header {
     private String text3;
     private String text4;
     private String buttonText;
+    private String cloudinaryPublicId;
+
+    public String getCloudinaryPublicId() {
+        return cloudinaryPublicId;
+    }
+
+    public void setCloudinaryPublicId(String cloudinaryPublicId) {
+        this.cloudinaryPublicId = cloudinaryPublicId;
+    }
 
     public UUID getId() {
         return id;
