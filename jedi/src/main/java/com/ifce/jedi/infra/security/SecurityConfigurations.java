@@ -33,6 +33,11 @@ public class SecurityConfigurations {
                 .csrf(csrf -> csrf.disable())
                 .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .authorizeHttpRequests(authorize -> authorize
+                        .requestMatchers(
+                                "/v3/api-docs/**",
+                                "/swagger-ui/**",
+                                "/swagger-ui.html"
+                        ).permitAll()
                         .requestMatchers(HttpMethod.POST, "/auth/login").permitAll()
                         .requestMatchers(HttpMethod.POST, "/auth/register").hasRole("ADMIN")
 
@@ -40,9 +45,17 @@ public class SecurityConfigurations {
                         .requestMatchers(HttpMethod.POST, "/pre-inscricao/inicial").permitAll()
                         .requestMatchers(HttpMethod.GET, "/pre-inscricao/continuar/**").permitAll()
                         .requestMatchers(HttpMethod.PUT, "/pre-inscricao/continuar/**").permitAll()
+                        .requestMatchers(HttpMethod.PUT, "/header/update").hasRole("ADMIN")
+                        .requestMatchers(HttpMethod.POST, "/banner/slides/add").hasRole("ADMIN")
+                        .requestMatchers(HttpMethod.PUT, "/banner/slide/{slideId}").hasRole("ADMIN")
+                        .requestMatchers(HttpMethod.DELETE, "/banner/slide/{slideId}").hasRole("ADMIN")
+                        .requestMatchers(HttpMethod.PUT, "/banner/update").hasRole("ADMIN")
+                        .requestMatchers(HttpMethod.GET, "/header").permitAll()
+                        .requestMatchers(HttpMethod.GET, "/banner/get").permitAll()
 
                         .anyRequest().authenticated()
                 )
+
                 .addFilterBefore(securityFilter, UsernamePasswordAuthenticationFilter.class)
                 .build();
     }
