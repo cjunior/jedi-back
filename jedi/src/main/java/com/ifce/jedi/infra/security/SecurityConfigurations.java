@@ -35,7 +35,14 @@ public class SecurityConfigurations {
                 .authorizeHttpRequests(authorize -> authorize
                         .requestMatchers(HttpMethod.POST, "/auth/login").permitAll()
                         .requestMatchers(HttpMethod.POST, "/auth/register").hasRole("ADMIN")
-                        .anyRequest().authenticated())
+
+                        // Fluxo da pré-inscrição: tudo liberado
+                        .requestMatchers(HttpMethod.POST, "/pre-inscricao/inicial").permitAll()
+                        .requestMatchers(HttpMethod.GET, "/pre-inscricao/continuar/**").permitAll()
+                        .requestMatchers(HttpMethod.PUT, "/pre-inscricao/continuar/**").permitAll()
+
+                        .anyRequest().authenticated()
+                )
                 .addFilterBefore(securityFilter, UsernamePasswordAuthenticationFilter.class)
                 .build();
     }
