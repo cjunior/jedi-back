@@ -1,4 +1,4 @@
-package com.ifce.jedi.model;
+package com.ifce.jedi.model.User;
 
 
 import jakarta.persistence.*;

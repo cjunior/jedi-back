@@ -40,6 +40,11 @@ public class SecurityConfigurations {
                         ).permitAll()
                         .requestMatchers(HttpMethod.POST, "/auth/login").permitAll()
                         .requestMatchers(HttpMethod.POST, "/auth/register").hasRole("ADMIN")
+
+                        // Fluxo da pré-inscrição: tudo liberado
+                        .requestMatchers(HttpMethod.POST, "/pre-inscricao/inicial").permitAll()
+                        .requestMatchers(HttpMethod.GET, "/pre-inscricao/continuar/**").permitAll()
+                        .requestMatchers(HttpMethod.PUT, "/pre-inscricao/continuar/**").permitAll()
                         .requestMatchers(HttpMethod.PUT, "/header/update").hasRole("ADMIN")
                         .requestMatchers(HttpMethod.POST, "/banner/slides/add").hasRole("ADMIN")
                         .requestMatchers(HttpMethod.PUT, "/banner/slide/{slideId}").hasRole("ADMIN")
@@ -47,7 +52,10 @@ public class SecurityConfigurations {
                         .requestMatchers(HttpMethod.PUT, "/banner/update").hasRole("ADMIN")
                         .requestMatchers(HttpMethod.GET, "/header").permitAll()
                         .requestMatchers(HttpMethod.GET, "/banner/get").permitAll()
-                        .anyRequest().authenticated())
+
+                        .anyRequest().authenticated()
+                )
+
                 .addFilterBefore(securityFilter, UsernamePasswordAuthenticationFilter.class)
                 .build();
     }
