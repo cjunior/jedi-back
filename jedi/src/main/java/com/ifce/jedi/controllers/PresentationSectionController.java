@@ -15,7 +15,7 @@ public class PresentationSectionController {
     @Autowired
     private PresentationSectionService service;
 
-    @GetMapping
+    @GetMapping("/get")
     public ResponseEntity<PresentationSectionResponseDto> getPresentationSection() {
         PresentationSectionResponseDto section = service.getPresentationSection();
         return section == null ? ResponseEntity.noContent().build() : ResponseEntity.ok(section);

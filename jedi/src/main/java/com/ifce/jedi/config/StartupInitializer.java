@@ -2,13 +2,16 @@ package com.ifce.jedi.config;
 
 import com.ifce.jedi.dto.Banner.BannerDto;
 import com.ifce.jedi.dto.Banner.BannerItemUrlDto;
-import com.ifce.jedi.dto.Header.HeaderDto;
+import com.ifce.jedi.dto.Header.HeaderUrlDto;
 import com.ifce.jedi.dto.PresentationSection.PresentationSectionDto;
+import com.ifce.jedi.dto.Team.TeamDto;
+import com.ifce.jedi.dto.Team.TeamItemUrlDto;
 import com.ifce.jedi.model.User.User;
 import com.ifce.jedi.model.User.UserRole;
 import com.ifce.jedi.repository.UserRepository;
 import com.ifce.jedi.service.BannerService;
 import com.ifce.jedi.service.HeaderService;
+import com.ifce.jedi.service.TeamService;
 import com.ifce.jedi.service.PresentationSectionService;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.context.annotation.Bean;
@@ -21,15 +24,8 @@ import java.util.List;
 public class StartupInitializer {
 
     @Bean
-    public CommandLineRunner initDefaultData(
-            UserRepository userRepository,
-            PasswordEncoder passwordEncoder,
-            HeaderService headerService,
-            BannerService bannerService,
-            PresentationSectionService presentationSectionService
-    ) {
+    public CommandLineRunner initDefaultAdmin(UserRepository userRepository, PasswordEncoder passwordEncoder) {
         return args -> {
-            // 🛡️ Criação do usuário admin padrão
             String email = "admin@example.com";
 
             if (userRepository.findByLogin(email) == null) {
@@ -38,32 +34,41 @@ public class StartupInitializer {
                 User admin = new User(email, passwordHash, UserRole.ADMIN);
                 userRepository.save(admin);
 
-                System.out.println("✅ Usuário admin criado com sucesso.");
+                System.out.println("Usuário admin criado com sucesso.");
             } else {
-                System.out.println("ℹ️ Usuário admin já existe.");
+                System.out.println("Usuário admin já existe.");
             }
+        };
+    }
 
-            // 🌐 Criação do Header padrão
+    @Bean
+    public CommandLineRunner initDefaultHeader(HeaderService headerService){
+        return args -> {
             if (headerService.getHeader() == null) {
-                HeaderDto headerDto = new HeaderDto(
-                        "https://exemplo.com/logo.png", // <- Atualizar depois para a URL real
+                HeaderUrlDto headerUrlDto = new HeaderUrlDto(
+                        "https://res.cloudinary.com/dp98r2imm/image/upload/v1749996488/d750ae3dcaf62a93289de01f9b7384e86d42784e_kmfia6.png",
+                        "d750ae3dcaf62a93289de01f9b7384e86d42784e_kmfia6",
                         "O Projeto",
                         "Conteúdo",
                         "Ajuda",
                         "#RedeJED",
                         "Entrar"
                 );
-                headerService.createHeader(headerDto);
-                System.out.println("✅ Header padrão criado.");
+                headerService.createHeader(headerUrlDto);
+                System.out.println("Header padrão criado.");
             } else {
-                System.out.println("ℹ️ Header já existe.");
+                System.out.println("Header já existe.");
             }
+        };
+    }
 
-            // 🏞️ Criação do Banner padrão
+    @Bean
+    public CommandLineRunner initDefaultBanner(BannerService bannerService){
+        return args -> {
             if (bannerService.getBanner() == null) {
                 BannerDto bannerDto = new BannerDto(
-                        "Bem-vindo ao Projeto Jedi!",
-                        "Transformando o futuro da educação pública.",
+                        "DÊ UM PLAY NO SEU FUTURO",
+                        "Curso online com formação personalizada para você empreender de forma inteligente e estratégica",
                         List.of(
                                 new BannerItemUrlDto(
                                         "https://res.cloudinary.com/dp98r2imm/image/upload/v1749910911/bannerInicial_xcwltm.jpg",
@@ -73,12 +78,39 @@ public class StartupInitializer {
                         )
                 );
                 bannerService.createBanner(bannerDto);
-                System.out.println("✅ Banner padrão criado.");
+                System.out.println("Banner padrão criado.");
             } else {
-                System.out.println("ℹ️ Banner já existe.");
+                System.out.println("Banner já existe.");
             }
+        };
+    }
 
-            // 📄 Criação da Presentation Section padrão
+    @Bean
+    public CommandLineRunner initDefaultTeam(TeamService teamService){
+        return args -> {
+            if(teamService.getTeam() == null){
+                TeamDto teamDto = new TeamDto(
+                    "Equipe",
+                        List.of(
+                                    new TeamItemUrlDto(
+                                            "https://res.cloudinary.com/dp98r2imm/image/upload/v1749910911/bannerInicial_xcwltm.jpg"
+                                    ),
+                                new TeamItemUrlDto(
+                                        "https://res.cloudinary.com/dp98r2imm/image/upload/v1749945082/fotoend2_ajfnzd.png"
+                                )
+                        )
+                );
+                teamService.createTeam(teamDto);
+                System.out.println("Banner da Equipe padrão criado.");
+            } else {
+                System.out.println("Banner da Equipe já existe.");
+            }
+        };
+    }
+
+    @Bean
+    public CommandLineRunner initDefaultPresentationSection(PresentationSectionService presentationSectionService){
+        return args -> {
             if (presentationSectionService.getPresentationSection() == null) {
                 PresentationSectionDto dto = new PresentationSectionDto(
                         "Projeto de integração de estudantes com impacto social.",
@@ -88,9 +120,9 @@ public class StartupInitializer {
                         "Nosso projeto visa promover integração, desenvolvimento pessoal e impacto social."
                 );
                 presentationSectionService.createPresentationSection(dto);
-                System.out.println("✅ Presentation Section criada.");
+                System.out.println("Presentation Section criada.");
             } else {
-                System.out.println("ℹ️ Presentation Section já existe.");
+                System.out.println("Presentation Section já existe.");
             }
         };
     }
