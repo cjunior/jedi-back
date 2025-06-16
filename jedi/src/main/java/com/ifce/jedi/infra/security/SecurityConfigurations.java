@@ -50,9 +50,15 @@ public class SecurityConfigurations {
                         .requestMatchers(HttpMethod.PUT, "/banner/slide/{slideId}").hasRole("ADMIN")
                         .requestMatchers(HttpMethod.DELETE, "/banner/slide/{slideId}").hasRole("ADMIN")
                         .requestMatchers(HttpMethod.PUT, "/banner/update").hasRole("ADMIN")
-                        .requestMatchers(HttpMethod.GET, "/header").permitAll()
+                        .requestMatchers(HttpMethod.GET, "/header/get").permitAll()
                         .requestMatchers(HttpMethod.GET, "/banner/get").permitAll()
-
+                        .requestMatchers(HttpMethod.GET, "/team/get").permitAll()
+                        .requestMatchers(HttpMethod.POST, "/team/members/add").hasRole("ADMIN")
+                        .requestMatchers(HttpMethod.DELETE, "/team/member/{memberId}").hasRole("ADMIN")
+                        .requestMatchers(HttpMethod.PUT, "/team/member/{memberId}").hasRole("ADMIN")
+                        .requestMatchers(HttpMethod.PUT, "/team/update").hasRole("ADMIN")
+                        .requestMatchers(HttpMethod.PUT, "/presentation-section/update").hasRole("ADMIN")
+                        .requestMatchers(HttpMethod.GET, "/presentation-section/get").permitAll()
                         .anyRequest().authenticated()
                 )
 

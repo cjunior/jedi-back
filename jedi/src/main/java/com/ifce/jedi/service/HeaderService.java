@@ -3,7 +3,6 @@ package com.ifce.jedi.service;
 import com.ifce.jedi.dto.Header.HeaderDto;
 import com.ifce.jedi.dto.Header.HeaderResponseDto;
 import com.ifce.jedi.dto.Header.HeaderUrlDto;
-import com.ifce.jedi.model.SecoesSite.Header;
 import com.ifce.jedi.model.SecoesSite.Header.Header;
 import com.ifce.jedi.repository.HeaderRepository;
 import org.springframework.beans.factory.annotation.Autowired;
