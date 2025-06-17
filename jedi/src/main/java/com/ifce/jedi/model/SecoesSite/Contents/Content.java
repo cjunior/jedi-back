@@ -9,4 +9,5 @@ import jakarta.persistence.Table;
 public class Content {
     @Id
     private Long id;
+
 }
