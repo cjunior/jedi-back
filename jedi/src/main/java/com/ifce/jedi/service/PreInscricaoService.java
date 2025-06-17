@@ -62,7 +62,7 @@ public class PreInscricaoService {
 
 
     public PreInscricao validateTokenOrThrow(String token) {
-        PreInscricao preInscricao = preInscricaoRepository.findByContinuationToken(token)
+        PreInscricao preInscricao = findByContinuationToken(token)
                 .orElseThrow(() -> new TokenNotFoundException("Token inválido."));
 
         if (preInscricao.getTokenExpiration() == null || preInscricao.getTokenExpiration().isBefore(LocalDateTime.now())) {

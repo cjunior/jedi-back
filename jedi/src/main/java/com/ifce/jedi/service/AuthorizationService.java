@@ -11,7 +11,7 @@ import org.springframework.stereotype.Service;
 public class AuthorizationService implements UserDetailsService {
 
     @Autowired
-    UserRepository userRepository; // preciso do repository aqui pra fazer a consulta no meu BD
+    UserRepository userRepository;
 
 
     @Override
