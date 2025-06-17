@@ -1,5 +1,6 @@
 package com.ifce.jedi.dto.PreInscricao;
 
+import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import org.springframework.web.multipart.MultipartFile;
@@ -21,9 +22,11 @@ public class PreInscricaoComplementarDto {
         private String rg;
 
         @NotNull
+        @Schema(type = "string", format = "binary")
         private MultipartFile document;
 
         @NotNull
+        @Schema(type = "string", format = "binary")
         private MultipartFile proofOfAdress;
 
         // Construtor vazio (requerido pelo Spring)
