@@ -109,20 +109,17 @@ public class StartupInitializer {
     }
 
     @Bean
-    public CommandLineRunner initDefaultPresentationSection(PresentationSectionService presentationSectionService){
+    public CommandLineRunner initDefaultPresentationSection(PresentationSectionService service) {
         return args -> {
-            if (presentationSectionService.getPresentationSection() == null) {
+            if (service.get() == null) {
                 PresentationSectionDto dto = new PresentationSectionDto(
-                        "Projeto de integração de estudantes com impacto social.",
-                        "150 ESTUDANTES ATIVOS",
-                        "5000 PESSOAS IMPACTADAS",
-                        "https://res.cloudinary.com/dp98r2imm/image/upload/v1749910911/bannerInicial_xcwltm.jpg",
-                        "Nosso projeto visa promover integração, desenvolvimento pessoal e impacto social."
+                        "0 PROJECT",
+                        "Lorem ipsum dolor sit amet, consectetur adipiscing elit...",
+                        "150 STUDENTS",
+                        "5000 REACH",
+                        "https://res.cloudinary.com/dp98r2imm/image/upload/v1749945082/fotoend2_ajfnzd.png"
                 );
-                presentationSectionService.createPresentationSection(dto);
-                System.out.println("Presentation Section criada.");
-            } else {
-                System.out.println("Presentation Section já existe.");
+                service.create(dto);
             }
         };
     }

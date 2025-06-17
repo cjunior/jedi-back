@@ -29,7 +29,7 @@ public class LoadLandPageService {
         var header = headerService.getHeader();
         var banner = bannerService.getBanner();
         var team = teamService.getTeam();
-        var presentationSection = presentationSectionService.getPresentationSection();
+        var presentationSection = presentationSectionService.get();
         LoadLandPageDto dto = new LoadLandPageDto(header, banner, team, presentationSection);
 
         return dto;
