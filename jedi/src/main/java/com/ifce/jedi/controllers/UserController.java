@@ -31,6 +31,7 @@ public class UserController {
 
 
     @GetMapping("/pre-inscricoes")
+    @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<List<PreInscricaoDadosDto>> getAllPreInscricoes() {
         return ResponseEntity.ok(userService.getAllPreInscricoes());
     }
