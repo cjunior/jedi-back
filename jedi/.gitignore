@@ -34,4 +34,6 @@ build/
 
 /docker
 
-.idea/
+## Arquivo de variáveis sensíveis
+../.env
+

@@ -27,14 +27,7 @@ public class HeaderController {
 
     @PutMapping(value = "/update", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     @PreAuthorize("hasRole('ADMIN')")
-    public ResponseEntity<HeaderResponseDto> updateHeader(
-            @RequestPart(name = "file", required = false) MultipartFile file,
-            @RequestPart("text1") String text1,
-            @RequestPart("text2") String text2,
-            @RequestPart("text3") String text3,
-            @RequestPart("text4") String text4,
-            @RequestPart("buttonText") String buttnText) throws IOException {
-        HeaderDto dto = new HeaderDto(text1, text2, text3, text4, buttnText);
-        return ResponseEntity.ok(headerService.updateHeader(file, dto));
+    public ResponseEntity<HeaderResponseDto> updateHeader(@ModelAttribute HeaderDto dto) throws IOException {
+        return ResponseEntity.ok(headerService.updateHeader(dto));
     }
 }

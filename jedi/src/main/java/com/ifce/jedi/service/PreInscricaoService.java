@@ -2,6 +2,9 @@ package com.ifce.jedi.service;
 
 import com.ifce.jedi.dto.PreInscricao.PreInscricaoComplementarDto;
 import com.ifce.jedi.dto.PreInscricao.PreInscricaoDto;
+import com.ifce.jedi.exception.custom.EmailAlreadyUsedException;
+import com.ifce.jedi.exception.custom.TokenExpiredException;
+import com.ifce.jedi.exception.custom.TokenNotFoundException;
 import com.ifce.jedi.model.User.PreInscricao;
 import com.ifce.jedi.repository.PreInscricaoRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -20,7 +23,7 @@ public class PreInscricaoService {
     public PreInscricao createRegistration(PreInscricaoDto preInscricaoDto) {
 
         if (findByEmail(preInscricaoDto.email()).isPresent()){
-            throw new IllegalArgumentException("Já existe uma pre-inscricao com esse email.");
+            throw new EmailAlreadyUsedException("Já existe uma pre-inscricao com esse email.");
         }
 
         PreInscricao preInscricao = new PreInscricao(
@@ -30,7 +33,6 @@ public class PreInscricaoService {
         );
 
         // Geração do token
-
         String token = UUID.randomUUID().toString();
         preInscricao.setContinuationToken(token);
         preInscricao.setTokenExpiration(LocalDateTime.now().plusHours(24));
@@ -40,12 +42,8 @@ public class PreInscricaoService {
 
 
     public void completeRegistration(String token, PreInscricaoComplementarDto  preInscricaoComplementarDto) {
-        PreInscricao preInscricao = preInscricaoRepository.findByContinuationToken(token)
-                .orElseThrow(()-> new IllegalArgumentException("Token inválido."));
 
-        if (preInscricao.getTokenExpiration() == null || LocalDateTime.now().isAfter(preInscricao.getTokenExpiration())) {
-            throw new IllegalArgumentException("Token expirado.");
-        }
+        PreInscricao preInscricao = validateTokenOrThrow(token);
 
         try {
             preInscricao.setBirthDate(preInscricaoComplementarDto.getBirthDate());
@@ -57,9 +55,21 @@ public class PreInscricaoService {
 
             preInscricaoRepository.save(preInscricao);
         } catch (Exception e) {
-            throw new RuntimeException("Erro ao processar arivos enviados.", e);
+            throw new RuntimeException("Erro ao processar arquivos enviados.", e);
         }
 
+    }
+
+
+    public PreInscricao validateTokenOrThrow(String token) {
+        PreInscricao preInscricao = findByContinuationToken(token)
+                .orElseThrow(() -> new TokenNotFoundException("Token inválido."));
+
+        if (preInscricao.getTokenExpiration() == null || preInscricao.getTokenExpiration().isBefore(LocalDateTime.now())) {
+            throw new TokenExpiredException("Token expirado.");
+        }
+
+        return preInscricao;
     }
 
     public PreInscricao findById(UUID id) {

@@ -7,6 +7,7 @@ import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
+import java.time.LocalDateTime;
 import java.util.Collection;
 import java.util.List;
 import java.util.Objects;
@@ -25,6 +26,15 @@ public class User implements UserDetails {
 
     private String password;
 
+    private String name;
+
+    private LocalDateTime createdAt;
+
+    @PrePersist
+    protected void onCreate() {
+        this.createdAt = LocalDateTime.now();
+    }
+
     @Enumerated(EnumType.STRING)
     private UserRole role;
 
@@ -37,8 +47,14 @@ public class User implements UserDetails {
         this.password = password;
     }
 
-    public User(String email, String password) {
-        this.login = email;
+    public User(String name, String login, String password) {
+        this.name = name;
+        this.login = login;
+        this.password = password;
+    }
+
+    public User(String name, String password) {
+        this.login = name;
         this.password = password;
     }
 
@@ -46,6 +62,25 @@ public class User implements UserDetails {
         this.login = login;
         this.password = password;
         this.role = role;
+    }
+
+    public User(String login, String password, UserRole role, String name) {
+        this.login = login;
+        this.password = password;
+        this.role = role;
+        this.name = name;
+    }
+
+    public LocalDateTime getCreatedAt() {
+        return createdAt;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String email) {
+        this.name = email;
     }
 
     public UUID getId() {
@@ -65,7 +100,6 @@ public class User implements UserDetails {
     public Collection<? extends GrantedAuthority> getAuthorities() {
         return List.of(new SimpleGrantedAuthority("ROLE_" + this.role.name()));
     }
-
 
     @Override
     public String getUsername() {

@@ -59,6 +59,8 @@ public class SecurityConfigurations {
                         .requestMatchers(HttpMethod.PUT, "/team/update").hasRole("ADMIN")
                         .requestMatchers(HttpMethod.PUT, "/presentation-section/update").hasRole("ADMIN")
                         .requestMatchers(HttpMethod.GET, "/presentation-section/get").permitAll()
+                        .requestMatchers(HttpMethod.GET, "loadlandpage/get").permitAll()
+                        .requestMatchers(HttpMethod.PUT, "/update-all").hasRole("ADMIN")
                         .anyRequest().authenticated()
                 )
 
