@@ -2,6 +2,8 @@ package com.ifce.jedi.config;
 
 import com.ifce.jedi.dto.Banner.BannerDto;
 import com.ifce.jedi.dto.Banner.BannerItemUrlDto;
+import com.ifce.jedi.dto.Contents.ContentDto;
+import com.ifce.jedi.dto.Contents.ContentItemUrlDto;
 import com.ifce.jedi.dto.Header.HeaderUrlDto;
 import com.ifce.jedi.dto.PresentationSection.PresentationSectionDto;
 import com.ifce.jedi.dto.Team.TeamDto;
@@ -9,10 +11,7 @@ import com.ifce.jedi.dto.Team.TeamItemUrlDto;
 import com.ifce.jedi.model.User.User;
 import com.ifce.jedi.model.User.UserRole;
 import com.ifce.jedi.repository.UserRepository;
-import com.ifce.jedi.service.BannerService;
-import com.ifce.jedi.service.HeaderService;
-import com.ifce.jedi.service.TeamService;
-import com.ifce.jedi.service.PresentationSectionService;
+import com.ifce.jedi.service.*;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -120,6 +119,30 @@ public class StartupInitializer {
                         "https://res.cloudinary.com/dp98r2imm/image/upload/v1749945082/fotoend2_ajfnzd.png"
                 );
                 service.create(dto);
+            }
+        };
+    }
+
+    @Bean
+    public CommandLineRunner initDefaultContentSection(ContentService contentService){
+        return args -> {
+            if(contentService.getContent() == null) {
+                ContentDto dto = new ContentDto(
+                        "teste",
+                        "teste",
+                        "teste",
+                        "",
+                        List.of(
+                                new ContentItemUrlDto(
+                                        "https://res.cloudinary.com/dp98r2imm/image/upload/v1749910911/bannerInicial_xcwltm.jpg",
+                                        ""
+                                )
+                        )
+                );
+                contentService.createContent(dto);
+                System.out.println("Content Section criada.");
+            }else {
+                System.out.println("Presentation Section já existe.");
             }
         };
     }

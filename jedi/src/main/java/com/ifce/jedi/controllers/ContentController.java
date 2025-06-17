@@ -1,8 +1,6 @@
 package com.ifce.jedi.controllers;
 
-import com.ifce.jedi.dto.Contents.ContentDto;
-import com.ifce.jedi.dto.Contents.ContentItemDto;
-import com.ifce.jedi.dto.Contents.ContentResponseDto;
+import com.ifce.jedi.dto.Contents.*;
 import com.ifce.jedi.service.ContentService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
@@ -35,7 +33,7 @@ public class ContentController {
 
     @PostMapping(value = "/slides/add", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     @PreAuthorize("hasRole('ADMIN')")
-    public ResponseEntity<?> addSlide(@ModelAttribute ContentItemDto form) throws IOException {
+    public ResponseEntity<?> addSlide(@ModelAttribute ContentItemUploadDto form) throws IOException {
 
         List<MultipartFile> files = form.getFiles();
         List<String> igmText = form.getImgTexts();
@@ -46,7 +44,7 @@ public class ContentController {
 
         for (int i = 0; i < igmText.size(); i++) {
             ContentItemDto dto = new ContentItemDto(igmText.get(i));
-            bannerService.addSlide(files[i], dto);
+            contentService.addSlide(files.get(i), dto);
         }
 
         return ResponseEntity.ok("Itens adicionados com sucesso!");
