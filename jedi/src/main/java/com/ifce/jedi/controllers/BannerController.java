@@ -10,6 +10,7 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
+import java.util.List;
 
 @RestController
 @RequestMapping("/banner")
@@ -32,33 +33,57 @@ public class BannerController {
 
     @PostMapping(value = "/slides/add", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     @PreAuthorize("hasRole('ADMIN')")
-    public ResponseEntity<BannerItemResponseDto> addSlide(
-            @RequestPart("file") MultipartFile file,
-            @RequestPart("buttonText") String buttonText,
-            @RequestPart(value = "buttonUrl", required = false) String buttonUrl) throws IOException {
+    public ResponseEntity<?> addSlide(@ModelAttribute BannerSlideUploadDto form) throws IOException {
 
-        BannerItemDto dto = new BannerItemDto(buttonText, buttonUrl);
-        return ResponseEntity.ok(bannerService.addSlide(file, dto));
+        MultipartFile[] files = form.getFile();
+        List<String> buttonText = form.getButtonText();
+        List<String> buttonUrl = form.getButtonUrl();
+
+        if (files.length != buttonText.size()) {
+            return ResponseEntity.badRequest().body("Número de arquivos e textos não correspondem.");
+        }
+
+        for (int i = 0; i < buttonText.size(); i++) {
+            String url = (buttonUrl != null && i < buttonUrl.size()) ? buttonUrl.get(i) : "";
+            BannerItemDto dto = new BannerItemDto(buttonText.get(i), url);
+            bannerService.addSlide(files[i], dto);
+        }
+
+        return ResponseEntity.ok("Itens adicionados com sucesso!");
     }
 
 
-    @PutMapping(value ="/slide/{slideId}", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+
+    @PutMapping(value = "/slide/update", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     @PreAuthorize("hasRole('ADMIN')")
-    public ResponseEntity<BannerItemResponseDto> updateSlide(
-            @PathVariable Long slideId,
-            @RequestPart(name = "file", required = false) MultipartFile file,
-            @RequestPart("buttonText") String buttonText,
-            @RequestPart(value = "buttonUrl", required = false) String buttonUrl) throws IOException {
+    public ResponseEntity<?> updateSlide(@ModelAttribute BannerSlideUpdateDto dto) throws IOException {
 
-        BannerItemDto dto = new BannerItemDto(buttonText, buttonUrl);
-        return ResponseEntity.ok(bannerService.updateSlide(slideId, file, dto));
+        List<Long> slideIds = dto.getSlideId();
+        MultipartFile[] files = dto.getFile();
+        List<String> buttonText = dto.getButtonText();
+        List<String> buttonUrl = dto.getButtonUrl();
+
+        if (slideIds.size() != buttonText.size() || files.length != buttonText.size()) {
+            return ResponseEntity.badRequest().body("Números de atributos não correspondem.");
+        }
+
+        for (int i = 0; i < slideIds.size(); i++) {
+            String url = (buttonUrl != null && i < buttonUrl.size()) ? buttonUrl.get(i) : "";
+            BannerItemDto itemDto = new BannerItemDto(buttonText.get(i), url);
+            bannerService.updateSlide(slideIds.get(i), files[i], itemDto);
+        }
+
+        return ResponseEntity.ok("Slides atualizados com sucesso.");
     }
+
 
 
     @DeleteMapping("/slide/{slideId}")
     @PreAuthorize("hasRole('ADMIN')")
-    public ResponseEntity<BannerResponseDto> deleteSlide(
-            @PathVariable Long slideId) throws IOException {
-        return ResponseEntity.ok(bannerService.deleteSlide(slideId));
+    public ResponseEntity<?> deleteSlide(
+            @PathVariable List<Long> slideId) throws IOException {
+        for (int i = 0; i < slideId.size(); i++)
+            bannerService.deleteSlide(slideId.get(i));
+        return ResponseEntity.ok().body("Imagens excluídas com sucesso");
     }
 }

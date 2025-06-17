@@ -98,25 +98,23 @@ public class BannerService {
     }
 
     @Transactional
-    public BannerItemResponseDto addSlide(MultipartFile file, BannerItemDto dto) throws IOException {
+    public BannerResponseDto addSlide(MultipartFile file, BannerItemDto dto) throws IOException {
         Banner banner = bannerRepository.findAll().stream().findFirst()
                 .orElseThrow(() -> new RuntimeException("Banner não encontrado"));
 
-        BannerItem item = new BannerItem();
 
+        BannerItem item = new BannerItem();
         var uploadResult = cloudinaryService.uploadImage(file);
         item.setImgUrl(uploadResult.get("url"));
         item.setCloudinaryPublicId(uploadResult.get("public_id"));
         item.setButtonText(dto.buttonText());
         item.setButtonUrl(dto.buttonUrl());
         item.setBanner(banner);
-
         banner.getItems().add(item);
-        bannerRepository.save(banner);
 
-        return new BannerItemResponseDto(
-                item.getId(), item.getImgUrl(), item.getButtonText(), item.getButtonUrl()
-        );
+
+        bannerRepository.save(banner);
+        return toResponse(banner);
     }
 
     @Transactional

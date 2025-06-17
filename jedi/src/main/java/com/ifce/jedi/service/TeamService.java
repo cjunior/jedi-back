@@ -83,22 +83,24 @@ public class TeamService {
     }
 
     @Transactional
-    public TeamItemResponseDto addMember(MultipartFile file, TeamItemDto dto) throws IOException {
+    public TeamResponseDto addMember(MultipartFile[] files, TeamItemDto dto) throws IOException {
         Team team = teamRepository.findAll().stream().findFirst()
                 .orElseThrow(() -> new RuntimeException("Team não encontrado."));
 
-        TeamItem item = new TeamItem();
+        for (MultipartFile file : files){
+            TeamItem item = new TeamItem();
+            var uploadResult = cloudinaryService.uploadImage(file);
+            item.setImgUrl(uploadResult.get("url"));
+            item.setCloudinaryPublicId(uploadResult.get("public_id"));
+            item.setTeam(team);
+            team.getItems().add(item);
+        }
 
-        var uploadResult = cloudinaryService.uploadImage(file);
-        item.setImgUrl(uploadResult.get("url"));
-        item.setCloudinaryPublicId(uploadResult.get("public_id"));
-        item.setTeam(team);
 
-        team.getItems().add(item);
+
         teamRepository.save(team);
 
-        return new TeamItemResponseDto(
-                item.getId(), item.getImgUrl());
+        return toResponse(team);
     }
 
     @Transactional

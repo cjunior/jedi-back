@@ -26,24 +26,24 @@ public class HeaderService {
         return new HeaderResponseDto(headers.get(0));
     }
 
-    public HeaderResponseDto updateHeader(MultipartFile file, HeaderDto dto) throws IOException {
+    public HeaderResponseDto updateHeader(HeaderDto dto) throws IOException {
         Header header = headerRepository.findAll().stream().findFirst()
                 .orElseThrow(() -> new RuntimeException("Header não encontrado"));
 
-        if (file != null && !file.isEmpty()) {
+        if (dto.getFile() != null && !dto.getFile().isEmpty()) {
             if (header.getCloudinaryPublicId() != null) {
                 cloudinaryService.deleteImage(header.getCloudinaryPublicId());
             }
-            var uploadResult = cloudinaryService.uploadImage(file);
+            var uploadResult = cloudinaryService.uploadImage(dto.getFile());
             header.setLogoUrl(uploadResult.get("url"));
             header.setCloudinaryPublicId(uploadResult.get("public_id"));
         }
 
-        header.setText1(dto.text1());
-        header.setText2(dto.text2());
-        header.setText3(dto.text3());
-        header.setText4(dto.text4());
-        header.setButtonText(dto.buttonText());
+        header.setText1(dto.getText1());
+        header.setText2(dto.getText2());
+        header.setText3(dto.getText3());
+        header.setText4(dto.getText4());
+        header.setButtonText(dto.getButtonText());
 
         headerRepository.save(header);
 
