@@ -32,7 +32,7 @@ public class UserService {
 
         String encryptedPassword = new BCryptPasswordEncoder().encode(dto.password());
 
-        User newUser = new User(dto.name(), dto.login(), UserRole.GERENTE, dto.password());
+        User newUser = new User(dto.name(), dto.login(), UserRole.GERENTE, encryptedPassword);
 
         userRepository.save(newUser);
     }
