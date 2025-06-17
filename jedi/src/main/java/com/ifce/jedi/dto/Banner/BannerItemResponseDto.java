@@ -1,4 +1,4 @@
 package com.ifce.jedi.dto.Banner;
 
-public record BannerItemResponseDto(Long id, String imgUrl, String buttoText, String buttonUrl){
+public record BannerItemResponseDto(Long id, String imgUrl, String buttonText, String buttonUrl){
 }
