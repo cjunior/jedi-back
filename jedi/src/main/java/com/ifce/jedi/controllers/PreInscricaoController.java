@@ -8,6 +8,7 @@ import com.ifce.jedi.service.EmailService;
 import com.ifce.jedi.service.PreInscricaoService;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -57,11 +58,14 @@ public class PreInscricaoController {
         return ResponseEntity.ok(resumo);
     }
 
-    @PutMapping("/continuar/{token}")
+
+
+    @PutMapping(value = "/continuar/{token}", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     public ResponseEntity<?> completeRegistration(
             @PathVariable String token,
             @Valid @ModelAttribute PreInscricaoComplementarDto preInscricaoDto) {
         preInscricaoService.completeRegistration(token, preInscricaoDto);
         return ResponseEntity.ok("Pré-inscrição finalizada com sucesso.");
     }
+
 }
