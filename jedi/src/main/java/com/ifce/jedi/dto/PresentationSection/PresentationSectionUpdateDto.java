@@ -1,10 +1,8 @@
 package com.ifce.jedi.dto.PresentationSection;
 
-public record PresentationSectionResponseDto(
-        Long id,
+public record PresentationSectionUpdateDto(
         String title,
         String description,
         String firstStatistic,
-        String secondStatistic,
-        String imageUrl
+        String secondStatistic
 ) {}
