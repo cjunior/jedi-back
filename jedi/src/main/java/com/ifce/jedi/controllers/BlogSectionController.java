@@ -30,10 +30,4 @@ public class BlogSectionController {
             @ModelAttribute BlogItemImageUploadDto dto) throws IOException {
         return ResponseEntity.ok(service.updateItemImage(itemId, dto.file()));
     }
-
-    @PostMapping("/reset-to-default")
-    @PreAuthorize("hasRole('ADMIN')")
-    public ResponseEntity<BlogSectionResponseDto> resetToDefault() {
-        return ResponseEntity.ok(service.resetToDefault());
-    }
 }

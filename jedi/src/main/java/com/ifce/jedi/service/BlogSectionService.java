@@ -34,10 +34,9 @@ public class BlogSectionService {
         section.setTitle("Últimas postagens do blog");
 
         List<BlogItem> items = List.of(
-                createItem(section, "Lorem ipsum dolor sit amet, consectetur", "Maria", "08 de Abril", "2 min de leitura", null, "Imagem do post 1"),
-                createItem(section, "Lorem ipsum dolor sit amet, consectetur", "Maria", "08 de Abril", "2 min de leitura", null, "Imagem do post 2"),
-                createItem(section, "Lorem ipsum dolor sit amet, consectetur", "Maria", "08 de Abril", "2 min de leitura", null, "Imagem do post 3"),
-                createItem(section, "Lorem ipsum dolor sit amet, consectetur", "Maria", "08 de Abril", "2 min de leitura", null, "Imagem do post 4")
+                createItem(section, "Lorem ipsum dolor sit amet, consectetur", "Maria", "08 de Abril", "2 min de leitura", "https://exemplo.com/imagem1.jpg", "Imagem ilustrativa 1"),
+                createItem(section, "Segundo post de exemplo", "João", "10 de Abril", "3 min de leitura", "https://exemplo.com/imagem2.jpg", "Imagem ilustrativa 2"),
+                createItem(section, "Terceiro post de exemplo", "Ana", "12 de Abril", "4 min de leitura", "https://exemplo.com/imagem3.jpg", "Imagem ilustrativa 3")
         );
 
         section.setItems(items);
@@ -60,17 +59,12 @@ public class BlogSectionService {
     @Transactional
     public BlogSectionResponseDto updateItemImage(Long itemId, MultipartFile file) throws IOException {
         BlogSection section = repository.findFirstByOrderByIdAsc()
-                .orElseThrow(() -> new RuntimeException("Seção do Blog não encontrada"));
-
-        // Garante que sempre terá 4 itens
-        if (section.getItems().size() != 4) {
-            resetToDefaultItems(section);
-        }
+                .orElseThrow(() -> new RuntimeException("Blog Section não encontrada"));
 
         BlogItem item = section.getItems().stream()
                 .filter(i -> i.getId().equals(itemId))
                 .findFirst()
-                .orElseThrow(() -> new RuntimeException("Item do Blog não encontrado"));
+                .orElseThrow(() -> new RuntimeException("Item Blog não encontrado"));
 
         if (item.getCloudinaryPublicId() != null) {
             cloudinaryService.deleteImage(item.getCloudinaryPublicId());
@@ -82,36 +76,6 @@ public class BlogSectionService {
 
         repository.save(section);
         return toResponse(section);
-    }
-
-    @Transactional
-    public BlogSectionResponseDto resetToDefault() {
-        BlogSection section = repository.findFirstByOrderByIdAsc()
-                .orElseGet(() -> {
-                    BlogSection newSection = new BlogSection();
-                    newSection.setTitle("Últimas postagens do blog");
-                    return repository.save(newSection);
-                });
-
-        section.getItems().clear();
-        section.setItems(List.of(
-                createItem(section, "Lorem ipsum dolor sit amet, consectetur", "Maria", "08 de Abril", "2 min de leitura", null, "Imagem do post 1"),
-                createItem(section, "Lorem ipsum dolor sit amet, consectetur", "Maria", "08 de Abril", "2 min de leitura", null, "Imagem do post 2"),
-                createItem(section, "Lorem ipsum dolor sit amet, consectetur", "Maria", "08 de Abril", "2 min de leitura", null, "Imagem do post 3"),
-                createItem(section, "Lorem ipsum dolor sit amet, consectetur", "Maria", "08 de Abril", "2 min de leitura", null, "Imagem do post 4")
-        ));
-
-        return toResponse(repository.save(section));
-    }
-
-    private void resetToDefaultItems(BlogSection section) {
-        section.getItems().clear();
-        section.setItems(List.of(
-                createItem(section, "Lorem ipsum dolor sit amet, consectetur", "Maria", "08 de Abril", "2 min de leitura", null, "Imagem do post 1"),
-                createItem(section, "Lorem ipsum dolor sit amet, consectetur", "Maria", "08 de Abril", "2 min de leitura", null, "Imagem do post 2"),
-                createItem(section, "Lorem ipsum dolor sit amet, consectetur", "Maria", "08 de Abril", "2 min de leitura", null, "Imagem do post 3"),
-                createItem(section, "Lorem ipsum dolor sit amet, consectetur", "Maria", "08 de Abril", "2 min de leitura", null, "Imagem do post 4")
-        ));
     }
 
     private BlogSectionResponseDto toResponse(BlogSection entity) {
