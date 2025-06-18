@@ -34,11 +34,8 @@ public class PresentationSectionService {
         }
 
         PresentationSection entity = new PresentationSection();
-        entity.setTitle(dto.title());
-        entity.setDescription(dto.description());
-        entity.setFirstStatistic(dto.firstStatistic());
-        entity.setSecondStatistic(dto.secondStatistic());
-        entity.setImageUrl(dto.imageUrl());
+        updateEntityFromDto(entity, dto);
+        entity.setImgUrl(dto.imgUrl());
 
         PresentationSection saved = repository.save(entity);
         return toResponse(saved);
@@ -50,9 +47,11 @@ public class PresentationSectionService {
                 .orElseThrow(() -> new RuntimeException("Presentation section not found"));
 
         entity.setTitle(dto.title());
-        entity.setDescription(dto.description());
+        entity.setFirstDescription(dto.firstDescription());
+        entity.setSecondDescription(dto.secondDescription());
         entity.setFirstStatistic(dto.firstStatistic());
         entity.setSecondStatistic(dto.secondStatistic());
+        entity.setImgDescription(dto.imgDescription());
 
         PresentationSection updated = repository.save(entity);
         return toResponse(updated);
@@ -68,21 +67,32 @@ public class PresentationSectionService {
         }
 
         var uploadResult = cloudinaryService.uploadImage(file);
-        entity.setImageUrl(uploadResult.get("url"));
+        entity.setImgUrl(uploadResult.get("url"));
         entity.setCloudinaryPublicId(uploadResult.get("public_id"));
 
         PresentationSection updated = repository.save(entity);
         return toResponse(updated);
     }
 
+    private void updateEntityFromDto(PresentationSection entity, PresentationSectionDto dto) {
+        entity.setTitle(dto.title());
+        entity.setFirstDescription(dto.firstDescription());
+        entity.setSecondDescription(dto.secondDescription());
+        entity.setFirstStatistic(dto.firstStatistic());
+        entity.setSecondStatistic(dto.secondStatistic());
+        entity.setImgDescription(dto.imgDescription());
+    }
+
     private PresentationSectionResponseDto toResponse(PresentationSection entity) {
         return new PresentationSectionResponseDto(
                 entity.getId(),
                 entity.getTitle(),
-                entity.getDescription(),
+                entity.getFirstDescription(),
+                entity.getSecondDescription(),
                 entity.getFirstStatistic(),
                 entity.getSecondStatistic(),
-                entity.getImageUrl()
+                entity.getImgUrl(),
+                entity.getImgDescription()
         );
     }
 }

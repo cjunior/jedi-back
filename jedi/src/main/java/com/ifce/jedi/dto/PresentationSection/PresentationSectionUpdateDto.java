@@ -2,7 +2,9 @@ package com.ifce.jedi.dto.PresentationSection;
 
 public record PresentationSectionUpdateDto(
         String title,
-        String description,
+        String firstDescription,
+        String secondDescription,
         String firstStatistic,
-        String secondStatistic
+        String secondStatistic,
+        String imgDescription
 ) {}

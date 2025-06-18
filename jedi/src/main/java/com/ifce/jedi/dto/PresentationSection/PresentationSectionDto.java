@@ -4,18 +4,22 @@ import com.ifce.jedi.model.SecoesSite.PresentationSection;
 
 public record PresentationSectionDto(
         String title,
-        String description,
+        String firstDescription,
+        String secondDescription,
         String firstStatistic,
         String secondStatistic,
-        String imageUrl
+        String imgUrl,
+        String imgDescription
 ) {
     public PresentationSectionDto(PresentationSection entity) {
         this(
                 entity.getTitle(),
-                entity.getDescription(),
+                entity.getFirstDescription(),
+                entity.getSecondDescription(),
                 entity.getFirstStatistic(),
                 entity.getSecondStatistic(),
-                entity.getImageUrl()
+                entity.getImgUrl(),
+                entity.getImgDescription()
         );
     }
 }
