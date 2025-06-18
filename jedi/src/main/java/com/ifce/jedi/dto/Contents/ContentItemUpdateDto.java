@@ -9,7 +9,6 @@ public class ContentItemUpdateDto {
     private List<MultipartFile> files;
 
     private List<String> imgsTexts;
-    private List<Boolean> isMain;
 
     public List<Long> getItemsId() {
         return itemsId;
@@ -35,21 +34,13 @@ public class ContentItemUpdateDto {
         this.imgsTexts = imgsTexts;
     }
 
-    public List<Boolean> getIsMain() {
-        return isMain;
-    }
-
-    public void setIsMain(List<Boolean> isMain) {
-        this.isMain = isMain;
-    }
 
     public ContentItemUpdateDto() {
     }
 
-    public ContentItemUpdateDto(List<Long> itemsId, List<String> imgsTexts, List<MultipartFile> files, List<Boolean> isMain) {
+    public ContentItemUpdateDto(List<Long> itemsId, List<String> imgsTexts, List<MultipartFile> files) {
         this.itemsId = itemsId;
         this.imgsTexts = imgsTexts;
         this.files = files;
-        this.isMain = isMain;
     }
 }

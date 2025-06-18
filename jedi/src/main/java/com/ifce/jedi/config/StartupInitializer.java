@@ -128,11 +128,19 @@ public class StartupInitializer {
         return args -> {
             if(contentService.getContent() == null) {
                 ContentDto dto = new ContentDto(
-                        "teste",
-                        "teste",
-                        "teste",
-                        "",
+                        "CONTEÚDOS",
+                        "Lorem ipsum",
+                        "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Praesent ac ullamcorper metus.",
+                        "https://res.cloudinary.com/dp98r2imm/image/upload/v1749910911/bannerInicial_xcwltm.jpg",
                         List.of(
+                                new ContentItemUrlDto(
+                                        "https://res.cloudinary.com/dp98r2imm/image/upload/v1749910911/bannerInicial_xcwltm.jpg",
+                                        ""
+                                ),
+                                new ContentItemUrlDto(
+                                        "https://res.cloudinary.com/dp98r2imm/image/upload/v1749910911/bannerInicial_xcwltm.jpg",
+                                        "VENDAS NO WHATSAPP"
+                                ),
                                 new ContentItemUrlDto(
                                         "https://res.cloudinary.com/dp98r2imm/image/upload/v1749910911/bannerInicial_xcwltm.jpg",
                                         ""
@@ -142,7 +150,7 @@ public class StartupInitializer {
                 contentService.createContent(dto);
                 System.out.println("Content Section criada.");
             }else {
-                System.out.println("Presentation Section já existe.");
+                System.out.println("Content Section já existe.");
             }
         };
     }

@@ -1,5 +1,7 @@
 package com.ifce.jedi.controllers;
 
+import com.ifce.jedi.dto.Banner.BannerItemDto;
+import com.ifce.jedi.dto.Banner.BannerSlideUpdateDto;
 import com.ifce.jedi.dto.Contents.*;
 import com.ifce.jedi.service.ContentService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -11,9 +13,10 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
+import java.util.Collections;
 import java.util.List;
 
-@Controller
+@RestController
 @RequestMapping("/content")
 public class ContentController {
     @Autowired
@@ -25,10 +28,28 @@ public class ContentController {
         return content == null ? ResponseEntity.notFound().build() : ResponseEntity.ok(content);
     }
 
-    @PutMapping("/update")
+    @PutMapping(value = "/update", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     @PreAuthorize("hasRole('ADMIN')")
-    public ResponseEntity<ContentResponseDto> update(@ModelAttribute ContentDto dto) {
+    public ResponseEntity<ContentResponseDto> update(@ModelAttribute UpdateContentDto dto) throws IOException {
         return ResponseEntity.ok(contentService.updateContent(dto));
+    }
+
+    @PutMapping(value = "/slide/update", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+    @PreAuthorize("hasRole('ADMIN')")
+    public ResponseEntity<?> updateSlide(@ModelAttribute ContentItemUpdateDto dto) throws IOException {
+        // Verifica se as listas são nulas ou vazias
+        List<Long> slideIds = dto.getItemsId() != null ? dto.getItemsId() : Collections.emptyList();
+        List<MultipartFile> files = dto.getFiles() != null ? dto.getFiles() : Collections.emptyList();
+        List<String> imgTexts = dto.getImgsTexts() != null ? dto.getImgsTexts() : Collections.emptyList();
+
+        // Se há arquivos, atualiza com os arquivos; senão, atualiza sem eles
+        for (int i = 0; i < slideIds.size(); i++) {
+            ContentItemDto itemDto = new ContentItemDto(imgTexts.get(i));
+            MultipartFile file = !files.isEmpty() ? files.get(i) : null;
+            contentService.updateSlide(slideIds.get(i), file, itemDto);
+        }
+
+        return ResponseEntity.ok("Slides atualizados com sucesso.");
     }
 
     @PostMapping(value = "/slides/add", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
@@ -48,5 +69,14 @@ public class ContentController {
         }
 
         return ResponseEntity.ok("Itens adicionados com sucesso!");
+    }
+
+    @DeleteMapping("/slide/{slideId}")
+    @PreAuthorize("hasRole('ADMIN')")
+    public ResponseEntity<?> deleteSlide(
+            @PathVariable List<Long> slideId) throws IOException {
+        for (int i = 0; i < slideId.size(); i++)
+            contentService.deleteSlide(slideId.get(i));
+        return ResponseEntity.ok().body("Imagens excluídas com sucesso");
     }
 }

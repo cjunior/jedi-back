@@ -1,20 +1,25 @@
 package com.ifce.jedi.model.SecoesSite.Contents;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.Id;
-import jakarta.persistence.Table;
+import jakarta.persistence.*;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @Entity
 @Table(name = "content_section")
 public class Content {
     @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     private String title;
+    private String subTitle;
     private String description;
     private String mainImageUrl;
-    List<ContentItem> imgCarousel;
+
+    private String CloudinaryPublicId;
+
+    @OneToMany(mappedBy = "content", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<ContentItem> imgCarousel = new ArrayList<>();
 
     public Long getId() {
         return id;
@@ -30,6 +35,14 @@ public class Content {
 
     public void setTitle(String title) {
         this.title = title;
+    }
+
+    public String getSubTitle() {
+        return subTitle;
+    }
+
+    public void setSubTitle(String subTitle) {
+        this.subTitle = subTitle;
     }
 
     public String getDescription() {
@@ -48,6 +61,14 @@ public class Content {
         this.mainImageUrl = mainImageUrl;
     }
 
+    public String getCloudinaryPublicId() {
+        return CloudinaryPublicId;
+    }
+
+    public void setCloudinaryPublicId(String cloudinaryPublicId) {
+        CloudinaryPublicId = cloudinaryPublicId;
+    }
+
     public List<ContentItem> getImgCarousel() {
         return imgCarousel;
     }
@@ -59,11 +80,13 @@ public class Content {
     public Content() {
     }
 
-    public Content(Long id, String title, String description, String mainImageUrl, List<ContentItem> imgCarousel) {
+    public Content(Long id, String title, String subTitle, String description, String mainImageUrl, String cloudinaryPublicId, List<ContentItem> imgCarousel) {
         this.id = id;
         this.title = title;
+        this.subTitle = subTitle;
         this.description = description;
         this.mainImageUrl = mainImageUrl;
+        CloudinaryPublicId = cloudinaryPublicId;
         this.imgCarousel = imgCarousel;
     }
 }

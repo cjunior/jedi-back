@@ -1,9 +1,13 @@
 package com.ifce.jedi.model.SecoesSite.Contents;
 
 import com.ifce.jedi.model.SecoesSite.BaseSectionItem;
+import jakarta.persistence.Entity;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
+import jakarta.persistence.Table;
 
+@Entity
+@Table(name = "Content_item")
 public class ContentItem extends BaseSectionItem {
     private String imgText;
 
