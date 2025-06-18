@@ -23,11 +23,11 @@ public class BlogSectionController {
         return ResponseEntity.ok(service.get());
     }
 
-    @PutMapping(value = "/item/{itemId}/image", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+    @PutMapping(value = "/item/{itemId}", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     @PreAuthorize("hasRole('ADMIN')")
-    public ResponseEntity<BlogSectionResponseDto> updateItemImage(
+    public ResponseEntity<BlogSectionResponseDto> updateBlogItem(
             @PathVariable Long itemId,
-            @ModelAttribute BlogItemImageUploadDto dto) throws IOException {
-        return ResponseEntity.ok(service.updateItemImage(itemId, dto.file()));
+            @ModelAttribute BlogItemUpdateDto dto) throws IOException {
+        return ResponseEntity.ok(service.updateBlogItem(itemId, dto));
     }
 }

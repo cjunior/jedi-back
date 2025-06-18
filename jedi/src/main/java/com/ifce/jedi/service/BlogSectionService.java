@@ -4,7 +4,6 @@ import com.ifce.jedi.dto.Blog.*;
 import com.ifce.jedi.model.SecoesSite.BlogSection.BlogItem;
 import com.ifce.jedi.model.SecoesSite.BlogSection.BlogSection;
 import com.ifce.jedi.repository.BlogSectionRepository;
-import com.ifce.jedi.service.CloudinaryService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
@@ -34,10 +33,10 @@ public class BlogSectionService {
         section.setTitle("Últimas postagens do blog");
 
         List<BlogItem> items = List.of(
-                createItem(section, "Lorem ipsum dolor sit amet, consectetur", "Maria", "08 de Abril", "2 min de leitura", "https://exemplo.com/imagem1.jpg", "Imagem ilustrativa 1"),
-                createItem(section, "Segundo post de exemplo", "João", "10 de Abril", "3 min de leitura", "https://exemplo.com/imagem2.jpg", "Imagem ilustrativa 2"),
-                createItem(section, "Terceiro post de exemplo", "Ana", "12 de Abril", "4 min de leitura", "https://exemplo.com/imagem3.jpg", "Imagem ilustrativa 3"),
-                createItem(section, "Quarto post de exemplo", "Genilton", "15 de Abril", "4 min de leitura", "https://exemplo.com/imagem3.jpg", "Imagem ilustrativa 4")
+                createItem(section, "Lorem ipsum dolor sit amet, consectetur", "Maria", "08 de Abril", "2 min de leitura", "https://res.cloudinary.com/dp98r2imm/image/upload/v1749996488/d750ae3dcaf62a93289de01f9b7384e86d42784e_kmfia6.png", "Imagem ilustrativa 1"),
+                createItem(section, "Segundo post de exemplo", "João", "10 de Abril", "3 min de leitura", "https://res.cloudinary.com/dp98r2imm/image/upload/v1749996488/d750ae3dcaf62a93289de01f9b7384e86d42784e_kmfia6.png", "Imagem ilustrativa 2"),
+                createItem(section, "Terceiro post de exemplo", "Ana", "12 de Abril", "4 min de leitura", "https://res.cloudinary.com/dp98r2imm/image/upload/v1749996488/d750ae3dcaf62a93289de01f9b7384e86d42784e_kmfia6.png", "Imagem ilustrativa 3"),
+                createItem(section, "Quarto post de exemplo", "Genilton", "12 de Abril", "4 min de leitura", "https://res.cloudinary.com/dp98r2imm/image/upload/v1749996488/d750ae3dcaf62a93289de01f9b7384e86d42784e_kmfia6.png", "Imagem ilustrativa 4")
         );
 
         section.setItems(items);
@@ -58,7 +57,7 @@ public class BlogSectionService {
     }
 
     @Transactional
-    public BlogSectionResponseDto updateItemImage(Long itemId, MultipartFile file) throws IOException {
+    public BlogSectionResponseDto updateBlogItem(Long itemId, BlogItemUpdateDto dto) throws IOException {
         BlogSection section = repository.findFirstByOrderByIdAsc()
                 .orElseThrow(() -> new RuntimeException("Blog Section não encontrada"));
 
@@ -67,13 +66,22 @@ public class BlogSectionService {
                 .findFirst()
                 .orElseThrow(() -> new RuntimeException("Item Blog não encontrado"));
 
-        if (item.getCloudinaryPublicId() != null) {
-            cloudinaryService.deleteImage(item.getCloudinaryPublicId());
-        }
+        // Atualiza campos textuais
+        if (dto.title() != null) item.setTitle(dto.title());
+        if (dto.author() != null) item.setAuthor(dto.author());
+        if (dto.date() != null) item.setDate(dto.date());
+        if (dto.readingTime() != null) item.setReadingTime(dto.readingTime());
+        if (dto.imageDescription() != null) item.setImageDescription(dto.imageDescription());
 
-        var uploadResult = cloudinaryService.uploadImage(file);
-        item.setImageUrl(uploadResult.get("url"));
-        item.setCloudinaryPublicId(uploadResult.get("public_id"));
+        // Atualiza imagem se for fornecida
+        if (dto.file() != null && !dto.file().isEmpty()) {
+            if (item.getCloudinaryPublicId() != null) {
+                cloudinaryService.deleteImage(item.getCloudinaryPublicId());
+            }
+            var uploadResult = cloudinaryService.uploadImage(dto.file());
+            item.setImageUrl(uploadResult.get("url"));
+            item.setCloudinaryPublicId(uploadResult.get("public_id"));
+        }
 
         repository.save(section);
         return toResponse(section);
