@@ -36,7 +36,8 @@ public class BlogSectionService {
         List<BlogItem> items = List.of(
                 createItem(section, "Lorem ipsum dolor sit amet, consectetur", "Maria", "08 de Abril", "2 min de leitura", "https://exemplo.com/imagem1.jpg", "Imagem ilustrativa 1"),
                 createItem(section, "Segundo post de exemplo", "João", "10 de Abril", "3 min de leitura", "https://exemplo.com/imagem2.jpg", "Imagem ilustrativa 2"),
-                createItem(section, "Terceiro post de exemplo", "Ana", "12 de Abril", "4 min de leitura", "https://exemplo.com/imagem3.jpg", "Imagem ilustrativa 3")
+                createItem(section, "Terceiro post de exemplo", "Ana", "12 de Abril", "4 min de leitura", "https://exemplo.com/imagem3.jpg", "Imagem ilustrativa 3"),
+                createItem(section, "Quarto post de exemplo", "Genilton", "15 de Abril", "4 min de leitura", "https://exemplo.com/imagem3.jpg", "Imagem ilustrativa 4")
         );
 
         section.setItems(items);
