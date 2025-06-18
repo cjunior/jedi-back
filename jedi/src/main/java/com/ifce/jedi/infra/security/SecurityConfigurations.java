@@ -81,6 +81,8 @@ public class SecurityConfigurations {
                         .requestMatchers(HttpMethod.POST, "/content/slides/add").hasRole("ADMIN")
                         .requestMatchers(HttpMethod.PUT, "/content/update").hasRole("ADMIN")
                         .requestMatchers(HttpMethod.PUT, "/content/slides/update").hasRole("ADMIN")
+
+                        .requestMatchers(HttpMethod.POST, "/contactus/email").permitAll()
                         .anyRequest().authenticated()
                 )
                 .addFilterBefore(securityFilter, UsernamePasswordAuthenticationFilter.class)
