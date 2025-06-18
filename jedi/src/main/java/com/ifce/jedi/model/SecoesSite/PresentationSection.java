@@ -12,10 +12,12 @@ public class PresentationSection {
     private Long id;
 
     private String title;
-    private String description;
+    private String firstDescription;
+    private String secondDescription;
     private String firstStatistic;
     private String secondStatistic;
-    private String imageUrl;
+    private String imgUrl;
+    private String imgDescription;
     private String cloudinaryPublicId;
 
     public PresentationSection() {}
@@ -27,8 +29,11 @@ public class PresentationSection {
     public String getTitle() { return title; }
     public void setTitle(String title) { this.title = title; }
 
-    public String getDescription() { return description; }
-    public void setDescription(String description) { this.description = description; }
+    public String getFirstDescription() { return firstDescription; }
+    public void setFirstDescription(String firstDescription) { this.firstDescription = firstDescription; }
+
+    public String getSecondDescription() { return secondDescription; }
+    public void setSecondDescription(String secondDescription) { this.secondDescription = secondDescription; }
 
     public String getFirstStatistic() { return firstStatistic; }
     public void setFirstStatistic(String firstStatistic) { this.firstStatistic = firstStatistic; }
@@ -36,8 +41,11 @@ public class PresentationSection {
     public String getSecondStatistic() { return secondStatistic; }
     public void setSecondStatistic(String secondStatistic) { this.secondStatistic = secondStatistic; }
 
-    public String getImageUrl() { return imageUrl; }
-    public void setImageUrl(String imageUrl) { this.imageUrl = imageUrl; }
+    public String getImgUrl() { return imgUrl; }
+    public void setImgUrl(String imgUrl) { this.imgUrl = imgUrl; }
+
+    public String getImgDescription() { return imgDescription; }
+    public void setImgDescription(String imgDescription) { this.imgDescription = imgDescription; }
 
     public String getCloudinaryPublicId() { return cloudinaryPublicId; }
     public void setCloudinaryPublicId(String cloudinaryPublicId) { this.cloudinaryPublicId = cloudinaryPublicId; }

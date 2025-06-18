@@ -112,11 +112,13 @@ public class StartupInitializer {
         return args -> {
             if (service.get() == null) {
                 PresentationSectionDto dto = new PresentationSectionDto(
-                        "0 PROJECT",
-                        "Lorem ipsum dolor sit amet, consectetur adipiscing elit...",
-                        "150 STUDENTS",
-                        "5000 REACH",
-                        "https://res.cloudinary.com/dp98r2imm/image/upload/v1749945082/fotoend2_ajfnzd.png"
+                        "0 PROJETO",
+                        "Lorem ipsum dolor sit amet...",
+                        "Duis fermentum velit at sapien...",
+                        "150 DE ESTUDANTES",
+                        "5000 DE ALCANCE",
+                        "https://res.cloudinary.com/dp98r2imm/image/upload/v1749945082/fotoend2_ajfnzd.png",
+                        "Imagem ilustrativa do projeto"
                 );
                 service.create(dto);
             }
