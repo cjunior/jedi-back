@@ -25,6 +25,10 @@ public class LoadLandPageService {
     private PresentationSectionService presentationSectionService;
     @Autowired
     private FaqSectionService faqSectionService;
+    @Autowired
+    private ContentService contentService;
+    @Autowired
+    private ContactUsService contactUsService;
 
 
     public LoadLandPageDto getAll() {
@@ -33,7 +37,9 @@ public class LoadLandPageService {
         var team = teamService.getTeam();
         var presentationSection = presentationSectionService.get();
         var faqSection = faqSectionService.get();
-        LoadLandPageDto dto = new LoadLandPageDto(header, banner, team, presentationSection, faqSection);
+        var content = contentService.getContent();
+        var contact = contactUsService.getSection();
+        LoadLandPageDto dto = new LoadLandPageDto(header, banner, presentationSection, team, content, faqSection, contact);
 
         return dto;
     }

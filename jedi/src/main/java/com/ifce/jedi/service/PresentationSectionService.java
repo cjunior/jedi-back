@@ -63,12 +63,11 @@ public class PresentationSectionService {
                 .orElseThrow(() -> new RuntimeException("Presentation section not found"));
 
         if (entity.getCloudinaryPublicId() != null) {
+            var uploadResult = cloudinaryService.uploadImage(file);
             cloudinaryService.deleteImage(entity.getCloudinaryPublicId());
+            entity.setImgUrl(uploadResult.get("url"));
+            entity.setCloudinaryPublicId(uploadResult.get("public_id"));
         }
-
-        var uploadResult = cloudinaryService.uploadImage(file);
-        entity.setImgUrl(uploadResult.get("url"));
-        entity.setCloudinaryPublicId(uploadResult.get("public_id"));
 
         PresentationSection updated = repository.save(entity);
         return toResponse(updated);

@@ -39,10 +39,6 @@ public class ContentController {
     public ResponseEntity<?> updateSlide(@ModelAttribute ContentUpdateWrapperDto wrapperDto) throws IOException {
         List<ContentItemUpdateDto> contentItems = wrapperDto.getItems();
 
-        if (contentItems == null || contentItems.isEmpty()) {
-            return ResponseEntity.badRequest().body("Nenhum item enviado.");
-        }
-
         for (ContentItemUpdateDto item : contentItems) {
             ContentItemDto contentItemDto = new ContentItemDto(item.getImgsText());
             contentService.updateSlide(item.getId(), item.getFile(), contentItemDto);

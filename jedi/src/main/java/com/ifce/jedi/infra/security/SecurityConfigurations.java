@@ -74,7 +74,7 @@ public class SecurityConfigurations {
                         .requestMatchers(HttpMethod.PUT, "/faq-section/item/**").hasRole("ADMIN")
 
                         // Load Landpage
-                        .requestMatchers(HttpMethod.GET, "loadlandpage/get").permitAll()
+                        .requestMatchers(HttpMethod.GET, "/loadlandpage/get").permitAll()
                         .requestMatchers(HttpMethod.PUT, "/update-all").hasRole("ADMIN")
 
                         .requestMatchers(HttpMethod.GET, "/content/get").permitAll()

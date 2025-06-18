@@ -1,9 +1,16 @@
 package com.ifce.jedi.controllers;
 
 import com.ifce.jedi.dto.Banner.*;
+import com.ifce.jedi.dto.ContactUs.ContactUsUpdateDto;
+import com.ifce.jedi.dto.Contents.ContentItemDto;
+import com.ifce.jedi.dto.Contents.UpdateContentDto;
+import com.ifce.jedi.dto.FaqSection.FaqItemUpdateDto;
 import com.ifce.jedi.dto.Header.HeaderDto;
+import com.ifce.jedi.dto.LoadLandPage.ContentItemUpdateLandPageDto;
+import com.ifce.jedi.dto.LoadLandPage.FaqItemUpdateLandPageDto;
 import com.ifce.jedi.dto.LoadLandPage.LoadLandPageDto;
 import com.ifce.jedi.dto.LoadLandPage.UpdateLoadLandPageDto;
+import com.ifce.jedi.dto.PresentationSection.PresentationSectionUpdateDto;
 import com.ifce.jedi.dto.Team.TeamItemDto;
 import com.ifce.jedi.dto.Team.TeamItemUpdateDto;
 import com.ifce.jedi.dto.Team.TeamUpdateDto;
@@ -38,6 +45,12 @@ public class LoadLandPageController {
 
     @Autowired
     private PresentationSectionService presentationService;
+
+    @Autowired
+    private ContentService contentService;
+
+    @Autowired
+    private ContactUsService contactUsService;
 
     @Autowired
     private FaqSectionService faqSectionService;
@@ -76,6 +89,17 @@ public class LoadLandPageController {
         );
         headerService.updateHeader(headerDto);
 
+        var presentationSectionUpdateDto = new PresentationSectionUpdateDto(
+                dto.getPresentationSectionTitle(),
+                dto.getPresentationSectionFirstDescription(),
+                dto.getPresentationSectionSecondDescription(),
+                dto.getPresentationSectionFirstStatistic(),
+                dto.getPresentationSectionSecondStatistic(),
+                dto.getPresentationSectionImgDescription()
+        );
+        presentationService.update(presentationSectionUpdateDto);
+        presentationService.updateImage(dto.getPresentationSectionFile());
+
         // Atualiza título da Equipe
         var teamDto = new TeamUpdateDto(dto.getTeamTitle());
         teamService.updateTeam(teamDto);
@@ -90,6 +114,38 @@ public class LoadLandPageController {
                 );
             }
         }
+
+        var updateContentDto = new UpdateContentDto(
+                dto.getContentTitle(),
+                dto.getContentSubTitle(),
+                dto.getContentDescription(),
+                dto.getContentMainImage()
+        );
+        contentService.updateContent(updateContentDto);
+
+        if (dto.getContentCarousel() != null && !dto.getContentCarousel().isEmpty()) {
+            for (ContentItemUpdateLandPageDto contentItem : dto.getContentCarousel()) {
+                contentService.updateSlide(
+                        contentItem.getId(),
+                        contentItem.getFile(),
+                        new ContentItemDto(contentItem.getImgText())
+                );
+            }
+        }
+
+        if (dto.getFaqItems() != null && !dto.getFaqItems().isEmpty()) {
+            for (FaqItemUpdateLandPageDto faqItem : dto.getFaqItems()) {
+                faqSectionService.updateItem(
+                        faqItem.getId(),
+                        new FaqItemUpdateDto(
+                                faqItem.getQuestion(),
+                                faqItem.getAnswer())
+                );
+            }
+        }
+
+        var contactUsUpdateDto = new ContactUsUpdateDto(dto.getContactTitle(), dto.getContactSubTitle(), dto.getContactDescription());
+        contactUsService.updateSection(contactUsUpdateDto);
 
         // Atualiza o título e descrição do banner
         var bannerDto = new BannerUpdateDto(dto.getBannerTitle(), dto.getBannerDescription());
