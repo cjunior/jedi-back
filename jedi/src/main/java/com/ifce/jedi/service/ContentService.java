@@ -58,9 +58,17 @@ public class ContentService {
                 () -> new RuntimeException("Seção não encontrada.")
         );
 
-        content.setTitle(dto.getTitle());
-        content.setSubTitle(dto.getSubTitle());
-        content.setDescription(dto.getDescription());
+        if(dto.getTitle() != null){
+            content.setTitle(dto.getTitle());
+        }
+        if(dto.getSubTitle() != null){
+            content.setSubTitle(dto.getSubTitle());
+
+        }
+        if(dto.getDescription() != null){
+            content.setDescription(dto.getDescription());
+
+        }
         if(dto.getMainImage() != null && !dto.getMainImage().isEmpty()){
             if (content.getCloudinaryPublicId() != null) {
                 cloudinaryService.deleteImage(content.getCloudinaryPublicId());
@@ -145,13 +153,10 @@ public class ContentService {
                 .findFirst()
                 .orElseThrow(() -> new RuntimeException("Slide não encontrado."));
 
-        // Atualiza o texto (DEBUG)
-        System.out.println("Texto antes: " + item.getImgText());
-        System.out.println("Texto recebido: " + dto.imgTexts());
+        if (dto.imgTexts() != null) {
+            item.setImgText(dto.imgTexts());
+        }
 
-        item.setImgText(dto.imgTexts()); // Atualiza sempre, independente do arquivo
-
-        // Atualiza a imagem (se houver)
         if (file != null && !file.isEmpty()) {
             if (item.getCloudinaryPublicId() != null) {
                 cloudinaryService.deleteImage(item.getCloudinaryPublicId());
@@ -161,10 +166,7 @@ public class ContentService {
             item.setCloudinaryPublicId(uploadResult.get("public_id"));
         }
 
-        contentRepository.save(content); // Força a persistência
-
-        // Verifica se o texto foi atualizado
-        System.out.println("Texto depois: " + item.getImgText());
+        contentRepository.save(content);
 
         return new ContentItemResponseDto(
                 item.getId(),

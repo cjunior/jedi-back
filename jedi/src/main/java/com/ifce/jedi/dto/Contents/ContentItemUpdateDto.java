@@ -5,42 +5,41 @@ import org.springframework.web.multipart.MultipartFile;
 import java.util.List;
 
 public class ContentItemUpdateDto {
-    private List<Long> itemsId;
-    private List<MultipartFile> files;
 
-    private List<String> imgsTexts;
+    private Long id;
+    private MultipartFile file;
+    private String imgsText;
 
-    public List<Long> getItemsId() {
-        return itemsId;
+    public Long getId() {
+        return id;
     }
 
-    public void setItemsId(List<Long> itemsId) {
-        this.itemsId = itemsId;
+    public void setId(Long id) {
+        this.id = id;
     }
 
-    public List<MultipartFile> getFiles() {
-        return files;
+    public MultipartFile getFile() {
+        return file;
     }
 
-    public void setFiles(List<MultipartFile> files) {
-        this.files = files;
+    public void setFile(MultipartFile file) {
+        this.file = file;
     }
 
-    public List<String> getImgsTexts() {
-        return imgsTexts;
+    public String getImgsText() {
+        return imgsText;
     }
 
-    public void setImgsTexts(List<String> imgsTexts) {
-        this.imgsTexts = imgsTexts;
+    public void setImgsText(String imgsText) {
+        this.imgsText = imgsText;
     }
-
 
     public ContentItemUpdateDto() {
     }
 
-    public ContentItemUpdateDto(List<Long> itemsId, List<String> imgsTexts, List<MultipartFile> files) {
-        this.itemsId = itemsId;
-        this.imgsTexts = imgsTexts;
-        this.files = files;
+    public ContentItemUpdateDto(Long id, MultipartFile file, String imgsText) {
+        this.id = id;
+        this.file = file;
+        this.imgsText = imgsText;
     }
 }

@@ -36,21 +36,21 @@ public class ContentController {
 
     @PutMapping(value = "/slide/update", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     @PreAuthorize("hasRole('ADMIN')")
-    public ResponseEntity<?> updateSlide(@ModelAttribute ContentItemUpdateDto dto) throws IOException {
-        // Verifica se as listas são nulas ou vazias
-        List<Long> slideIds = dto.getItemsId() != null ? dto.getItemsId() : Collections.emptyList();
-        List<MultipartFile> files = dto.getFiles() != null ? dto.getFiles() : Collections.emptyList();
-        List<String> imgTexts = dto.getImgsTexts() != null ? dto.getImgsTexts() : Collections.emptyList();
+    public ResponseEntity<?> updateSlide(@ModelAttribute ContentUpdateWrapperDto wrapperDto) throws IOException {
+        List<ContentItemUpdateDto> contentItems = wrapperDto.getItems();
 
-        // Se há arquivos, atualiza com os arquivos; senão, atualiza sem eles
-        for (int i = 0; i < slideIds.size(); i++) {
-            ContentItemDto itemDto = new ContentItemDto(imgTexts.get(i));
-            MultipartFile file = !files.isEmpty() ? files.get(i) : null;
-            contentService.updateSlide(slideIds.get(i), file, itemDto);
+        if (contentItems == null || contentItems.isEmpty()) {
+            return ResponseEntity.badRequest().body("Nenhum item enviado.");
+        }
+
+        for (ContentItemUpdateDto item : contentItems) {
+            ContentItemDto contentItemDto = new ContentItemDto(item.getImgsText());
+            contentService.updateSlide(item.getId(), item.getFile(), contentItemDto);
         }
 
         return ResponseEntity.ok("Slides atualizados com sucesso.");
     }
+
 
     @PostMapping(value = "/slides/add", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     @PreAuthorize("hasRole('ADMIN')")
