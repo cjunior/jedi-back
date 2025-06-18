@@ -74,6 +74,10 @@ public class SecurityConfigurations {
                         .requestMatchers(HttpMethod.GET, "loadlandpage/get").permitAll()
                         .requestMatchers(HttpMethod.PUT, "/update-all").hasRole("ADMIN")
 
+                        .requestMatchers(HttpMethod.GET, "/content/get").permitAll()
+                        .requestMatchers(HttpMethod.POST, "/content/slides/add").hasRole("ADMIN")
+                        .requestMatchers(HttpMethod.PUT, "/content/update").hasRole("ADMIN")
+                        .requestMatchers(HttpMethod.PUT, "/content/slides/update").hasRole("ADMIN")
                         .anyRequest().authenticated()
                 )
                 .addFilterBefore(securityFilter, UsernamePasswordAuthenticationFilter.class)
