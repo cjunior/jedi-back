@@ -1,27 +1,17 @@
 package com.ifce.jedi.dto.ContactUs;
 
 public class ContactUsUpdateDto {
-    private Long id;
     private String title;
     private String subTitle;
     private String description;
 
-    public ContactUsUpdateDto(Long id, String title, String subTitle, String description) {
-        this.id = id;
+    public ContactUsUpdateDto(String title, String subTitle, String description) {
         this.title = title;
         this.subTitle = subTitle;
         this.description = description;
     }
 
     public ContactUsUpdateDto() {
-    }
-
-    public Long getId() {
-        return id;
-    }
-
-    public void setId(Long id) {
-        this.id = id;
     }
 
     public String getTitle() {

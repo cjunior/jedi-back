@@ -73,6 +73,7 @@ public class ContactUsService {
         return new ContactUsResponseDto(
                 contactUs.getId(),
                 contactUs.getTitle(),
+                contactUs.getSubTitle(),
                 contactUs.getDescription()
         );
     }
