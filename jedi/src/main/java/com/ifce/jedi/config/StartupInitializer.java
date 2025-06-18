@@ -94,11 +94,11 @@ public class StartupInitializer {
         return args -> {
             if(teamService.getTeam() == null){
                 TeamDto teamDto = new TeamDto(
-                    "Equipe",
+                        "Equipe",
                         List.of(
-                                    new TeamItemUrlDto(
-                                            "https://res.cloudinary.com/dp98r2imm/image/upload/v1749910911/bannerInicial_xcwltm.jpg"
-                                    ),
+                                new TeamItemUrlDto(
+                                        "https://res.cloudinary.com/dp98r2imm/image/upload/v1749910911/bannerInicial_xcwltm.jpg"
+                                ),
                                 new TeamItemUrlDto(
                                         "https://res.cloudinary.com/dp98r2imm/image/upload/v1749945082/fotoend2_ajfnzd.png"
                                 )
