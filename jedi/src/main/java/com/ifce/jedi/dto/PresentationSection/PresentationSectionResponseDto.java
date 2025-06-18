@@ -3,8 +3,10 @@ package com.ifce.jedi.dto.PresentationSection;
 public record PresentationSectionResponseDto(
         Long id,
         String title,
-        String description,
+        String firstDescription,
+        String secondDescription,
         String firstStatistic,
         String secondStatistic,
-        String imageUrl
+        String imgUrl,
+        String imgDescription
 ) {}

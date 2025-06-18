@@ -39,6 +39,9 @@ public class LoadLandPageController {
     @Autowired
     private PresentationSectionService presentationService;
 
+    @Autowired
+    private FaqSectionService faqSectionService;
+
     @GetMapping("/get")
     public ResponseEntity<LoadLandPageDto> getHeader() {
         LoadLandPageDto landPage = loadLandPageService.getAll();
