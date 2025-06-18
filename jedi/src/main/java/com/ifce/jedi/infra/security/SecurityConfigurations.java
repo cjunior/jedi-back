@@ -19,9 +19,8 @@ import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 
 import java.util.List;
 
-//Tirar o default do SpringSecurity e fazer a minha config
-@Configuration // declarando que é uma classe de configuração
-@EnableWebSecurity // habilita o websecurity e eu que vou configurar
+@Configuration
+@EnableWebSecurity
 public class SecurityConfigurations {
 
     @Autowired
@@ -30,10 +29,11 @@ public class SecurityConfigurations {
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity httpSecurity) throws Exception {
         return httpSecurity
-                .cors(cors -> {})
+                .cors(cors -> cors.configurationSource(corsConfigurationSource()))
                 .csrf(csrf -> csrf.disable())
                 .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .authorizeHttpRequests(authorize -> authorize
+                        .requestMatchers(HttpMethod.OPTIONS, "/**").permitAll()
                         .requestMatchers(
                                 "/v3/api-docs/**",
                                 "/swagger-ui/**",
@@ -43,35 +43,42 @@ public class SecurityConfigurations {
                         .requestMatchers(HttpMethod.POST, "/auth/login").permitAll()
                         .requestMatchers(HttpMethod.POST, "/auth/register").hasRole("ADMIN")
 
-                        // Fluxo da pré-inscrição: tudo liberado
+                        // Pré-inscrição
                         .requestMatchers(HttpMethod.POST, "/pre-inscricao/inicial").permitAll()
                         .requestMatchers(HttpMethod.GET, "/pre-inscricao/continuar/**").permitAll()
                         .requestMatchers(HttpMethod.PUT, "/pre-inscricao/continuar/**").permitAll()
+
+                        // Header e Banner
                         .requestMatchers(HttpMethod.PUT, "/header/update").hasRole("ADMIN")
+                        .requestMatchers(HttpMethod.GET, "/header/get").permitAll()
                         .requestMatchers(HttpMethod.POST, "/banner/slides/add").hasRole("ADMIN")
                         .requestMatchers(HttpMethod.PUT, "/banner/slide/{slideId}").hasRole("ADMIN")
                         .requestMatchers(HttpMethod.DELETE, "/banner/slide/{slideId}").hasRole("ADMIN")
                         .requestMatchers(HttpMethod.PUT, "/banner/update").hasRole("ADMIN")
-                        .requestMatchers(HttpMethod.GET, "/header/get").permitAll()
                         .requestMatchers(HttpMethod.GET, "/banner/get").permitAll()
+
+                        // Equipe
                         .requestMatchers(HttpMethod.GET, "/team/get").permitAll()
                         .requestMatchers(HttpMethod.POST, "/team/members/add").hasRole("ADMIN")
                         .requestMatchers(HttpMethod.DELETE, "/team/member/{memberId}").hasRole("ADMIN")
                         .requestMatchers(HttpMethod.PUT, "/team/member/{memberId}").hasRole("ADMIN")
                         .requestMatchers(HttpMethod.PUT, "/team/update").hasRole("ADMIN")
+
+                        // Sessão de apresentação
                         .requestMatchers(HttpMethod.GET, "/presentation-section/get").permitAll()
                         .requestMatchers(HttpMethod.POST, "/presentation-section/create").hasRole("ADMIN")
                         .requestMatchers(HttpMethod.PUT, "/presentation-section/update").hasRole("ADMIN")
                         .requestMatchers(HttpMethod.PUT, "/presentation-section/update-image").hasRole("ADMIN")
+
+                        // Load Landpage
                         .requestMatchers(HttpMethod.GET, "loadlandpage/get").permitAll()
                         .requestMatchers(HttpMethod.PUT, "/update-all").hasRole("ADMIN")
+
                         .anyRequest().authenticated()
                 )
-
                 .addFilterBefore(securityFilter, UsernamePasswordAuthenticationFilter.class)
                 .build();
     }
-
 
     @Bean
     public AuthenticationManager authenticationManager(AuthenticationConfiguration authenticationConfiguration) throws Exception {
@@ -80,13 +87,13 @@ public class SecurityConfigurations {
 
     @Bean
     public PasswordEncoder passwordEncoder() {
-        return new BCryptPasswordEncoder(); // Encriptar a senha
+        return new BCryptPasswordEncoder();
     }
-
 
     @Bean
     public CorsConfigurationSource corsConfigurationSource() {
         CorsConfiguration configuration = new CorsConfiguration();
+
         configuration.setAllowedOriginPatterns(List.of("*"));
         configuration.setAllowedMethods(List.of("GET", "POST", "PUT", "DELETE", "OPTIONS"));
         configuration.setAllowedHeaders(List.of("*"));
