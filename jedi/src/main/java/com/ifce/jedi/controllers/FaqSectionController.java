@@ -26,4 +26,10 @@ public class FaqSectionController {
             @RequestBody FaqItemUpdateDto dto) {
         return ResponseEntity.ok(service.updateItem(itemId, dto));
     }
+    @PutMapping("/update-header")
+    @PreAuthorize("hasRole('ADMIN')")
+    public ResponseEntity<FaqSectionResponseDto> updateHeader(
+            @RequestBody FaqSectionHeaderUpdateDto dto) {
+        return ResponseEntity.ok(service.updateHeader(dto));
+    }
 }
