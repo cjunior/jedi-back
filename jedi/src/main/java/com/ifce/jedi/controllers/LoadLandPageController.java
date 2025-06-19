@@ -56,7 +56,7 @@ public class LoadLandPageController {
     private FaqSectionService faqSectionService;
 
     @GetMapping("/get")
-    public ResponseEntity<LoadLandPageDto> getHeader() {
+    public ResponseEntity<LoadLandPageDto> getAll() {
         LoadLandPageDto landPage = loadLandPageService.getAll();
         return landPage == null ? ResponseEntity.noContent().build() : ResponseEntity.ok(landPage);
     }
@@ -65,7 +65,6 @@ public class LoadLandPageController {
     @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<?> updateAll(@ModelAttribute UpdateLoadLandPageDto dto) throws IOException {
 
-        // Atualiza itens do Banner (já corrigido anteriormente)
         if (dto.getBannerItems() != null && !dto.getBannerItems().isEmpty()) {
             for (BannerItemUpdate itemUpdate : dto.getBannerItems()) {
                 BannerItemDto itemDto = new BannerItemDto(
@@ -78,7 +77,6 @@ public class LoadLandPageController {
             }
         }
 
-        // Atualiza Header
         var headerDto = new HeaderDto(
                 dto.getHeaderFile(),
                 dto.getHeaderText1(),
@@ -100,17 +98,15 @@ public class LoadLandPageController {
         presentationService.update(presentationSectionUpdateDto);
         presentationService.updateImage(dto.getPresentationSectionFile());
 
-        // Atualiza título da Equipe
         var teamDto = new TeamUpdateDto(dto.getTeamTitle());
         teamService.updateTeam(teamDto);
 
-        // ✅ Atualiza os membros da Equipe com arquivos
         if (dto.getTeamItems() != null && !dto.getTeamItems().isEmpty()) {
             for (TeamItemUpdateDto teamItem : dto.getTeamItems()) {
                 teamService.updateMember(
                         teamItem.getId(),
                         teamItem.getFile(),
-                        new TeamItemDto() // Pode adaptar se necessário
+                        new TeamItemDto()
                 );
             }
         }
@@ -147,7 +143,6 @@ public class LoadLandPageController {
         var contactUsUpdateDto = new ContactUsUpdateDto(dto.getContactTitle(), dto.getContactSubTitle(), dto.getContactDescription());
         contactUsService.updateSection(contactUsUpdateDto);
 
-        // Atualiza o título e descrição do banner
         var bannerDto = new BannerUpdateDto(dto.getBannerTitle(), dto.getBannerDescription());
         bannerService.updateBanner(bannerDto);
 

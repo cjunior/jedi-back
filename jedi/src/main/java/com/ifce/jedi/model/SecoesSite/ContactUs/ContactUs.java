@@ -3,7 +3,7 @@ package com.ifce.jedi.model.SecoesSite.ContactUs;
 import jakarta.persistence.*;
 
 @Entity
-@Table(name = "Contact-Us")
+@Table(name = "ContactUs")
 public class ContactUs {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
