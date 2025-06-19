@@ -193,4 +193,12 @@ public class StartupInitializer {
         };
     }
 
+
+    @Bean
+    public CommandLineRunner initDefaultBlogSection(BlogSectionService service) {
+        return args -> {
+            // Já está implementado no próprio service a criação dos dados padrão
+            service.get(); // Isso irá criar a seção com itens padrão se não existir
+        };
+    }
 }
