@@ -162,6 +162,23 @@ public class StartupInitializer {
         };
     }
 
+    @Bean
+    public CommandLineRunner initDefaultContactSection(ContactUsService contactUsService){
+        return args -> {
+            if(contactUsService.getSection() == null) {
+                ContactUsDto dto = new ContactUsDto(
+                        "Fale Conosco",
+                        "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Duis consequat lobortis dui vitae laoreet.",
+                        "Preencha o formulário ao lado para entrar em contato."
+                );
+                contactUsService.createSection(dto);
+                System.out.println("ContactUs Section criada.");
+            }else {
+                System.out.println("ContactUs Section já existe.");
+            }
+        };
+    }
+
 
     @Bean
     public CommandLineRunner initRedeJediSectionAndImages(

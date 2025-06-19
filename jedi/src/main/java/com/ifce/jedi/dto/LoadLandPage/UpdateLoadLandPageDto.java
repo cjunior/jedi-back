@@ -47,6 +47,9 @@ public class UpdateLoadLandPageDto {
         private String contactSubTitle;
         private String contactDescription;
 
+        private MultipartFile redeJedFile;
+
+
         public MultipartFile getHeaderFile() {
                 return headerFile;
         }
