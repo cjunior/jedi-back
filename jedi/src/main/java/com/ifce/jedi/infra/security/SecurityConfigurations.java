@@ -72,6 +72,7 @@ public class SecurityConfigurations {
 
                         .requestMatchers(HttpMethod.GET, "/faq-section/get").permitAll()
                         .requestMatchers(HttpMethod.PUT, "/faq-section/item/**").hasRole("ADMIN")
+                        .requestMatchers(HttpMethod.PUT, "/faq-section/update-header").hasRole("ADMIN")
 
                         // Load Landpage
                         .requestMatchers(HttpMethod.GET, "/loadlandpage/get").permitAll()
