@@ -70,6 +70,10 @@ public class RedeJediImageService {
 
 
     public List<RedeJediImageDto> updateMultipleImages(List<Long> ids, List<MultipartFile> novasImagens) throws IOException {
+        if (ids == null || novasImagens == null || ids.isEmpty() || novasImagens.isEmpty()) {
+            throw new IllegalArgumentException("As listas de IDs e imagens não podem estar vazias.");
+        }
+
         if (ids.size() != novasImagens.size()) {
             throw new IllegalArgumentException("A quantidade de IDs e imagens deve ser igual");
         }

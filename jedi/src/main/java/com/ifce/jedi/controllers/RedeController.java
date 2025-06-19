@@ -60,6 +60,15 @@ public class RedeController {
             @RequestParam List<Long> ids,
             @RequestPart(name = "imagens") MultipartFile[] imagens
     ) throws IOException {
+
+        if (ids == null || imagens == null || ids.isEmpty() || imagens.length == 0) {
+            throw new IllegalArgumentException("A lista de IDs e de imagens não pode estar vazia.");
+        }
+
+        if (ids.size() != imagens.length) {
+            throw new IllegalArgumentException("A quantidade de IDs e imagens deve ser igual.");
+        }
+
         return imageService.updateMultipleImages(ids, Arrays.asList(imagens));
     }
 
