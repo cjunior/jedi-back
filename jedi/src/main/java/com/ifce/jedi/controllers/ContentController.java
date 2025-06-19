@@ -55,14 +55,20 @@ public class ContentController {
         List<MultipartFile> files = form.getFiles();
         List<String> igmText = form.getImgTexts();
 
-        if (files.size() != igmText.size()) {
-            return ResponseEntity.badRequest().body("Número de arquivos e textos não correspondem.");
+        if(!igmText.isEmpty()){
+            for (int i = 0; i < igmText.size(); i++) {
+                ContentItemDto dto = new ContentItemDto(igmText.get(i));
+                contentService.addSlide(files.get(i), dto);
+            }
         }
 
-        for (int i = 0; i < igmText.size(); i++) {
-            ContentItemDto dto = new ContentItemDto(igmText.get(i));
-            contentService.addSlide(files.get(i), dto);
+        else{
+            for (int i = 0; i < files.size(); i++) {
+                ContentItemDto dto = new ContentItemDto();
+                contentService.addSlide(files.get(i), dto);
+            }
         }
+
 
         return ResponseEntity.ok("Itens adicionados com sucesso!");
     }
