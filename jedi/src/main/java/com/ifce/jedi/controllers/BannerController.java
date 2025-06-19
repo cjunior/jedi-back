@@ -38,11 +38,16 @@ public class BannerController {
         MultipartFile[] files = form.getFile();
         List<String> buttonText = form.getButtonText();
         List<String> buttonUrl = form.getButtonUrl();
-
-        for (int i = 0; i < buttonText.size(); i++) {
-            String url = (buttonUrl != null && i < buttonUrl.size()) ? buttonUrl.get(i) : "";
-            BannerItemDto dto = new BannerItemDto(buttonText.get(i), url);
-            bannerService.addSlide(files[i], dto);
+        if(form.getFile() == null){
+            return ResponseEntity.badRequest().body("Insira ao menos um arquivo");
+        }
+        else{
+            for (int i = 0; i < files.length; i++) {
+                String url = (buttonUrl != null && i < buttonUrl.size()) ? buttonUrl.get(i) : null;
+                String text = (buttonText != null && i < buttonText.size()) ? buttonText.get(i) : null;
+                BannerItemDto dto = new BannerItemDto(text, url);
+                bannerService.addSlide(files[i], dto);
+            }
         }
 
         return ResponseEntity.ok("Itens adicionados com sucesso!");

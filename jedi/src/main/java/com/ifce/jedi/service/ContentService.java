@@ -48,6 +48,7 @@ public class ContentService {
                 content.getSubTitle(),
                 content.getDescription(),
                 content.getMainImageUrl(),
+                content.getMainImageText(),
                 slides
         );
     }
@@ -67,6 +68,10 @@ public class ContentService {
         }
         if(dto.getDescription() != null){
             content.setDescription(dto.getDescription());
+
+        }
+        if(dto.getMainImageText() != null){
+            content.setMainImageText(dto.getMainImageText());
 
         }
         if(dto.getMainImage() != null && !dto.getMainImage().isEmpty()){
@@ -92,7 +97,7 @@ public class ContentService {
         var uploadResult = cloudinaryService.uploadImage(file);
         item.setImgUrl(uploadResult.get("url"));
         item.setCloudinaryPublicId(uploadResult.get("public_id"));
-        item.setImgText(dto.imgTexts());
+        item.setImgText(dto.getImgTexts());
         item.setContent(content);
         content.getImgCarousel().add(item);
 
@@ -109,6 +114,7 @@ public class ContentService {
         content.setSubTitle(dto.getSubTitle());
         content.setDescription(dto.getDescription());
         content.setMainImageUrl(dto.getMainImage());
+        content.setMainImageText(dto.getMainImageText());
 
         List<ContentItem> items = dto.getItems().stream().map(s -> {
             ContentItem item = new ContentItem();
@@ -153,8 +159,8 @@ public class ContentService {
                 .findFirst()
                 .orElseThrow(() -> new RuntimeException("Slide não encontrado."));
 
-        if (dto.imgTexts() != null) {
-            item.setImgText(dto.imgTexts());
+        if (dto.getImgTexts() != null) {
+            item.setImgText(dto.getImgTexts());
         }
 
         if (file != null && !file.isEmpty()) {

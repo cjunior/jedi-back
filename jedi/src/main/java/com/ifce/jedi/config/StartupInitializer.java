@@ -139,6 +139,7 @@ public class StartupInitializer {
                         "Lorem ipsum",
                         "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Praesent ac ullamcorper metus.",
                         "https://res.cloudinary.com/dp98r2imm/image/upload/v1749910911/bannerInicial_xcwltm.jpg",
+                        "PERCURSO BÁSICO",
                         List.of(
                                 new ContentItemUrlDto(
                                         "https://res.cloudinary.com/dp98r2imm/image/upload/v1749910911/bannerInicial_xcwltm.jpg",
@@ -197,7 +198,7 @@ public class StartupInitializer {
             if (imageRepo.count() == 0) {
                 List<RedeJediImage> imagens = List.of(
                         new RedeJediImage(
-                                "https://res.cloudinary.com/dp98r2imm/image/upload/v1750283534/JEDI/rwi4ljbcpovupa19j35c.jpg",
+                                "https://res.cloudinary.com/dp98r2imm/image/upload/v1749910911/bannerInicial_xcwltm.jpg",
                                 "JEDI/rwi4ljbcpovupa19j35c"
                         )
                 );

@@ -55,7 +55,10 @@ public class ContentController {
         List<MultipartFile> files = form.getFiles();
         List<String> igmText = form.getImgTexts();
 
-        if(!igmText.isEmpty()){
+        if(form.getFiles() == null){
+            return ResponseEntity.badRequest().body("Insira ao menos um arquivo");
+        }
+        if(form.getImgTexts() != null){
             for (int i = 0; i < igmText.size(); i++) {
                 ContentItemDto dto = new ContentItemDto(igmText.get(i));
                 contentService.addSlide(files.get(i), dto);

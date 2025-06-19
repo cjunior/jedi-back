@@ -9,6 +9,7 @@ public class ContentDto {
     private String subTitle;
     private String description;
     private String mainImage;
+    private String mainImageText;
     private List<ContentItemUrlDto> items;
 
     public String getTitle() {
@@ -43,6 +44,14 @@ public class ContentDto {
         this.mainImage = mainImage;
     }
 
+    public String getMainImageText() {
+        return mainImageText;
+    }
+
+    public void setMainImageText(String mainImageText) {
+        this.mainImageText = mainImageText;
+    }
+
     public List<ContentItemUrlDto> getItems() {
         return items;
     }
@@ -54,11 +63,12 @@ public class ContentDto {
     public ContentDto() {
     }
 
-    public ContentDto(String title, String subTitle, String description, String mainImage, List<ContentItemUrlDto> items) {
+    public ContentDto(String title, String subTitle, String description, String mainImage, String mainImageText, List<ContentItemUrlDto> items) {
         this.title = title;
         this.subTitle = subTitle;
         this.description = description;
         this.mainImage = mainImage;
+        this.mainImageText = mainImageText;
         this.items = items;
     }
 }
