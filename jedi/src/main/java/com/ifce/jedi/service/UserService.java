@@ -10,6 +10,9 @@ import com.ifce.jedi.repository.PreInscricaoRepository;
 import com.ifce.jedi.repository.UserRepository;
 import jakarta.persistence.EntityNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -37,11 +40,9 @@ public class UserService {
         userRepository.save(newUser);
     }
 
-    public List<PreInscricaoDadosDto> getAllPreInscricoes() {
-        List<PreInscricao> preInscricoes = preInscricaoRepository.findAll();
-        return preInscricoes.stream()
-                .map(PreInscricaoDadosDto::fromEntity)
-                .collect(Collectors.toList());
+    public Page<PreInscricaoDadosDto> getAllPreInscricoes(Pageable pageable) {
+        return preInscricaoRepository.findAll(pageable)
+                .map(PreInscricaoDadosDto::fromEntity);
     }
 
 

@@ -8,6 +8,8 @@ import com.ifce.jedi.model.User.PreInscricao;
 import com.ifce.jedi.service.UserService;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -32,9 +34,11 @@ public class UserController {
 
     @GetMapping("/pre-inscricoes")
     @PreAuthorize("hasRole('ADMIN')")
-    public ResponseEntity<List<PreInscricaoDadosDto>> getAllPreInscricoes() {
-        return ResponseEntity.ok(userService.getAllPreInscricoes());
+    public ResponseEntity<Page<PreInscricaoDadosDto>> getAllPreInscricoes(Pageable pageable) {
+        return ResponseEntity.ok(userService.getAllPreInscricoes(pageable));
     }
+
+
 
 
 }
