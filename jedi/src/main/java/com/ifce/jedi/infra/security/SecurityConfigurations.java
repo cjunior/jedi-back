@@ -70,9 +70,26 @@ public class SecurityConfigurations {
                         .requestMatchers(HttpMethod.PUT, "/presentation-section/update").hasRole("ADMIN")
                         .requestMatchers(HttpMethod.PUT, "/presentation-section/update-image").hasRole("ADMIN")
 
+                        .requestMatchers(HttpMethod.GET, "/faq-section/get").permitAll()
+                        .requestMatchers(HttpMethod.PUT, "/faq-section/item/**").hasRole("ADMIN")
+
                         // Load Landpage
-                        .requestMatchers(HttpMethod.GET, "loadlandpage/get").permitAll()
+                        .requestMatchers(HttpMethod.GET, "/loadlandpage/get").permitAll()
                         .requestMatchers(HttpMethod.PUT, "/update-all").hasRole("ADMIN")
+
+                        .requestMatchers(HttpMethod.GET, "/content/get").permitAll()
+                        .requestMatchers(HttpMethod.POST, "/content/slides/add").hasRole("ADMIN")
+                        .requestMatchers(HttpMethod.PUT, "/content/update").hasRole("ADMIN")
+                        .requestMatchers(HttpMethod.PUT, "/content/slides/update").hasRole("ADMIN")
+
+                        .requestMatchers(HttpMethod.POST, "/contact/email").permitAll()
+                        .requestMatchers(HttpMethod.GET, "/contact/get").permitAll()
+                        .requestMatchers(HttpMethod.PUT, "contact/update").hasRole("ADMIN")
+
+                        .requestMatchers(HttpMethod.GET, "/rede-jedi").permitAll()
+                        .requestMatchers(HttpMethod.POST, "/rede-jedi").hasRole("ADMIN")
+                        .requestMatchers(HttpMethod.DELETE, "/rede-jedi/**").hasRole("ADMIN")
+                        .requestMatchers(HttpMethod.PUT, "/rede-jedi/titulo").hasRole("ADMIN")
 
                         .anyRequest().authenticated()
                 )

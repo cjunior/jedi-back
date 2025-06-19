@@ -1,0 +1,54 @@
+package com.ifce.jedi.controllers;
+
+import com.ifce.jedi.dto.Rede.RedeJediImageDto;
+import com.ifce.jedi.dto.Rede.RedeJediSectionDto;
+import com.ifce.jedi.service.RedeJediImageService;
+import com.ifce.jedi.service.RedeJediSectionService;
+import io.swagger.v3.oas.annotations.Operation;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
+
+import java.io.IOException;
+
+@RestController
+@RequestMapping("/rede-jedi")
+public class RedeController {
+
+    @Autowired
+    private RedeJediImageService imageService;
+
+    @Autowired
+    private RedeJediSectionService sectionService;
+
+
+    @PostMapping(consumes = "multipart/form-data")
+    @Operation(summary = "Fazer upload de uma nova imagem para a Rede Jedi")
+    @PreAuthorize("hasRole('ADMIN')")
+    public RedeJediImageDto upload(@RequestPart MultipartFile arquivo) throws IOException {
+        return imageService.upload(arquivo);
+    }
+
+    @DeleteMapping("/{id}")
+    @Operation(summary = "Deletar uma imagem da Rede Jedi pelo ID")
+    @PreAuthorize("hasRole('ADMIN')")
+    public ResponseEntity<Void> delete(@PathVariable Long id) throws IOException {
+        imageService.delete(id);
+        return ResponseEntity.noContent().build();
+    }
+
+
+    @PutMapping("/titulo")
+    @PreAuthorize("hasRole('ADMIN')")
+    public RedeJediSectionDto atualizarTitulo(@RequestBody String novoTitulo) {
+        // Supondo que você sempre usa a seção com id 1
+        return sectionService.atualizarTitulo(1L, novoTitulo);
+    }
+
+    @GetMapping
+    public RedeJediSectionDto getSection() {
+        return sectionService.getSection(1L);
+    }
+}

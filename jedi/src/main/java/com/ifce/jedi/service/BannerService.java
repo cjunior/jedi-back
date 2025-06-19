@@ -3,6 +3,7 @@ package com.ifce.jedi.service;
 import com.ifce.jedi.dto.Banner.*;
 import com.ifce.jedi.model.SecoesSite.Banner.Banner;
 import com.ifce.jedi.model.SecoesSite.Banner.BannerItem;
+import com.ifce.jedi.repository.BannerItemRepository;
 import com.ifce.jedi.repository.BannerRepository;
 import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -18,6 +19,8 @@ public class BannerService {
 
     @Autowired
     private BannerRepository bannerRepository;
+    @Autowired
+    private BannerItemRepository bannerItemRepository;
     @Autowired
     private CloudinaryService cloudinaryService;
 
@@ -57,27 +60,40 @@ public class BannerService {
 
     @Transactional
     public BannerItemResponseDto updateSlide(Long slideId, MultipartFile file, BannerItemDto dto) throws IOException {
-        Banner banner = bannerRepository.findAll().stream().findFirst()
-                .orElseThrow(() -> new RuntimeException("Banner não encontrado."));
+        // Validação básica
+        if (dto == null) {
+            throw new IllegalArgumentException("DTO não pode ser nulo");
+        }
 
-        BannerItem item = banner.getItems().stream()
-                .filter(s -> s.getId().equals(slideId))
-                .findFirst()
+        // Busca direta do item (mais eficiente)
+        BannerItem item = bannerItemRepository.findById(slideId)
                 .orElseThrow(() -> new RuntimeException("Slide não encontrado."));
 
+        // Atualiza textos (se fornecidos)
+        if (dto.buttonText() != null) {
+            item.setButtonText(dto.buttonText());
+        }
+        if (dto.buttonUrl() != null) {
+            item.setButtonUrl(dto.buttonUrl());
+        }
+
+        // Atualiza imagem (se fornecida)
         if (file != null && !file.isEmpty()) {
+            // 1. Faz upload da nova imagem
+            var uploadResult = cloudinaryService.uploadImage(file);
+
+            // 2. Deleta a antiga (se existir)
             if (item.getCloudinaryPublicId() != null) {
                 cloudinaryService.deleteImage(item.getCloudinaryPublicId());
             }
-            var uploadResult = cloudinaryService.uploadImage(file);
+
+            // 3. Atualiza campos
             item.setImgUrl(uploadResult.get("url"));
             item.setCloudinaryPublicId(uploadResult.get("public_id"));
         }
 
-        item.setButtonText(dto.buttonText());
-        item.setButtonUrl(dto.buttonUrl());
-
-        bannerRepository.save(banner);
+        // Salva apenas o item (não o banner inteiro)
+        bannerItemRepository.save(item);
 
         return new BannerItemResponseDto(
                 item.getId(),

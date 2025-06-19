@@ -1,9 +1,12 @@
 package com.ifce.jedi.dto.LoadLandPage;
 
 
+import com.ifce.jedi.dto.Banner.BannerItemUpdate;
+import com.ifce.jedi.dto.Team.TeamItemUpdateDto;
 import io.swagger.v3.oas.annotations.media.Schema;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class UpdateLoadLandPageDto {
@@ -15,35 +18,34 @@ public class UpdateLoadLandPageDto {
         private String headerButtonText;
         private String bannerTitle;
         private String bannerDescription;
-        private List<Long> bannerItemIds;
 
-        @Schema(type = "string", format = "binary", description = "Imagens do banner")
-        private MultipartFile[] bannerFiles;
-        private List<String> bannerButtonText;
+        private List<BannerItemUpdate> bannerItems = new ArrayList<>();
         private List<String> bannerButtonurl;
+
+        private String presentationSectionTitle;
+        private String presentationSectionFirstDescription;
+        private String presentationSectionSecondDescription;
+        private String presentationSectionFirstStatistic;
+        private String presentationSectionSecondStatistic;
+        private String presentationSectionImgDescription;
+
+        private MultipartFile presentationSectionFile;
+
         private String teamTitle;
-        private List<Long> teamItemIds;
+        private List<TeamItemUpdateDto> teamItems = new ArrayList<>();
 
-        @Schema(type = "string", format = "binary", description = "Imagens do banner")
-        private MultipartFile[] teamFiles;
+        private String contentTitle;
+        private String contentSubTitle;
+        private String contentDescription;
+        private MultipartFile contentMainImage;
 
-        public UpdateLoadLandPageDto(MultipartFile headerFile, String headerText1, String headerText2, String headerText3, String headerText4, String bannerTitle, String headerButtonText, String bannerDescription, List<Long> bannerItemIds, MultipartFile[] bannerFiles, List<String> bannerButtonText, List<String> bannerButtonurl, String teamTitle, List<Long> teamItemIds, MultipartFile[] teamFiles) {
-                this.headerFile = headerFile;
-                this.headerText1 = headerText1;
-                this.headerText2 = headerText2;
-                this.headerText3 = headerText3;
-                this.headerText4 = headerText4;
-                this.bannerTitle = bannerTitle;
-                this.headerButtonText = headerButtonText;
-                this.bannerDescription = bannerDescription;
-                this.bannerItemIds = bannerItemIds;
-                this.bannerFiles = bannerFiles;
-                this.bannerButtonText = bannerButtonText;
-                this.bannerButtonurl = bannerButtonurl;
-                this.teamTitle = teamTitle;
-                this.teamItemIds = teamItemIds;
-                this.teamFiles = teamFiles;
-        }
+        private List<ContentItemUpdateLandPageDto> contentCarousel = new ArrayList<>();
+
+        private List<FaqItemUpdateLandPageDto> faqItems = new ArrayList<>();
+
+        private String contactTitle;
+        private String contactSubTitle;
+        private String contactDescription;
 
         public MultipartFile getHeaderFile() {
                 return headerFile;
@@ -109,28 +111,12 @@ public class UpdateLoadLandPageDto {
                 this.bannerDescription = bannerDescription;
         }
 
-        public List<Long> getBannerItemIds() {
-                return bannerItemIds;
+        public List<BannerItemUpdate> getBannerItems() {
+                return bannerItems;
         }
 
-        public void setBannerItemIds(List<Long> bannerItemIds) {
-                this.bannerItemIds = bannerItemIds;
-        }
-
-        public MultipartFile[] getBannerFiles() {
-                return bannerFiles;
-        }
-
-        public void setBannerFiles(MultipartFile[] bannerFiles) {
-                this.bannerFiles = bannerFiles;
-        }
-
-        public List<String> getBannerButtonText() {
-                return bannerButtonText;
-        }
-
-        public void setBannerButtonText(List<String> bannerButtonText) {
-                this.bannerButtonText = bannerButtonText;
+        public void setBannerItems(List<BannerItemUpdate> bannerItems) {
+                this.bannerItems = bannerItems;
         }
 
         public List<String> getBannerButtonurl() {
@@ -141,6 +127,62 @@ public class UpdateLoadLandPageDto {
                 this.bannerButtonurl = bannerButtonurl;
         }
 
+        public String getPresentationSectionTitle() {
+                return presentationSectionTitle;
+        }
+
+        public void setPresentationSectionTitle(String presentationSectionTitle) {
+                this.presentationSectionTitle = presentationSectionTitle;
+        }
+
+        public String getPresentationSectionFirstDescription() {
+                return presentationSectionFirstDescription;
+        }
+
+        public void setPresentationSectionFirstDescription(String presentationSectionFirstDescription) {
+                this.presentationSectionFirstDescription = presentationSectionFirstDescription;
+        }
+
+        public String getPresentationSectionSecondDescription() {
+                return presentationSectionSecondDescription;
+        }
+
+        public void setPresentationSectionSecondDescription(String presentationSectionSecondDescription) {
+                this.presentationSectionSecondDescription = presentationSectionSecondDescription;
+        }
+
+        public String getPresentationSectionFirstStatistic() {
+                return presentationSectionFirstStatistic;
+        }
+
+        public void setPresentationSectionFirstStatistic(String presentationSectionFirstStatistic) {
+                this.presentationSectionFirstStatistic = presentationSectionFirstStatistic;
+        }
+
+        public String getPresentationSectionSecondStatistic() {
+                return presentationSectionSecondStatistic;
+        }
+
+        public void setPresentationSectionSecondStatistic(String presentationSectionSecondStatistic) {
+                this.presentationSectionSecondStatistic = presentationSectionSecondStatistic;
+        }
+
+        public String getPresentationSectionImgDescription() {
+                return presentationSectionImgDescription;
+        }
+
+        public void setPresentationSectionImgDescription(String presentationSectionImgDescription) {
+                this.presentationSectionImgDescription = presentationSectionImgDescription;
+        }
+
+        public MultipartFile getPresentationSectionFile() {
+                return presentationSectionFile;
+        }
+
+        public void setPresentationSectionFile(MultipartFile presentationSectionFile) {
+                this.presentationSectionFile = presentationSectionFile;
+        }
+
         public String getTeamTitle() {
                 return teamTitle;
         }
@@ -149,19 +191,117 @@ public class UpdateLoadLandPageDto {
                 this.teamTitle = teamTitle;
         }
 
-        public List<Long> getTeamItemIds() {
-                return teamItemIds;
+        public List<TeamItemUpdateDto> getTeamItems() {
+                return teamItems;
         }
 
-        public void setTeamItemIds(List<Long> teamItemIds) {
-                this.teamItemIds = teamItemIds;
+        public void setTeamItems(List<TeamItemUpdateDto> teamItems) {
+                this.teamItems = teamItems;
         }
 
-        public MultipartFile[] getTeamFiles() {
-                return teamFiles;
+        public String getContentTitle() {
+                return contentTitle;
         }
 
-        public void setTeamFiles(MultipartFile[] teamFiles) {
-                this.teamFiles = teamFiles;
+        public void setContentTitle(String contentTitle) {
+                this.contentTitle = contentTitle;
+        }
+
+        public String getContentSubTitle() {
+                return contentSubTitle;
+        }
+
+        public void setContentSubTitle(String contentSubTitle) {
+                this.contentSubTitle = contentSubTitle;
+        }
+
+        public String getContentDescription() {
+                return contentDescription;
+        }
+
+        public void setContentDescription(String contentDescription) {
+                this.contentDescription = contentDescription;
+        }
+
+        public MultipartFile getContentMainImage() {
+                return contentMainImage;
+        }
+
+        public void setContentMainImage(MultipartFile contentMainImage) {
+                this.contentMainImage = contentMainImage;
+        }
+
+        public List<ContentItemUpdateLandPageDto> getContentCarousel() {
+                return contentCarousel;
+        }
+
+        public void setContentCarousel(List<ContentItemUpdateLandPageDto> contentCarousel) {
+                this.contentCarousel = contentCarousel;
+        }
+
+        public List<FaqItemUpdateLandPageDto> getFaqItems() {
+                return faqItems;
+        }
+
+        public void setFaqItems(List<FaqItemUpdateLandPageDto> faqItems) {
+                this.faqItems = faqItems;
+        }
+
+        public String getContactTitle() {
+                return contactTitle;
+        }
+
+        public void setContactTitle(String contactTitle) {
+                this.contactTitle = contactTitle;
+        }
+
+        public String getContactSubTitle() {
+                return contactSubTitle;
+        }
+
+        public void setContactSubTitle(String contactSubTitle) {
+                this.contactSubTitle = contactSubTitle;
+        }
+
+        public String getContactDescription() {
+                return contactDescription;
+        }
+
+        public void setContactDescription(String contactDescription) {
+                this.contactDescription = contactDescription;
+        }
+
+        public UpdateLoadLandPageDto() {
+        }
+
+        public UpdateLoadLandPageDto(MultipartFile headerFile, String headerText1, String headerText2, String headerText3, String headerText4, String headerButtonText, String bannerTitle, String bannerDescription, List<BannerItemUpdate> bannerItems, List<String> bannerButtonurl, String presentationSectionTitle, String presentationSectionFirstDescription, String presentationSectionSecondDescription, String presentationSectionFirstStatistic, String presentationSectionSecondStatistic, String presentationSectionImgDescription, MultipartFile presentationSectionFile, String teamTitle, List<TeamItemUpdateDto> teamItems, String contentTitle, String contentSubTitle, String contentDescription, MultipartFile contentMainImage, List<ContentItemUpdateLandPageDto> contentCarousel, List<FaqItemUpdateLandPageDto> faqItems, String contactTitle, String contactSubTitle, String contactDescription) {
+                this.headerFile = headerFile;
+                this.headerText1 = headerText1;
+                this.headerText2 = headerText2;
+                this.headerText3 = headerText3;
+                this.headerText4 = headerText4;
+                this.headerButtonText = headerButtonText;
+                this.bannerTitle = bannerTitle;
+                this.bannerDescription = bannerDescription;
+                this.bannerItems = bannerItems;
+                this.bannerButtonurl = bannerButtonurl;
+                this.presentationSectionTitle = presentationSectionTitle;
+                this.presentationSectionFirstDescription = presentationSectionFirstDescription;
+                this.presentationSectionSecondDescription = presentationSectionSecondDescription;
+                this.presentationSectionFirstStatistic = presentationSectionFirstStatistic;
+                this.presentationSectionSecondStatistic = presentationSectionSecondStatistic;
+                this.presentationSectionImgDescription = presentationSectionImgDescription;
+                this.presentationSectionFile = presentationSectionFile;
+                this.teamTitle = teamTitle;
+                this.teamItems = teamItems;
+                this.contentTitle = contentTitle;
+                this.contentSubTitle = contentSubTitle;
+                this.contentDescription = contentDescription;
+                this.contentMainImage = contentMainImage;
+                this.contentCarousel = contentCarousel;
+                this.faqItems = faqItems;
+                this.contactTitle = contactTitle;
+                this.contactSubTitle = contactSubTitle;
+                this.contactDescription = contactDescription;
         }
 }

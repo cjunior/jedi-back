@@ -1,13 +1,18 @@
 package com.ifce.jedi.controllers;
 
-import com.ifce.jedi.dto.Banner.BannerDto;
-import com.ifce.jedi.dto.Banner.BannerItemDto;
-import com.ifce.jedi.dto.Banner.BannerSlideUpdateDto;
-import com.ifce.jedi.dto.Banner.BannerUpdateDto;
+import com.ifce.jedi.dto.Banner.*;
+import com.ifce.jedi.dto.ContactUs.ContactUsUpdateDto;
+import com.ifce.jedi.dto.Contents.ContentItemDto;
+import com.ifce.jedi.dto.Contents.UpdateContentDto;
+import com.ifce.jedi.dto.FaqSection.FaqItemUpdateDto;
 import com.ifce.jedi.dto.Header.HeaderDto;
+import com.ifce.jedi.dto.LoadLandPage.ContentItemUpdateLandPageDto;
+import com.ifce.jedi.dto.LoadLandPage.FaqItemUpdateLandPageDto;
 import com.ifce.jedi.dto.LoadLandPage.LoadLandPageDto;
 import com.ifce.jedi.dto.LoadLandPage.UpdateLoadLandPageDto;
+import com.ifce.jedi.dto.PresentationSection.PresentationSectionUpdateDto;
 import com.ifce.jedi.dto.Team.TeamItemDto;
+import com.ifce.jedi.dto.Team.TeamItemUpdateDto;
 import com.ifce.jedi.dto.Team.TeamUpdateDto;
 import com.ifce.jedi.service.*;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -19,7 +24,10 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
+import java.util.Collections;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 @RestController
 @RequestMapping("/loadlandpage")
@@ -38,6 +46,15 @@ public class LoadLandPageController {
     @Autowired
     private PresentationSectionService presentationService;
 
+    @Autowired
+    private ContentService contentService;
+
+    @Autowired
+    private ContactUsService contactUsService;
+
+    @Autowired
+    private FaqSectionService faqSectionService;
+
     @GetMapping("/get")
     public ResponseEntity<LoadLandPageDto> getHeader() {
         LoadLandPageDto landPage = loadLandPageService.getAll();
@@ -47,62 +64,96 @@ public class LoadLandPageController {
     @PutMapping(value = "/update-all", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<?> updateAll(@ModelAttribute UpdateLoadLandPageDto dto) throws IOException {
-        MultipartFile headerFile = dto.getHeaderFile();
-        String headerText1 = dto.getHeaderText1();
-        String headerText2 = dto.getHeaderText2();
-        String headerText3 = dto.getHeaderText3();
-        String headerText4 = dto.getHeaderText4();
-        String headerButtonText = dto.getHeaderButtonText();
-        String bannerTitle = dto.getBannerTitle();
-        String bannerDescription = dto.getBannerDescription();
-        List<Long> bannerItemIds = dto.getBannerItemIds();
-        MultipartFile[] bannerFiles = dto.getBannerFiles();
-        List<String> bannerButtonText = dto.getBannerButtonText();
-        List<String> bannerButtonurl = dto.getBannerButtonurl();
-        String teamTitle = dto.getTeamTitle();
-        List<Long> teamItemIds = dto.getTeamItemIds();
-        MultipartFile[] teamFiles = dto.getTeamFiles();
 
-        if (bannerItemIds.size() != bannerButtonText.size() || bannerFiles.length != bannerButtonText.size()) {
-            return ResponseEntity.badRequest().body("Números de atributos não correspondem.");
+        // Atualiza itens do Banner (já corrigido anteriormente)
+        if (dto.getBannerItems() != null && !dto.getBannerItems().isEmpty()) {
+            for (BannerItemUpdate itemUpdate : dto.getBannerItems()) {
+                BannerItemDto itemDto = new BannerItemDto(
+                        itemUpdate.getButtonText(),
+                        itemUpdate.getButtonUrl() != null ? itemUpdate.getButtonUrl() : ""
+                );
+
+                MultipartFile file = itemUpdate.getFile();
+                bannerService.updateSlide(itemUpdate.getId(), file, itemDto);
+            }
         }
-        var headerDto = new HeaderDto(headerFile, headerText1, headerText2, headerText3, headerText4, headerButtonText);
+
+        // Atualiza Header
+        var headerDto = new HeaderDto(
+                dto.getHeaderFile(),
+                dto.getHeaderText1(),
+                dto.getHeaderText2(),
+                dto.getHeaderText3(),
+                dto.getHeaderText4(),
+                dto.getHeaderButtonText()
+        );
         headerService.updateHeader(headerDto);
 
-        var bannerDto = new BannerUpdateDto(bannerTitle, bannerDescription);
-        bannerService.updateBanner(bannerDto);
+        var presentationSectionUpdateDto = new PresentationSectionUpdateDto(
+                dto.getPresentationSectionTitle(),
+                dto.getPresentationSectionFirstDescription(),
+                dto.getPresentationSectionSecondDescription(),
+                dto.getPresentationSectionFirstStatistic(),
+                dto.getPresentationSectionSecondStatistic(),
+                dto.getPresentationSectionImgDescription()
+        );
+        presentationService.update(presentationSectionUpdateDto);
+        presentationService.updateImage(dto.getPresentationSectionFile());
 
-        if(!bannerItemIds.isEmpty()){
-            if(bannerFiles.length > 0){
-                for (int i = 0; i < bannerItemIds.size(); i++) {
-                    String url = (bannerButtonurl != null && i < bannerButtonurl.size()) ? bannerButtonurl.get(i) : "";
-                    BannerItemDto itemDto = new BannerItemDto(bannerButtonText.get(i), url);
-                    bannerService.updateSlide(bannerItemIds.get(i), bannerFiles[i], itemDto);
-                }
-            }
-            else {
-                for (int i = 0; i < bannerItemIds.size(); i++) {
-                    String url = (bannerButtonurl != null && i < bannerButtonurl.size()) ? bannerButtonurl.get(i) : "";
-                    BannerItemDto itemDto = new BannerItemDto(bannerButtonText.get(i), url);
-                    bannerService.updateSlide(bannerItemIds.get(i), null, itemDto);
-                }
-            }
-        }
-
-        var teamDto = new TeamUpdateDto(teamTitle);
+        // Atualiza título da Equipe
+        var teamDto = new TeamUpdateDto(dto.getTeamTitle());
         teamService.updateTeam(teamDto);
 
-        if (teamItemIds.size() != teamFiles.length) {
-            return ResponseEntity.badRequest().body("Número de IDs e arquivos não correspondem.");
-        }
-        if(!teamItemIds.isEmpty()){
-            TeamItemDto teamItemDto = new TeamItemDto();
-            for (int i = 0; i < teamItemIds.size(); i++){
-                teamService.updateMember(teamItemIds.get(i), teamFiles[i], teamItemDto);
+        // ✅ Atualiza os membros da Equipe com arquivos
+        if (dto.getTeamItems() != null && !dto.getTeamItems().isEmpty()) {
+            for (TeamItemUpdateDto teamItem : dto.getTeamItems()) {
+                teamService.updateMember(
+                        teamItem.getId(),
+                        teamItem.getFile(),
+                        new TeamItemDto() // Pode adaptar se necessário
+                );
             }
         }
+
+        var updateContentDto = new UpdateContentDto(
+                dto.getContentTitle(),
+                dto.getContentSubTitle(),
+                dto.getContentDescription(),
+                dto.getContentMainImage()
+        );
+        contentService.updateContent(updateContentDto);
+
+        if (dto.getContentCarousel() != null && !dto.getContentCarousel().isEmpty()) {
+            for (ContentItemUpdateLandPageDto contentItem : dto.getContentCarousel()) {
+                contentService.updateSlide(
+                        contentItem.getId(),
+                        contentItem.getFile(),
+                        new ContentItemDto(contentItem.getImgText())
+                );
+            }
+        }
+
+        if (dto.getFaqItems() != null && !dto.getFaqItems().isEmpty()) {
+            for (FaqItemUpdateLandPageDto faqItem : dto.getFaqItems()) {
+                faqSectionService.updateItem(
+                        faqItem.getId(),
+                        new FaqItemUpdateDto(
+                                faqItem.getQuestion(),
+                                faqItem.getAnswer())
+                );
+            }
+        }
+
+        var contactUsUpdateDto = new ContactUsUpdateDto(dto.getContactTitle(), dto.getContactSubTitle(), dto.getContactDescription());
+        contactUsService.updateSection(contactUsUpdateDto);
+
+        // Atualiza o título e descrição do banner
+        var bannerDto = new BannerUpdateDto(dto.getBannerTitle(), dto.getBannerDescription());
+        bannerService.updateBanner(bannerDto);
 
         return ResponseEntity.ok().body("Atualizado com sucesso!");
     }
+
+
 
 }
