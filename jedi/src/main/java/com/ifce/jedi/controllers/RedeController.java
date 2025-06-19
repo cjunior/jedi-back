@@ -63,9 +63,6 @@ public class RedeController {
     ) throws IOException {
         List<Long> ids = new ArrayList<>();
         List<MultipartFile> imagens = new ArrayList<>();
-        if (dto.getImages() == null) {
-            throw new IllegalArgumentException("Escolha ao menos uma imagem para atualizar");
-        }
         for (imagemRedeJedDto obj : dto.getImages()){
             ids.add(obj.getId());
             if(obj.getFile()!= null){

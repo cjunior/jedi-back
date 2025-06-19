@@ -1,16 +1,16 @@
 package com.ifce.jedi.controllers;
 
 import com.ifce.jedi.dto.Banner.*;
+import com.ifce.jedi.dto.Blog.BlogItemUpdateDto;
 import com.ifce.jedi.dto.ContactUs.ContactUsUpdateDto;
 import com.ifce.jedi.dto.Contents.ContentItemDto;
 import com.ifce.jedi.dto.Contents.UpdateContentDto;
 import com.ifce.jedi.dto.FaqSection.FaqItemUpdateDto;
+import com.ifce.jedi.dto.FaqSection.FaqSectionHeaderUpdateDto;
 import com.ifce.jedi.dto.Header.HeaderDto;
-import com.ifce.jedi.dto.LoadLandPage.ContentItemUpdateLandPageDto;
-import com.ifce.jedi.dto.LoadLandPage.FaqItemUpdateLandPageDto;
-import com.ifce.jedi.dto.LoadLandPage.LoadLandPageDto;
-import com.ifce.jedi.dto.LoadLandPage.UpdateLoadLandPageDto;
+import com.ifce.jedi.dto.LoadLandPage.*;
 import com.ifce.jedi.dto.PresentationSection.PresentationSectionUpdateDto;
+import com.ifce.jedi.dto.Rede.imagemRedeJedUpdateWrapperDto;
 import com.ifce.jedi.dto.Team.TeamItemDto;
 import com.ifce.jedi.dto.Team.TeamItemUpdateDto;
 import com.ifce.jedi.dto.Team.TeamUpdateDto;
@@ -24,10 +24,7 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 @RestController
 @RequestMapping("/loadlandpage")
@@ -54,6 +51,15 @@ public class LoadLandPageController {
 
     @Autowired
     private FaqSectionService faqSectionService;
+
+    @Autowired
+    private RedeJediSectionService redeJediSectionService;
+
+    @Autowired
+    private RedeJediImageService redeJediImageService;
+
+    @Autowired
+    private BlogSectionService blogSectionService;
 
     @GetMapping("/get")
     public ResponseEntity<LoadLandPageDto> getAll() {
@@ -140,9 +146,41 @@ public class LoadLandPageController {
                 );
             }
         }
-
+        faqSectionService.updateHeader(new FaqSectionHeaderUpdateDto(dto.getFaqTitle(), dto.getFaqSubtitle()));
         var contactUsUpdateDto = new ContactUsUpdateDto(dto.getContactTitle(), dto.getContactSubTitle(), dto.getContactDescription());
         contactUsService.updateSection(contactUsUpdateDto);
+
+        redeJediSectionService.atualizarTitulo(1L, dto.getRedeTitle());
+
+
+
+        List<Long> ids = new ArrayList<>();
+        List<MultipartFile> imagens = new ArrayList<>();
+        if(dto.getRedeFiles() != null){
+            for (imagemRedeJedUpdateWrapperDto obj : dto.getRedeFiles()){
+                ids.add(obj.getId());
+                if(obj.getFile()!= null){
+                    imagens.add(obj.getFile());
+                }
+            }
+            redeJediImageService.updateMultipleImages(ids, imagens);
+        }
+
+
+        if(dto.getBlogItems() != null){
+            for (blogitemsWrapperDto obj : dto.getBlogItems()){
+                blogSectionService.updateBlogItem(obj.getId(), new BlogItemUpdateDto(
+                        obj.getTitle(),
+                        obj.getAuthor(),
+                        obj.getDate(),
+                        obj.getReadingTime(),
+                        obj.getImageDescription(),
+                        obj.getFile()
+                ));
+            }
+        }
+
+
 
         var bannerDto = new BannerUpdateDto(dto.getBannerTitle(), dto.getBannerDescription());
         bannerService.updateBanner(bannerDto);
