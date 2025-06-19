@@ -70,16 +70,10 @@ public class RedeJediImageService {
 
 
     public List<RedeJediImageDto> updateMultipleImages(List<Long> ids, List<MultipartFile> novasImagens) throws IOException {
-        if (ids == null || novasImagens == null || ids.isEmpty() || novasImagens.isEmpty()) {
-            throw new IllegalArgumentException("As listas de IDs e imagens não podem estar vazias.");
-        }
-
-        if (ids.size() != novasImagens.size()) {
-            throw new IllegalArgumentException("A quantidade de IDs e imagens deve ser igual");
-        }
-
         List<RedeJediImageDto> atualizadas = new ArrayList<>();
-
+        if(novasImagens.isEmpty()){
+            return atualizadas;
+        }
         for (int i = 0; i < ids.size(); i++) {
             Long id = ids.get(i);
             MultipartFile novaImagem = novasImagens.get(i);
@@ -87,12 +81,16 @@ public class RedeJediImageService {
             RedeJediImage imagemExistente = imageRepository.findById(id)
                     .orElseThrow(() -> new RuntimeException("Imagem com ID " + id + " não encontrada"));
 
-            cloudinaryService.deleteImage(imagemExistente.getPublicId());
+            if(novaImagem != null){
+                var uploadResult = cloudinaryService.uploadImage(novaImagem);
 
-            Map<String, String> uploadResult = cloudinaryService.uploadImage(novaImagem);
+                if(imagemExistente.getPublicId() != null){
+                    cloudinaryService.deleteImage(imagemExistente.getPublicId());
+                }
+                imagemExistente.setUrl(uploadResult.get("url"));
+                imagemExistente.setPublicId(uploadResult.get("public_id"));
 
-            imagemExistente.setUrl(uploadResult.get("url"));
-            imagemExistente.setPublicId(uploadResult.get("public_id"));
+            }
 
             RedeJediImage salva = imageRepository.save(imagemExistente);
             atualizadas.add(mapToDto(salva));
