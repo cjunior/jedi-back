@@ -40,10 +40,38 @@ public class UserService {
         userRepository.save(newUser);
     }
 
-    public Page<PreInscricaoDadosDto> getAllPreInscricoes(Pageable pageable) {
-        return preInscricaoRepository.findAll(pageable)
-                .map(PreInscricaoDadosDto::fromEntity);
+    public Page<PreInscricaoDadosDto> getAllPreInscricoes(String nome, String email, Boolean somenteCompletos, Pageable pageable) {
+        Specification<PreInscricao> spec = (root, query, builder) -> builder.conjunction();
+
+        if (nome != null && !nome.isBlank()) {
+            spec = spec.and((root, query, builder) ->
+                    builder.like(builder.lower(root.get("completeName")), nome.toLowerCase() + "%"));
+        }
+
+        if (email != null && !email.isBlank()) {
+            spec = spec.and((root, query, builder) ->
+                    builder.like(builder.lower(root.get("email")), "%" + email.toLowerCase() + "%"));
+        }
+
+        if (Boolean.TRUE.equals(somenteCompletos)) {
+            spec = spec.and((root, query, builder) -> builder.and(
+                    builder.isNotNull(root.get("completeName")),
+                    builder.isNotNull(root.get("email")),
+                    builder.isNotNull(root.get("cellPhone")),
+                    builder.isNotNull(root.get("birthDate")),
+                    builder.isNotNull(root.get("municipality")),
+                    builder.isNotNull(root.get("cpf")),
+                    builder.isNotNull(root.get("rg")),
+                    builder.isNotNull(root.get("document")),
+                    builder.isNotNull(root.get("proofOfAdress"))
+            ));
+        }
+
+        return preInscricaoRepository.findAll(spec, pageable)
+                .map(PreInscricaoDadosDto::fromEntity); // <-- Aqui está a correção
     }
+
+
 
 
 

@@ -34,9 +34,15 @@ public class UserController {
 
     @GetMapping("/pre-inscricoes")
     @PreAuthorize("hasRole('ADMIN')")
-    public ResponseEntity<Page<PreInscricaoDadosDto>> getAllPreInscricoes(Pageable pageable) {
-        return ResponseEntity.ok(userService.getAllPreInscricoes(pageable));
+    public ResponseEntity<Page<PreInscricaoDadosDto>> getAllPreInscricoes(
+            @RequestParam(required = false) String nome,
+            @RequestParam(required = false) String email,
+            @RequestParam(required = false, defaultValue = "false") Boolean somenteCompletos,
+            Pageable pageable
+    ) {
+        return ResponseEntity.ok(userService.getAllPreInscricoes(nome, email, somenteCompletos, pageable));
     }
+
 
 
 
