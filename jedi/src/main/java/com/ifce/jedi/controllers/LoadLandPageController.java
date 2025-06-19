@@ -115,7 +115,8 @@ public class LoadLandPageController {
                 dto.getContentTitle(),
                 dto.getContentSubTitle(),
                 dto.getContentDescription(),
-                dto.getContentMainImage()
+                dto.getContentMainImage(),
+                dto.getContentMainImageText()
         );
         contentService.updateContent(updateContentDto);
 

@@ -9,6 +9,7 @@ public class UpdateContentDto {
     private String subTitle;
     private String description;
     private MultipartFile mainImage;
+    private String mainImageText;
 
     public String getTitle() {
         return title;
@@ -42,13 +43,22 @@ public class UpdateContentDto {
         this.mainImage = mainImage;
     }
 
+    public String getMainImageText() {
+        return mainImageText;
+    }
+
+    public void setMainImageText(String mainImageText) {
+        this.mainImageText = mainImageText;
+    }
+
     public UpdateContentDto() {
     }
 
-    public UpdateContentDto(String title, String subTitle, String description, MultipartFile mainImage) {
+    public UpdateContentDto(String title, String subTitle, String description, MultipartFile mainImage, String mainImageText) {
         this.title = title;
         this.subTitle = subTitle;
         this.description = description;
         this.mainImage = mainImage;
+        this.mainImageText = mainImageText;
     }
 }

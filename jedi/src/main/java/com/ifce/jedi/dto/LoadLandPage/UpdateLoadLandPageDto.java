@@ -38,6 +38,7 @@ public class UpdateLoadLandPageDto {
         private String contentSubTitle;
         private String contentDescription;
         private MultipartFile contentMainImage;
+        private String contentMainImageText;
 
         private List<ContentItemUpdateLandPageDto> contentCarousel = new ArrayList<>();
 
@@ -234,6 +235,14 @@ public class UpdateLoadLandPageDto {
                 this.contentMainImage = contentMainImage;
         }
 
+        public String getContentMainImageText() {
+                return contentMainImageText;
+        }
+
+        public void setContentMainImageText(String contentMainImageText) {
+                this.contentMainImageText = contentMainImageText;
+        }
+
         public List<ContentItemUpdateLandPageDto> getContentCarousel() {
                 return contentCarousel;
         }
@@ -274,10 +283,18 @@ public class UpdateLoadLandPageDto {
                 this.contactDescription = contactDescription;
         }
 
+        public MultipartFile getRedeJedFile() {
+                return redeJedFile;
+        }
+
+        public void setRedeJedFile(MultipartFile redeJedFile) {
+                this.redeJedFile = redeJedFile;
+        }
+
         public UpdateLoadLandPageDto() {
         }
 
-        public UpdateLoadLandPageDto(MultipartFile headerFile, String headerText1, String headerText2, String headerText3, String headerText4, String headerButtonText, String bannerTitle, String bannerDescription, List<BannerItemUpdate> bannerItems, List<String> bannerButtonurl, String presentationSectionTitle, String presentationSectionFirstDescription, String presentationSectionSecondDescription, String presentationSectionFirstStatistic, String presentationSectionSecondStatistic, String presentationSectionImgDescription, MultipartFile presentationSectionFile, String teamTitle, List<TeamItemUpdateDto> teamItems, String contentTitle, String contentSubTitle, String contentDescription, MultipartFile contentMainImage, List<ContentItemUpdateLandPageDto> contentCarousel, List<FaqItemUpdateLandPageDto> faqItems, String contactTitle, String contactSubTitle, String contactDescription) {
+        public UpdateLoadLandPageDto(MultipartFile headerFile, String headerText1, String headerText2, String headerText3, String headerText4, String headerButtonText, String bannerTitle, String bannerDescription, List<BannerItemUpdate> bannerItems, List<String> bannerButtonurl, String presentationSectionTitle, String presentationSectionFirstDescription, String presentationSectionSecondDescription, String presentationSectionFirstStatistic, String presentationSectionSecondStatistic, String presentationSectionImgDescription, MultipartFile presentationSectionFile, String teamTitle, List<TeamItemUpdateDto> teamItems, String contentTitle, String contentSubTitle, String contentDescription, MultipartFile contentMainImage, String contentMainImageText, List<ContentItemUpdateLandPageDto> contentCarousel, List<FaqItemUpdateLandPageDto> faqItems, String contactTitle, String contactSubTitle, String contactDescription, MultipartFile redeJedFile) {
                 this.headerFile = headerFile;
                 this.headerText1 = headerText1;
                 this.headerText2 = headerText2;
@@ -301,10 +318,12 @@ public class UpdateLoadLandPageDto {
                 this.contentSubTitle = contentSubTitle;
                 this.contentDescription = contentDescription;
                 this.contentMainImage = contentMainImage;
+                this.contentMainImageText = contentMainImageText;
                 this.contentCarousel = contentCarousel;
                 this.faqItems = faqItems;
                 this.contactTitle = contactTitle;
                 this.contactSubTitle = contactSubTitle;
                 this.contactDescription = contactDescription;
+                this.redeJedFile = redeJedFile;
         }
 }

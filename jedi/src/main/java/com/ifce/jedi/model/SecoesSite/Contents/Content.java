@@ -15,6 +15,7 @@ public class Content {
     private String subTitle;
     private String description;
     private String mainImageUrl;
+    private String mainImageText;
 
     private String CloudinaryPublicId;
 
@@ -61,6 +62,14 @@ public class Content {
         this.mainImageUrl = mainImageUrl;
     }
 
+    public String getMainImageText() {
+        return mainImageText;
+    }
+
+    public void setMainImageText(String mainImageText) {
+        this.mainImageText = mainImageText;
+    }
+
     public String getCloudinaryPublicId() {
         return CloudinaryPublicId;
     }
@@ -80,12 +89,13 @@ public class Content {
     public Content() {
     }
 
-    public Content(Long id, String title, String subTitle, String description, String mainImageUrl, String cloudinaryPublicId, List<ContentItem> imgCarousel) {
+    public Content(Long id, String title, String subTitle, String description, String mainImageUrl, String mainImageText, String cloudinaryPublicId, List<ContentItem> imgCarousel) {
         this.id = id;
         this.title = title;
         this.subTitle = subTitle;
         this.description = description;
         this.mainImageUrl = mainImageUrl;
+        this.mainImageText = mainImageText;
         CloudinaryPublicId = cloudinaryPublicId;
         this.imgCarousel = imgCarousel;
     }
