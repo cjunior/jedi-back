@@ -9,8 +9,12 @@ import com.ifce.jedi.dto.Header.HeaderUrlDto;
 import com.ifce.jedi.dto.PresentationSection.PresentationSectionDto;
 import com.ifce.jedi.dto.Team.TeamDto;
 import com.ifce.jedi.dto.Team.TeamItemUrlDto;
+import com.ifce.jedi.model.SecoesSite.Rede.RedeJediImage;
+import com.ifce.jedi.model.SecoesSite.Rede.RedeJediSection;
 import com.ifce.jedi.model.User.User;
 import com.ifce.jedi.model.User.UserRole;
+import com.ifce.jedi.repository.RedeJediImageRepository;
+import com.ifce.jedi.repository.RedeJediSectionRepository;
 import com.ifce.jedi.repository.UserRepository;
 import com.ifce.jedi.service.*;
 import org.springframework.boot.CommandLineRunner;
@@ -157,20 +161,36 @@ public class StartupInitializer {
             }
         };
     }
+
+
     @Bean
-    public CommandLineRunner initDefaultContactSection(ContactUsService contactUsService){
+    public CommandLineRunner initRedeJediSectionAndImages(
+            RedeJediSectionRepository sectionRepo,
+            RedeJediImageRepository imageRepo
+    ) {
         return args -> {
-            if(contactUsService.getSection() == null) {
-                ContactUsDto dto = new ContactUsDto(
-                        "Fale Conosco",
-                        "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Duis consequat lobortis dui vitae laoreet.",
-                        "Preencha o formulário ao lado para entrar em contato."
+            RedeJediSection section = sectionRepo.findById(1L).orElse(null);
+            if (section == null) {
+                section = new RedeJediSection();
+                section.setTitulo("Título padrão Rede Jedi");
+                section = sectionRepo.save(section); // agora tem ID
+                System.out.println("Seção Rede Jedi criada.");
+            }
+
+            if (imageRepo.count() == 0) {
+                List<RedeJediImage> imagens = List.of(
+                        new RedeJediImage(
+                                "https://res.cloudinary.com/dp98r2imm/image/upload/v1750283534/JEDI/rwi4ljbcpovupa19j35c.jpg",
+                                "JEDI/rwi4ljbcpovupa19j35c"
+                        )
                 );
-                contactUsService.createSection(dto);
-                System.out.println("ContactUs Section criada.");
-            }else {
-                System.out.println("ContactUs Section já existe.");
+
+                RedeJediSection finalSection = section;
+                imagens.forEach(img -> img.setSection(finalSection));
+                imageRepo.saveAll(imagens);
+                System.out.println("Imagens iniciais associadas à seção.");
             }
         };
     }
+
 }

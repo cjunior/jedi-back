@@ -85,6 +85,12 @@ public class SecurityConfigurations {
                         .requestMatchers(HttpMethod.POST, "/contact/email").permitAll()
                         .requestMatchers(HttpMethod.GET, "/contact/get").permitAll()
                         .requestMatchers(HttpMethod.PUT, "contact/update").hasRole("ADMIN")
+
+                        .requestMatchers(HttpMethod.GET, "/rede-jedi").permitAll()
+                        .requestMatchers(HttpMethod.POST, "/rede-jedi").hasRole("ADMIN")
+                        .requestMatchers(HttpMethod.DELETE, "/rede-jedi/**").hasRole("ADMIN")
+                        .requestMatchers(HttpMethod.PUT, "/rede-jedi/titulo").hasRole("ADMIN")
+
                         .anyRequest().authenticated()
                 )
                 .addFilterBefore(securityFilter, UsernamePasswordAuthenticationFilter.class)
