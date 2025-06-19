@@ -10,6 +10,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
@@ -66,4 +67,34 @@ public class RedeJediImageService {
         dto.setPublicId(img.getPublicId());
         return dto;
     }
+
+
+    public List<RedeJediImageDto> updateMultipleImages(List<Long> ids, List<MultipartFile> novasImagens) throws IOException {
+        if (ids.size() != novasImagens.size()) {
+            throw new IllegalArgumentException("A quantidade de IDs e imagens deve ser igual");
+        }
+
+        List<RedeJediImageDto> atualizadas = new ArrayList<>();
+
+        for (int i = 0; i < ids.size(); i++) {
+            Long id = ids.get(i);
+            MultipartFile novaImagem = novasImagens.get(i);
+
+            RedeJediImage imagemExistente = imageRepository.findById(id)
+                    .orElseThrow(() -> new RuntimeException("Imagem com ID " + id + " não encontrada"));
+
+            cloudinaryService.deleteImage(imagemExistente.getPublicId());
+
+            Map<String, String> uploadResult = cloudinaryService.uploadImage(novaImagem);
+
+            imagemExistente.setUrl(uploadResult.get("url"));
+            imagemExistente.setPublicId(uploadResult.get("public_id"));
+
+            RedeJediImage salva = imageRepository.save(imagemExistente);
+            atualizadas.add(mapToDto(salva));
+        }
+
+        return atualizadas;
+    }
+
 }
