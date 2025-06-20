@@ -10,8 +10,10 @@ import org.springframework.web.multipart.MultipartFile;
 
 import jakarta.transaction.Transactional;
 import java.io.IOException;
+import java.util.Comparator;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Service
 public class BlogSectionService {
@@ -89,6 +91,7 @@ public class BlogSectionService {
 
     private BlogSectionResponseDto toResponse(BlogSection entity) {
         List<BlogItemResponseDto> items = entity.getItems().stream()
+                .sorted(Comparator.comparing(BlogItem::getId))
                 .map(item -> new BlogItemResponseDto(
                         item.getId(),
                         item.getTitle(),
