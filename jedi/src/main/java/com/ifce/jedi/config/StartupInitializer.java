@@ -94,11 +94,11 @@ public class StartupInitializer {
         return args -> {
             if(teamService.getTeam() == null){
                 TeamDto teamDto = new TeamDto(
-                    "Equipe",
+                        "Equipe",
                         List.of(
-                                    new TeamItemUrlDto(
-                                            "https://res.cloudinary.com/dp98r2imm/image/upload/v1749910911/bannerInicial_xcwltm.jpg"
-                                    ),
+                                new TeamItemUrlDto(
+                                        "https://res.cloudinary.com/dp98r2imm/image/upload/v1749910911/bannerInicial_xcwltm.jpg"
+                                ),
                                 new TeamItemUrlDto(
                                         "https://res.cloudinary.com/dp98r2imm/image/upload/v1749945082/fotoend2_ajfnzd.png"
                                 )
@@ -139,6 +139,7 @@ public class StartupInitializer {
                         "Lorem ipsum",
                         "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Praesent ac ullamcorper metus.",
                         "https://res.cloudinary.com/dp98r2imm/image/upload/v1749910911/bannerInicial_xcwltm.jpg",
+                        "PERCURSO BÁSICO",
                         List.of(
                                 new ContentItemUrlDto(
                                         "https://res.cloudinary.com/dp98r2imm/image/upload/v1749910911/bannerInicial_xcwltm.jpg",
@@ -162,6 +163,23 @@ public class StartupInitializer {
         };
     }
 
+    @Bean
+    public CommandLineRunner initDefaultContactSection(ContactUsService contactUsService){
+        return args -> {
+            if(contactUsService.getSection() == null) {
+                ContactUsDto dto = new ContactUsDto(
+                        "Fale Conosco",
+                        "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Duis consequat lobortis dui vitae laoreet.",
+                        "Preencha o formulário ao lado para entrar em contato."
+                );
+                contactUsService.createSection(dto);
+                System.out.println("ContactUs Section criada.");
+            }else {
+                System.out.println("ContactUs Section já existe.");
+            }
+        };
+    }
+
 
     @Bean
     public CommandLineRunner initRedeJediSectionAndImages(
@@ -180,7 +198,7 @@ public class StartupInitializer {
             if (imageRepo.count() == 0) {
                 List<RedeJediImage> imagens = List.of(
                         new RedeJediImage(
-                                "https://res.cloudinary.com/dp98r2imm/image/upload/v1750283534/JEDI/rwi4ljbcpovupa19j35c.jpg",
+                                "https://res.cloudinary.com/dp98r2imm/image/upload/v1749910911/bannerInicial_xcwltm.jpg",
                                 "JEDI/rwi4ljbcpovupa19j35c"
                         )
                 );
@@ -193,4 +211,12 @@ public class StartupInitializer {
         };
     }
 
+
+    @Bean
+    public CommandLineRunner initDefaultBlogSection(BlogSectionService service) {
+        return args -> {
+            // Já está implementado no próprio service a criação dos dados padrão
+            service.get(); // Isso irá criar a seção com itens padrão se não existir
+        };
+    }
 }

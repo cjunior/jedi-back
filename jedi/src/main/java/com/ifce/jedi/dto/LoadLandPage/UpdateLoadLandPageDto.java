@@ -2,6 +2,8 @@ package com.ifce.jedi.dto.LoadLandPage;
 
 
 import com.ifce.jedi.dto.Banner.BannerItemUpdate;
+import com.ifce.jedi.dto.Rede.imagemRedeJedUpdateWrapperDto;
+import com.ifce.jedi.dto.Rede.imagemRedeJedWrapperDto;
 import com.ifce.jedi.dto.Team.TeamItemUpdateDto;
 import io.swagger.v3.oas.annotations.media.Schema;
 import org.springframework.web.multipart.MultipartFile;
@@ -38,14 +40,23 @@ public class UpdateLoadLandPageDto {
         private String contentSubTitle;
         private String contentDescription;
         private MultipartFile contentMainImage;
+        private String contentMainImageText;
 
         private List<ContentItemUpdateLandPageDto> contentCarousel = new ArrayList<>();
 
+        private String faqTitle;
+        private String faqSubtitle;
         private List<FaqItemUpdateLandPageDto> faqItems = new ArrayList<>();
 
         private String contactTitle;
         private String contactSubTitle;
         private String contactDescription;
+
+        private String redeTitle;
+
+        private List<imagemRedeJedUpdateWrapperDto> redeFiles;
+
+        private List<blogitemsWrapperDto> blogItems;
 
         public MultipartFile getHeaderFile() {
                 return headerFile;
@@ -231,12 +242,36 @@ public class UpdateLoadLandPageDto {
                 this.contentMainImage = contentMainImage;
         }
 
+        public String getContentMainImageText() {
+                return contentMainImageText;
+        }
+
+        public void setContentMainImageText(String contentMainImageText) {
+                this.contentMainImageText = contentMainImageText;
+        }
+
         public List<ContentItemUpdateLandPageDto> getContentCarousel() {
                 return contentCarousel;
         }
 
         public void setContentCarousel(List<ContentItemUpdateLandPageDto> contentCarousel) {
                 this.contentCarousel = contentCarousel;
+        }
+
+        public String getFaqTitle() {
+                return faqTitle;
+        }
+
+        public void setFaqTitle(String faqTitle) {
+                this.faqTitle = faqTitle;
+        }
+
+        public String getFaqSubtitle() {
+                return faqSubtitle;
+        }
+
+        public void setFaqSubtitle(String faqSubtitle) {
+                this.faqSubtitle = faqSubtitle;
         }
 
         public List<FaqItemUpdateLandPageDto> getFaqItems() {
@@ -271,10 +306,34 @@ public class UpdateLoadLandPageDto {
                 this.contactDescription = contactDescription;
         }
 
+        public String getRedeTitle() {
+                return redeTitle;
+        }
+
+        public void setRedeTitle(String redeTitle) {
+                this.redeTitle = redeTitle;
+        }
+
+        public List<imagemRedeJedUpdateWrapperDto> getRedeFiles() {
+                return redeFiles;
+        }
+
+        public void setRedeFiles(List<imagemRedeJedUpdateWrapperDto> redeFiles) {
+                this.redeFiles = redeFiles;
+        }
+
+        public List<blogitemsWrapperDto> getBlogItems() {
+                return blogItems;
+        }
+
+        public void setBlogItems(List<blogitemsWrapperDto> blogItems) {
+                this.blogItems = blogItems;
+        }
+
         public UpdateLoadLandPageDto() {
         }
 
-        public UpdateLoadLandPageDto(MultipartFile headerFile, String headerText1, String headerText2, String headerText3, String headerText4, String headerButtonText, String bannerTitle, String bannerDescription, List<BannerItemUpdate> bannerItems, List<String> bannerButtonurl, String presentationSectionTitle, String presentationSectionFirstDescription, String presentationSectionSecondDescription, String presentationSectionFirstStatistic, String presentationSectionSecondStatistic, String presentationSectionImgDescription, MultipartFile presentationSectionFile, String teamTitle, List<TeamItemUpdateDto> teamItems, String contentTitle, String contentSubTitle, String contentDescription, MultipartFile contentMainImage, List<ContentItemUpdateLandPageDto> contentCarousel, List<FaqItemUpdateLandPageDto> faqItems, String contactTitle, String contactSubTitle, String contactDescription) {
+        public UpdateLoadLandPageDto(MultipartFile headerFile, String headerText1, String headerText2, String headerText3, String headerText4, String headerButtonText, String bannerTitle, String bannerDescription, List<BannerItemUpdate> bannerItems, List<String> bannerButtonurl, String presentationSectionTitle, String presentationSectionFirstDescription, String presentationSectionSecondDescription, String presentationSectionFirstStatistic, String presentationSectionSecondStatistic, String presentationSectionImgDescription, MultipartFile presentationSectionFile, String teamTitle, List<TeamItemUpdateDto> teamItems, String contentTitle, String contentSubTitle, String contentDescription, MultipartFile contentMainImage, String contentMainImageText, List<ContentItemUpdateLandPageDto> contentCarousel, String faqTitle, String faqSubtitle, List<FaqItemUpdateLandPageDto> faqItems, String contactTitle, String contactSubTitle, String contactDescription, String redeTitle, List<imagemRedeJedUpdateWrapperDto> redeFiles, List<blogitemsWrapperDto> blogItems) {
                 this.headerFile = headerFile;
                 this.headerText1 = headerText1;
                 this.headerText2 = headerText2;
@@ -298,10 +357,16 @@ public class UpdateLoadLandPageDto {
                 this.contentSubTitle = contentSubTitle;
                 this.contentDescription = contentDescription;
                 this.contentMainImage = contentMainImage;
+                this.contentMainImageText = contentMainImageText;
                 this.contentCarousel = contentCarousel;
+                this.faqTitle = faqTitle;
+                this.faqSubtitle = faqSubtitle;
                 this.faqItems = faqItems;
                 this.contactTitle = contactTitle;
                 this.contactSubTitle = contactSubTitle;
                 this.contactDescription = contactDescription;
+                this.redeTitle = redeTitle;
+                this.redeFiles = redeFiles;
+                this.blogItems = blogItems;
         }
 }

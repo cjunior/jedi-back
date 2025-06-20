@@ -1,16 +1,16 @@
 package com.ifce.jedi.controllers;
 
 import com.ifce.jedi.dto.Banner.*;
+import com.ifce.jedi.dto.Blog.BlogItemUpdateDto;
 import com.ifce.jedi.dto.ContactUs.ContactUsUpdateDto;
 import com.ifce.jedi.dto.Contents.ContentItemDto;
 import com.ifce.jedi.dto.Contents.UpdateContentDto;
 import com.ifce.jedi.dto.FaqSection.FaqItemUpdateDto;
+import com.ifce.jedi.dto.FaqSection.FaqSectionHeaderUpdateDto;
 import com.ifce.jedi.dto.Header.HeaderDto;
-import com.ifce.jedi.dto.LoadLandPage.ContentItemUpdateLandPageDto;
-import com.ifce.jedi.dto.LoadLandPage.FaqItemUpdateLandPageDto;
-import com.ifce.jedi.dto.LoadLandPage.LoadLandPageDto;
-import com.ifce.jedi.dto.LoadLandPage.UpdateLoadLandPageDto;
+import com.ifce.jedi.dto.LoadLandPage.*;
 import com.ifce.jedi.dto.PresentationSection.PresentationSectionUpdateDto;
+import com.ifce.jedi.dto.Rede.imagemRedeJedUpdateWrapperDto;
 import com.ifce.jedi.dto.Team.TeamItemDto;
 import com.ifce.jedi.dto.Team.TeamItemUpdateDto;
 import com.ifce.jedi.dto.Team.TeamUpdateDto;
@@ -24,10 +24,7 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 @RestController
 @RequestMapping("/loadlandpage")
@@ -55,8 +52,17 @@ public class LoadLandPageController {
     @Autowired
     private FaqSectionService faqSectionService;
 
+    @Autowired
+    private RedeJediSectionService redeJediSectionService;
+
+    @Autowired
+    private RedeJediImageService redeJediImageService;
+
+    @Autowired
+    private BlogSectionService blogSectionService;
+
     @GetMapping("/get")
-    public ResponseEntity<LoadLandPageDto> getHeader() {
+    public ResponseEntity<LoadLandPageDto> getAll() {
         LoadLandPageDto landPage = loadLandPageService.getAll();
         return landPage == null ? ResponseEntity.noContent().build() : ResponseEntity.ok(landPage);
     }
@@ -65,7 +71,6 @@ public class LoadLandPageController {
     @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<?> updateAll(@ModelAttribute UpdateLoadLandPageDto dto) throws IOException {
 
-        // Atualiza itens do Banner (já corrigido anteriormente)
         if (dto.getBannerItems() != null && !dto.getBannerItems().isEmpty()) {
             for (BannerItemUpdate itemUpdate : dto.getBannerItems()) {
                 BannerItemDto itemDto = new BannerItemDto(
@@ -78,7 +83,6 @@ public class LoadLandPageController {
             }
         }
 
-        // Atualiza Header
         var headerDto = new HeaderDto(
                 dto.getHeaderFile(),
                 dto.getHeaderText1(),
@@ -100,17 +104,15 @@ public class LoadLandPageController {
         presentationService.update(presentationSectionUpdateDto);
         presentationService.updateImage(dto.getPresentationSectionFile());
 
-        // Atualiza título da Equipe
         var teamDto = new TeamUpdateDto(dto.getTeamTitle());
         teamService.updateTeam(teamDto);
 
-        // ✅ Atualiza os membros da Equipe com arquivos
         if (dto.getTeamItems() != null && !dto.getTeamItems().isEmpty()) {
             for (TeamItemUpdateDto teamItem : dto.getTeamItems()) {
                 teamService.updateMember(
                         teamItem.getId(),
                         teamItem.getFile(),
-                        new TeamItemDto() // Pode adaptar se necessário
+                        new TeamItemDto()
                 );
             }
         }
@@ -119,7 +121,8 @@ public class LoadLandPageController {
                 dto.getContentTitle(),
                 dto.getContentSubTitle(),
                 dto.getContentDescription(),
-                dto.getContentMainImage()
+                dto.getContentMainImage(),
+                dto.getContentMainImageText()
         );
         contentService.updateContent(updateContentDto);
 
@@ -143,11 +146,42 @@ public class LoadLandPageController {
                 );
             }
         }
-
+        faqSectionService.updateHeader(new FaqSectionHeaderUpdateDto(dto.getFaqTitle(), dto.getFaqSubtitle()));
         var contactUsUpdateDto = new ContactUsUpdateDto(dto.getContactTitle(), dto.getContactSubTitle(), dto.getContactDescription());
         contactUsService.updateSection(contactUsUpdateDto);
 
-        // Atualiza o título e descrição do banner
+        redeJediSectionService.atualizarTitulo(1L, dto.getRedeTitle());
+
+
+
+        List<Long> ids = new ArrayList<>();
+        List<MultipartFile> imagens = new ArrayList<>();
+        if(dto.getRedeFiles() != null){
+            for (imagemRedeJedUpdateWrapperDto obj : dto.getRedeFiles()){
+                ids.add(obj.getId());
+                if(obj.getFile()!= null){
+                    imagens.add(obj.getFile());
+                }
+            }
+            redeJediImageService.updateMultipleImages(ids, imagens);
+        }
+
+
+        if(dto.getBlogItems() != null){
+            for (blogitemsWrapperDto obj : dto.getBlogItems()){
+                blogSectionService.updateBlogItem(obj.getId(), new BlogItemUpdateDto(
+                        obj.getTitle(),
+                        obj.getAuthor(),
+                        obj.getDate(),
+                        obj.getReadingTime(),
+                        obj.getImageDescription(),
+                        obj.getFile()
+                ));
+            }
+        }
+
+
+
         var bannerDto = new BannerUpdateDto(dto.getBannerTitle(), dto.getBannerDescription());
         bannerService.updateBanner(bannerDto);
 

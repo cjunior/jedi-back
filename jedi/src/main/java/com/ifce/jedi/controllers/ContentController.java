@@ -53,16 +53,17 @@ public class ContentController {
     public ResponseEntity<?> addSlide(@ModelAttribute ContentItemUploadDto form) throws IOException {
 
         List<MultipartFile> files = form.getFiles();
-        List<String> igmText = form.getImgTexts();
+        List<String> imgText = form.getImgTexts();
 
-        if (files.size() != igmText.size()) {
-            return ResponseEntity.badRequest().body("Número de arquivos e textos não correspondem.");
+        if(form.getFiles() == null){
+            return ResponseEntity.badRequest().body("Insira ao menos um arquivo");
         }
-
-        for (int i = 0; i < igmText.size(); i++) {
-            ContentItemDto dto = new ContentItemDto(igmText.get(i));
+        for (int i = 0; i < files.size(); i++) {
+            String text = (imgText != null && imgText.size() > i) ? imgText.get(i) : null;
+            ContentItemDto dto = (text != null) ? new ContentItemDto(text) : new ContentItemDto();
             contentService.addSlide(files.get(i), dto);
         }
+
 
         return ResponseEntity.ok("Itens adicionados com sucesso!");
     }

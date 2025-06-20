@@ -72,6 +72,7 @@ public class SecurityConfigurations {
 
                         .requestMatchers(HttpMethod.GET, "/faq-section/get").permitAll()
                         .requestMatchers(HttpMethod.PUT, "/faq-section/item/**").hasRole("ADMIN")
+                        .requestMatchers(HttpMethod.PUT, "/faq-section/update-header").hasRole("ADMIN")
 
                         // Load Landpage
                         .requestMatchers(HttpMethod.GET, "/loadlandpage/get").permitAll()
@@ -85,6 +86,10 @@ public class SecurityConfigurations {
                         .requestMatchers(HttpMethod.POST, "/contact/email").permitAll()
                         .requestMatchers(HttpMethod.GET, "/contact/get").permitAll()
                         .requestMatchers(HttpMethod.PUT, "contact/update").hasRole("ADMIN")
+
+
+                        .requestMatchers(HttpMethod.GET, "/blog-section/get").permitAll()
+                        .requestMatchers(HttpMethod.PUT, "/blog-section/item/{itemId}").hasRole("ADMIN")
 
                         .requestMatchers(HttpMethod.GET, "/rede-jedi").permitAll()
                         .requestMatchers(HttpMethod.POST, "/rede-jedi").hasRole("ADMIN")

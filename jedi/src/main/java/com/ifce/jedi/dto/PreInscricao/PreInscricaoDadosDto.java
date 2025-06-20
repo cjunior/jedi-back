@@ -4,7 +4,6 @@ import com.ifce.jedi.model.User.PreInscricao;
 
 import java.time.LocalDate;
 
-import java.time.LocalDate;
 import java.util.Base64;
 
 public record PreInscricaoDadosDto(
@@ -19,6 +18,14 @@ public record PreInscricaoDadosDto(
         String proofOfAdressBase64
 ) {
     public static PreInscricaoDadosDto fromEntity(PreInscricao pre) {
+        String documentBase64 = null;
+        String proofOfAdressBase64 = null;
+
+        if (pre.getDocument() != null && pre.getProofOfAdress() != null) {
+            documentBase64 = Base64.getEncoder().encodeToString(pre.getDocument());
+            proofOfAdressBase64 = Base64.getEncoder().encodeToString(pre.getProofOfAdress());
+        }
+
         return new PreInscricaoDadosDto(
                 pre.getCompleteName(),
                 pre.getEmail(),
@@ -27,9 +34,10 @@ public record PreInscricaoDadosDto(
                 pre.getMunicipality(),
                 pre.getCpf(),
                 pre.getRg(),
-                pre.getDocument() != null ? Base64.getEncoder().encodeToString(pre.getDocument()) : null,
-                pre.getProofOfAdress() != null ? Base64.getEncoder().encodeToString(pre.getProofOfAdress()) : null
+                documentBase64,
+                proofOfAdressBase64
         );
     }
+
 }
 

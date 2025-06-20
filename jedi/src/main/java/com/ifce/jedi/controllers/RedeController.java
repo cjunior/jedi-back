@@ -2,6 +2,8 @@ package com.ifce.jedi.controllers;
 
 import com.ifce.jedi.dto.Rede.RedeJediImageDto;
 import com.ifce.jedi.dto.Rede.RedeJediSectionDto;
+import com.ifce.jedi.dto.Rede.imagemRedeJedDto;
+import com.ifce.jedi.dto.Rede.imagemRedeJedWrapperDto;
 import com.ifce.jedi.service.RedeJediImageService;
 import com.ifce.jedi.service.RedeJediSectionService;
 import io.swagger.v3.oas.annotations.Operation;
@@ -13,6 +15,7 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
@@ -57,20 +60,17 @@ public class RedeController {
     )
     @PreAuthorize("hasRole('ADMIN')")
     @Operation(summary = "Atualiza múltiplas imagens da Rede Jedi")
-    public List<RedeJediImageDto> updateMultiplasImagens(
-            @RequestParam List<Long> ids,
-            @RequestPart(name = "imagens") MultipartFile[] imagens
+    public List<RedeJediImageDto> updateMultiplasImagens(@ModelAttribute imagemRedeJedWrapperDto dto
     ) throws IOException {
-
-        if (ids == null || imagens == null || ids.isEmpty() || imagens.length == 0) {
-            throw new IllegalArgumentException("A lista de IDs e de imagens não pode estar vazia.");
+        List<Long> ids = new ArrayList<>();
+        List<MultipartFile> imagens = new ArrayList<>();
+        for (imagemRedeJedDto obj : dto.getImages()){
+            ids.add(obj.getId());
+            if(obj.getFile()!= null){
+                imagens.add(obj.getFile());
+            }
         }
-
-        if (ids.size() != imagens.length) {
-            throw new IllegalArgumentException("A quantidade de IDs e imagens deve ser igual.");
-        }
-
-        return imageService.updateMultipleImages(ids, Arrays.asList(imagens));
+        return imageService.updateMultipleImages(ids, imagens);
     }
 
 

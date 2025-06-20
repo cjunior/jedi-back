@@ -38,15 +38,16 @@ public class BannerController {
         MultipartFile[] files = form.getFile();
         List<String> buttonText = form.getButtonText();
         List<String> buttonUrl = form.getButtonUrl();
-
-        if (files.length != buttonText.size()) {
-            return ResponseEntity.badRequest().body("Número de arquivos e textos não correspondem.");
+        if(form.getFile() == null){
+            return ResponseEntity.badRequest().body("Insira ao menos um arquivo");
         }
-
-        for (int i = 0; i < buttonText.size(); i++) {
-            String url = (buttonUrl != null && i < buttonUrl.size()) ? buttonUrl.get(i) : "";
-            BannerItemDto dto = new BannerItemDto(buttonText.get(i), url);
-            bannerService.addSlide(files[i], dto);
+        else{
+            for (int i = 0; i < files.length; i++) {
+                String url = (buttonUrl != null && i < buttonUrl.size()) ? buttonUrl.get(i) : null;
+                String text = (buttonText != null && i < buttonText.size()) ? buttonText.get(i) : null;
+                BannerItemDto dto = new BannerItemDto(text, url);
+                bannerService.addSlide(files[i], dto);
+            }
         }
 
         return ResponseEntity.ok("Itens adicionados com sucesso!");
@@ -63,13 +64,10 @@ public class BannerController {
         List<String> buttonText = dto.getButtonText();
         List<String> buttonUrl = dto.getButtonUrl();
 
-        if (slideIds.size() != buttonText.size() || files.length != buttonText.size()) {
-            return ResponseEntity.badRequest().body("Números de atributos não correspondem.");
-        }
-
         for (int i = 0; i < slideIds.size(); i++) {
             String url = (buttonUrl != null && i < buttonUrl.size()) ? buttonUrl.get(i) : "";
-            BannerItemDto itemDto = new BannerItemDto(buttonText.get(i), url);
+            String text = (buttonText != null && i < buttonText.size()) ? buttonText.get(i) : "";
+            BannerItemDto itemDto = new BannerItemDto(text, url);
             bannerService.updateSlide(slideIds.get(i), files[i], itemDto);
         }
 

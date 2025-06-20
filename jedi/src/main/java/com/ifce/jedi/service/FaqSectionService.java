@@ -71,6 +71,23 @@ public class FaqSectionService {
         return toResponse(section);
     }
 
+    @Transactional
+    public FaqSectionResponseDto updateHeader(FaqSectionHeaderUpdateDto dto) {
+        FaqSection section = repository.findFirstByOrderByIdAsc()
+                .orElseThrow(() -> new RuntimeException("FAQ Section não encontrada"));
+
+        // Atualiza APENAS title e subtitle (ignora os itens)
+        if (dto.title() != null) {
+            section.setTitle(dto.title());
+        }
+        if (dto.subtitle() != null) {
+            section.setSubtitle(dto.subtitle());
+        }
+
+        FaqSection updated = repository.save(section);
+        return toResponse(updated); // Usa o método existente para a resposta
+    }
+
     private FaqSectionResponseDto toResponse(FaqSection entity) {
         List<FaqItemResponseDto> items = entity.getItems().stream()
                 .sorted((a, b) -> a.getPosition().compareTo(b.getPosition()))
