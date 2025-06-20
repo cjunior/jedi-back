@@ -27,12 +27,13 @@ public class RedeController {
     private RedeJediSectionService sectionService;
 
 
-    @PostMapping(consumes = "multipart/form-data")
-    @Operation(summary = "Fazer upload de uma nova imagem para a Rede Jedi")
+    @PostMapping(value = "/multiplas", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+    @Operation(summary = "Fazer upload de múltiplas imagens para a Rede Jedi")
     @PreAuthorize("hasRole('ADMIN')")
-    public RedeJediImageDto upload(@RequestPart MultipartFile arquivo) throws IOException {
-        return imageService.upload(arquivo);
+    public List<RedeJediImageDto> uploadMultiplas(@RequestPart MultipartFile[] arquivos) throws IOException {
+        return imageService.uploadMultiplas(arquivos);
     }
+
 
     @DeleteMapping("/{id}")
     @Operation(summary = "Deletar uma imagem da Rede Jedi pelo ID")

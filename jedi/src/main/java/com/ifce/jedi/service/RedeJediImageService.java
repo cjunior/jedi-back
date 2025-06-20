@@ -27,24 +27,31 @@ public class RedeJediImageService {
     @Autowired
     private RedeJediSectionRepository sectionRepository;
 
-    public RedeJediImageDto upload(MultipartFile imagem) throws IOException {
-        Map<String, String> uploadResult = cloudinaryService.uploadImage(imagem);
-
-        RedeJediImage entity = new RedeJediImage();
-        entity.setUrl(uploadResult.get("url"));
-        entity.setPublicId(uploadResult.get("public_id"));
+    public List<RedeJediImageDto> uploadMultiplas(MultipartFile[] imagens) throws IOException {
+        List<RedeJediImageDto> dtos = new ArrayList<>();
 
         RedeJediSection section = sectionRepository.findById(1L)
                 .orElseThrow(() -> new RuntimeException("Seção Rede Jedi não encontrada"));
-        entity.setSection(section);
 
-        RedeJediImage saved = imageRepository.save(entity);
+        for (MultipartFile imagem : imagens) {
+            Map<String, String> uploadResult = cloudinaryService.uploadImage(imagem);
 
-        RedeJediImageDto dto = new RedeJediImageDto();
-        dto.setId(saved.getId());
-        dto.setUrl(saved.getUrl());
-        dto.setPublicId(saved.getPublicId());
-        return dto;
+            RedeJediImage entity = new RedeJediImage();
+            entity.setUrl(uploadResult.get("url"));
+            entity.setPublicId(uploadResult.get("public_id"));
+            entity.setSection(section);
+
+            RedeJediImage saved = imageRepository.save(entity);
+
+            RedeJediImageDto dto = new RedeJediImageDto();
+            dto.setId(saved.getId());
+            dto.setUrl(saved.getUrl());
+            dto.setPublicId(saved.getPublicId());
+
+            dtos.add(dto);
+        }
+
+        return dtos;
     }
 
     public void delete(Long id) throws IOException {
