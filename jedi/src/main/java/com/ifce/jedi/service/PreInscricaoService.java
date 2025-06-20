@@ -10,7 +10,9 @@ import com.ifce.jedi.repository.PreInscricaoRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.io.IOException;
 import java.time.LocalDateTime;
+import java.util.Map;
 import java.util.Optional;
 import java.util.UUID;
 
@@ -20,10 +22,13 @@ public class PreInscricaoService {
     @Autowired
     PreInscricaoRepository preInscricaoRepository;
 
+    @Autowired
+    CloudinaryService  cloudinaryService;
+
     public PreInscricao createRegistration(PreInscricaoDto preInscricaoDto) {
 
-        if (findByEmail(preInscricaoDto.email()).isPresent()){
-            throw new EmailAlreadyUsedException("Já existe uma pre-inscricao com esse email.");
+        if (preInscricaoRepository.existsByEmail(preInscricaoDto.email())) {
+            throw new EmailAlreadyUsedException("E-mail já cadastrado.");
         }
 
         PreInscricao preInscricao = new PreInscricao(
@@ -32,33 +37,35 @@ public class PreInscricaoService {
                 preInscricaoDto.cellphone()
         );
 
-        // Geração do token
         String token = UUID.randomUUID().toString();
         preInscricao.setContinuationToken(token);
         preInscricao.setTokenExpiration(LocalDateTime.now().plusHours(24));
 
-        return  preInscricaoRepository.save(preInscricao);
+        return preInscricaoRepository.save(preInscricao);
     }
 
 
-    public void completeRegistration(String token, PreInscricaoComplementarDto  preInscricaoComplementarDto) {
-
+    public void completeRegistration(String token, PreInscricaoComplementarDto dto) {
         PreInscricao preInscricao = validateTokenOrThrow(token);
 
         try {
-            preInscricao.setBirthDate(preInscricaoComplementarDto.getBirthDate());
-            preInscricao.setMunicipality(preInscricaoComplementarDto.getMunicipality());
-            preInscricao.setCpf(preInscricaoComplementarDto.getCpf());
-            preInscricao.setRg(preInscricaoComplementarDto.getRg());
-            preInscricao.setDocument(preInscricaoComplementarDto.getDocument().getBytes());
-            preInscricao.setProofOfAdress(preInscricaoComplementarDto.getProofOfAdress().getBytes());
+            Map<String, String> documentUpload = cloudinaryService.uploadImage(dto.document());
+            Map<String, String> proofUpload = cloudinaryService.uploadImage(dto.proofOfAdress());
+
+            preInscricao.setBirthDate(dto.birthDate());
+            preInscricao.setMunicipality(dto.municipality());
+            preInscricao.setCpf(dto.cpf());
+            preInscricao.setRg(dto.rg());
+            preInscricao.setDocumentUrl(documentUpload.get("url"));
+            preInscricao.setProofOfAdressUrl(proofUpload.get("url"));
 
             preInscricaoRepository.save(preInscricao);
-        } catch (Exception e) {
-            throw new RuntimeException("Erro ao processar arquivos enviados.", e);
-        }
 
+        } catch (IOException e) {
+            throw new RuntimeException("Erro ao enviar arquivos para o Cloudinary.", e);
+        }
     }
+
 
 
     public PreInscricao validateTokenOrThrow(String token) {

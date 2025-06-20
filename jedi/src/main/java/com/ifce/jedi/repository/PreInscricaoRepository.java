@@ -9,6 +9,6 @@ import java.util.UUID;
 
 public interface PreInscricaoRepository extends JpaRepository<PreInscricao, UUID>, JpaSpecificationExecutor<PreInscricao>  {
     Optional<PreInscricao> findByEmail(String email);
-
+    boolean existsByEmail(String email);
     Optional<PreInscricao> findByContinuationToken(String token);
 }

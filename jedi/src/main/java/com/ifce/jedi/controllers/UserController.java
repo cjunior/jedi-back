@@ -2,9 +2,7 @@ package com.ifce.jedi.controllers;
 
 
 import com.ifce.jedi.dto.PreInscricao.PreInscricaoDadosDto;
-import com.ifce.jedi.dto.PreInscricao.PreInscricaoDto;
 import com.ifce.jedi.dto.User.RegisterDto;
-import com.ifce.jedi.model.User.PreInscricao;
 import com.ifce.jedi.service.UserService;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
