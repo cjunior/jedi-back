@@ -62,9 +62,12 @@ public class PresentationSectionService {
         PresentationSection entity = repository.findFirstByOrderByIdAsc()
                 .orElseThrow(() -> new RuntimeException("Presentation section not found"));
 
-        if (entity.getCloudinaryPublicId() != null) {
+        if(file != null && !file.isEmpty()){
             var uploadResult = cloudinaryService.uploadImage(file);
-            cloudinaryService.deleteImage(entity.getCloudinaryPublicId());
+            if (entity.getCloudinaryPublicId() != null) {
+                cloudinaryService.deleteImage(entity.getCloudinaryPublicId());
+            }
+
             entity.setImgUrl(uploadResult.get("url"));
             entity.setCloudinaryPublicId(uploadResult.get("public_id"));
         }
