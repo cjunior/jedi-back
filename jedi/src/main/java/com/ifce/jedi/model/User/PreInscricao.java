@@ -35,13 +35,11 @@ public class PreInscricao {
 
     private String rg;
 
-    @Lob
-    @Column(name = "document")
-    private byte[] document;
+    @Column(name = "document_url")
+    private String documentUrl;
 
-    @Lob
-    @Column(name =  "proof_of_adress")
-    private byte[] proofOfAdress;
+    @Column(name = "proof_of_adress_url")
+    private String proofOfAdressUrl;
 
     @Column(name = "continuation_token", unique = true)
     private String continuationToken;
@@ -57,6 +55,23 @@ public class PreInscricao {
         this.completeName = completeName;
         this.email = email;
         this.cellPhone = cellPhone;
+    }
+
+
+    public String getDocumentUrl() {
+        return documentUrl;
+    }
+
+    public void setDocumentUrl(String documentUrl) {
+        this.documentUrl = documentUrl;
+    }
+
+    public String getProofOfAdressUrl() {
+        return proofOfAdressUrl;
+    }
+
+    public void setProofOfAdressUrl(String proofOfAdressUrl) {
+        this.proofOfAdressUrl = proofOfAdressUrl;
     }
 
     public UUID getId() {
@@ -93,14 +108,6 @@ public class PreInscricao {
 
     public String getRg() {
         return rg;
-    }
-
-    public byte[] getDocument() {
-        return document;
-    }
-
-    public byte[] getProofOfAdress() {
-        return proofOfAdress;
     }
 
     public String getContinuationToken() {
@@ -141,14 +148,6 @@ public class PreInscricao {
 
     public void setRg(String rg) {
         this.rg = rg;
-    }
-
-    public void setDocument(byte[] document) {
-        this.document = document;
-    }
-
-    public void setProofOfAdress(byte[] proofoOfAdressUrl) {
-        this.proofOfAdress = proofoOfAdressUrl;
     }
 
     public void setContinuationToken(String continuationToken) {
