@@ -45,7 +45,7 @@ public class RedeJediSectionService {
             RedeJediImageDto imgDto = new RedeJediImageDto();
             imgDto.setId(img.getId());
             imgDto.setUrl(img.getUrl());
-            imgDto.setPublicId(img.getPublicId());
+            imgDto.setPublicId(img.getFileName());
             return imgDto;
         }).toList();
 
