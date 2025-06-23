@@ -22,8 +22,7 @@ public class BannerService {
     @Autowired
     private BannerItemRepository bannerItemRepository;
     @Autowired
-    private CloudinaryService cloudinaryService;
-
+    private LocalStorageService localStorageService;
     @Transactional
     public BannerResponseDto createBanner(BannerDto dto) {
         Banner banner = new Banner();
@@ -80,16 +79,16 @@ public class BannerService {
         // Atualiza imagem (se fornecida)
         if (file != null && !file.isEmpty()) {
             // 1. Faz upload da nova imagem
-            var uploadResult = cloudinaryService.uploadImage(file);
+            var uploadResult = localStorageService.salvar(file);
 
             // 2. Deleta a antiga (se existir)
-            if (item.getCloudinaryPublicId() != null) {
-                cloudinaryService.deleteImage(item.getCloudinaryPublicId());
+            if (item.getFileName() != null) {
+                localStorageService.deletar(item.getFileName());
             }
 
             // 3. Atualiza campos
-            item.setImgUrl(uploadResult.get("url"));
-            item.setCloudinaryPublicId(uploadResult.get("public_id"));
+            item.setFileName(uploadResult);
+            item.setImgUrl(localStorageService.carregar(uploadResult).toString());
         }
 
         // Salva apenas o item (não o banner inteiro)
@@ -120,9 +119,9 @@ public class BannerService {
 
 
         BannerItem item = new BannerItem();
-        var uploadResult = cloudinaryService.uploadImage(file);
-        item.setImgUrl(uploadResult.get("url"));
-        item.setCloudinaryPublicId(uploadResult.get("public_id"));
+        var uploadResult = localStorageService.salvar(file);
+        item.setImgUrl(localStorageService.carregar(uploadResult).toString());
+        item.setFileName(uploadResult);
         item.setButtonText(dto.buttonText());
         item.setButtonUrl(dto.buttonUrl());
         item.setBanner(banner);
@@ -144,7 +143,7 @@ public class BannerService {
                 .findFirst()
                 .orElseThrow(() -> new RuntimeException("Slide não encontrado"));
 
-        cloudinaryService.deleteImage(itemToRemove.getCloudinaryPublicId());
+        localStorageService.deletar(itemToRemove.getFileName());
         banner.getItems().remove(itemToRemove);
 
         bannerRepository.save(banner);

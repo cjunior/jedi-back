@@ -21,7 +21,7 @@ public class BlogSectionService {
     private BlogSectionRepository repository;
 
     @Autowired
-    private CloudinaryService cloudinaryService;
+    private LocalStorageService localStorageService;
 
     @Transactional
     public BlogSectionResponseDto get() {
@@ -111,12 +111,12 @@ public class BlogSectionService {
         if (dto.imageDescription() != null) item.setImageDescription(dto.imageDescription());
 
         if (dto.file() != null && !dto.file().isEmpty()) {
-            if (item.getCloudinaryPublicId() != null) {
-                cloudinaryService.deleteImage(item.getCloudinaryPublicId());
+            if (item.getFileName() != null) {
+                localStorageService.deletar(item.getFileName());
             }
-            var uploadResult = cloudinaryService.uploadImage(dto.file());
-            item.setImageUrl(uploadResult.get("url"));
-            item.setCloudinaryPublicId(uploadResult.get("public_id"));
+            var uploadResult = localStorageService.salvar(dto.file());
+            item.setImageUrl(localStorageService.carregar(uploadResult).toString());
+            item.setFileName(uploadResult);
         }
 
         repository.save(section);

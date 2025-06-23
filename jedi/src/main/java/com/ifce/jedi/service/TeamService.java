@@ -19,8 +19,7 @@ public class TeamService {
     @Autowired
     private TeamRepository teamRepository;
     @Autowired
-    private CloudinaryService cloudinaryService;
-
+    private LocalStorageService localStorageService;
     @Transactional
     public TeamResponseDto createTeam(TeamDto dto) {
         Team team = new Team();
@@ -60,12 +59,12 @@ public class TeamService {
                 .orElseThrow(() -> new RuntimeException("Membro não encontrado."));
 
         if (file != null && !file.isEmpty()) {
-            if (item.getCloudinaryPublicId() != null) {
-                cloudinaryService.deleteImage(item.getCloudinaryPublicId());
+            if (item.getFileName() != null) {
+                localStorageService.deletar(item.getFileName());
             }
-            var uploadResult = cloudinaryService.uploadImage(file);
-            item.setImgUrl(uploadResult.get("url"));
-            item.setCloudinaryPublicId(uploadResult.get("public_id"));
+            var uploadResult = localStorageService.salvar(file);
+            item.setImgUrl(localStorageService.carregar(uploadResult).toString());
+            item.setFileName(uploadResult);
         }
 
         Team updated = teamRepository.save(team);
@@ -89,9 +88,9 @@ public class TeamService {
 
         for (MultipartFile file : files){
             TeamItem item = new TeamItem();
-            var uploadResult = cloudinaryService.uploadImage(file);
-            item.setImgUrl(uploadResult.get("url"));
-            item.setCloudinaryPublicId(uploadResult.get("public_id"));
+            var uploadResult = localStorageService.salvar(file);
+            item.setImgUrl(localStorageService.carregar(uploadResult).toString());
+            item.setFileName(uploadResult);
             item.setTeam(team);
             team.getItems().add(item);
         }
@@ -114,7 +113,7 @@ public class TeamService {
                 .findFirst()
                 .orElseThrow(() -> new RuntimeException("Membro não encontrado."));
 
-        cloudinaryService.deleteImage(itemToRemove.getCloudinaryPublicId());
+        localStorageService.deletar(itemToRemove.getFileName());
         team.getItems().remove(itemToRemove);
 
         teamRepository.save(team);

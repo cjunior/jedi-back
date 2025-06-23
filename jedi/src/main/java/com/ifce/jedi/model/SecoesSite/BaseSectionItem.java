@@ -9,7 +9,7 @@ public abstract class BaseSectionItem {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     private String imgUrl;
-    private String cloudinaryPublicId;
+    private String fileName;
 
     public Long getId() {
         return id;
@@ -23,11 +23,11 @@ public abstract class BaseSectionItem {
         this.imgUrl = imgUrl;
     }
 
-    public String getCloudinaryPublicId() {
-        return cloudinaryPublicId;
+    public String getFileName() {
+        return fileName;
     }
 
-    public void setCloudinaryPublicId(String publicId) {
-        this.cloudinaryPublicId = publicId;
+    public void setFileName(String fileName) {
+        this.fileName = fileName;
     }
 }

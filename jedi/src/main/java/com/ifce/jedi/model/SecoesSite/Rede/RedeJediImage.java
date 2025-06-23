@@ -11,7 +11,7 @@ public class RedeJediImage {
 
     private String url;
 
-    private String publicId;
+    private String fileName;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "section_id")
@@ -20,9 +20,9 @@ public class RedeJediImage {
     public RedeJediImage() {
     }
 
-    public RedeJediImage(String url, String publicId) {
+    public RedeJediImage(String url, String fileName) {
         this.url = url;
-        this.publicId = publicId;
+        this.fileName = fileName;
     }
 
     public Long getId() { return id; }
@@ -31,8 +31,8 @@ public class RedeJediImage {
     public String getUrl() { return url; }
     public void setUrl(String url) { this.url = url; }
 
-    public String getPublicId() { return publicId; }
-    public void setPublicId(String publicId) { this.publicId = publicId; }
+    public String getFileName() { return fileName; }
+    public void setFileName(String fileName) { this.fileName = fileName; }
 
     public RedeJediSection getSection() { return section; }
     public void setSection(RedeJediSection section) { this.section = section; }

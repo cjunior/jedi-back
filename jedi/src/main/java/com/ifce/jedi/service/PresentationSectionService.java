@@ -20,6 +20,9 @@ public class PresentationSectionService {
     @Autowired
     private CloudinaryService cloudinaryService;
 
+    @Autowired
+    private LocalStorageService localStorageService;
+
     @Transactional
     public PresentationSectionResponseDto get() {
         return repository.findFirstByOrderByIdAsc()
@@ -63,13 +66,12 @@ public class PresentationSectionService {
                 .orElseThrow(() -> new RuntimeException("Presentation section not found"));
 
         if(file != null && !file.isEmpty()){
-            var uploadResult = cloudinaryService.uploadImage(file);
-            if (entity.getCloudinaryPublicId() != null) {
-                cloudinaryService.deleteImage(entity.getCloudinaryPublicId());
+            var uploadResult = localStorageService.salvar(file);
+            if(entity.getFileName() != null){
+                localStorageService.deletar(entity.getFileName());
             }
-
-            entity.setImgUrl(uploadResult.get("url"));
-            entity.setCloudinaryPublicId(uploadResult.get("public_id"));
+            entity.setImgUrl(localStorageService.carregar(uploadResult).toString());
+            entity.setFileName(uploadResult);
         }
 
         PresentationSection updated = repository.save(entity);

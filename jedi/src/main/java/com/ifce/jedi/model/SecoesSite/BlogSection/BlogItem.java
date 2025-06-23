@@ -16,7 +16,7 @@ public class BlogItem {
     private String readingTime;
     private String imageUrl;
     private String imageDescription;
-    private String cloudinaryPublicId;
+    private String fileName;
 
     @ManyToOne
     @JoinColumn(name = "blog_section_id")
@@ -37,8 +37,8 @@ public class BlogItem {
     public void setImageUrl(String imageUrl) { this.imageUrl = imageUrl; }
     public String getImageDescription() { return imageDescription; }
     public void setImageDescription(String imageDescription) { this.imageDescription = imageDescription; }
-    public String getCloudinaryPublicId() { return cloudinaryPublicId; }
-    public void setCloudinaryPublicId(String cloudinaryPublicId) { this.cloudinaryPublicId = cloudinaryPublicId; }
+    public String getFileName() { return fileName; }
+    public void setFileName(String fileName) { this.fileName = fileName; }
     public BlogSection getBlogSection() { return blogSection; }
     public void setBlogSection(BlogSection blogSection) { this.blogSection = blogSection; }
 }
