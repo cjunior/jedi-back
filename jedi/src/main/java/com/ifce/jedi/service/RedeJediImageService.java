@@ -12,7 +12,6 @@ import org.springframework.web.multipart.MultipartFile;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 import java.util.stream.Collectors;
 
 @Service
@@ -22,10 +21,10 @@ public class RedeJediImageService {
     private RedeJediImageRepository imageRepository;
 
     @Autowired
-    private CloudinaryService cloudinaryService;
+    private RedeJediSectionRepository sectionRepository;
 
     @Autowired
-    private RedeJediSectionRepository sectionRepository;
+    private LocalStorageService localStorageService;
 
     public List<RedeJediImageDto> uploadMultiplas(MultipartFile[] imagens) throws IOException {
         List<RedeJediImageDto> dtos = new ArrayList<>();
@@ -34,11 +33,11 @@ public class RedeJediImageService {
                 .orElseThrow(() -> new RuntimeException("Seção Rede Jedi não encontrada"));
 
         for (MultipartFile imagem : imagens) {
-            Map<String, String> uploadResult = cloudinaryService.uploadImage(imagem);
+            var uploadResult = localStorageService.salvar(imagem);
 
             RedeJediImage entity = new RedeJediImage();
-            entity.setUrl(uploadResult.get("url"));
-            entity.setPublicId(uploadResult.get("public_id"));
+            entity.setUrl(localStorageService.carregar(uploadResult).toString());
+            entity.setFileName(uploadResult);
             entity.setSection(section);
 
             RedeJediImage saved = imageRepository.save(entity);
@@ -46,7 +45,7 @@ public class RedeJediImageService {
             RedeJediImageDto dto = new RedeJediImageDto();
             dto.setId(saved.getId());
             dto.setUrl(saved.getUrl());
-            dto.setPublicId(saved.getPublicId());
+            dto.setPublicId(saved.getFileName());
 
             dtos.add(dto);
         }
@@ -57,7 +56,7 @@ public class RedeJediImageService {
     public void delete(Long id) throws IOException {
         RedeJediImage imagem = imageRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("Imagem não encontrada"));
-        cloudinaryService.deleteImage(imagem.getPublicId());
+        localStorageService.deletar(imagem.getFileName());
         imageRepository.delete(imagem);
     }
 
@@ -71,7 +70,7 @@ public class RedeJediImageService {
         RedeJediImageDto dto = new RedeJediImageDto();
         dto.setId(img.getId());
         dto.setUrl(img.getUrl());
-        dto.setPublicId(img.getPublicId());
+        dto.setPublicId(img.getFileName());
         return dto;
     }
 
@@ -89,13 +88,13 @@ public class RedeJediImageService {
                     .orElseThrow(() -> new RuntimeException("Imagem com ID " + id + " não encontrada"));
 
             if(novaImagem != null){
-                var uploadResult = cloudinaryService.uploadImage(novaImagem);
+                var uploadResult = localStorageService.salvar(novaImagem);
 
-                if(imagemExistente.getPublicId() != null){
-                    cloudinaryService.deleteImage(imagemExistente.getPublicId());
+                if(imagemExistente.getFileName() != null){
+                    localStorageService.deletar(imagemExistente.getFileName());
                 }
-                imagemExistente.setUrl(uploadResult.get("url"));
-                imagemExistente.setPublicId(uploadResult.get("public_id"));
+                imagemExistente.setUrl(localStorageService.carregar(uploadResult).toString());
+                imagemExistente.setFileName(uploadResult);
 
             }
 

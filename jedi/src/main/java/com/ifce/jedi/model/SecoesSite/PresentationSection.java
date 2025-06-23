@@ -18,7 +18,7 @@ public class PresentationSection {
     private String secondStatistic;
     private String imgUrl;
     private String imgDescription;
-    private String cloudinaryPublicId;
+    private String fileName;
 
     public PresentationSection() {}
 
@@ -47,8 +47,8 @@ public class PresentationSection {
     public String getImgDescription() { return imgDescription; }
     public void setImgDescription(String imgDescription) { this.imgDescription = imgDescription; }
 
-    public String getCloudinaryPublicId() { return cloudinaryPublicId; }
-    public void setCloudinaryPublicId(String cloudinaryPublicId) { this.cloudinaryPublicId = cloudinaryPublicId; }
+    public String getFileName() { return fileName; }
+    public void setFileName(String fileName) { this.fileName = fileName; }
 
     @Override
     public boolean equals(Object o) {
