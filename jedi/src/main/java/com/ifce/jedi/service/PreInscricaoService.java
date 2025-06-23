@@ -24,7 +24,7 @@ public class PreInscricaoService {
     PreInscricaoRepository preInscricaoRepository;
 
     @Autowired
-    CloudinaryService  cloudinaryService;
+    LocalStorageService localStorageService;
 
     public PreInscricao createRegistration(PreInscricaoDto preInscricaoDto) {
 
@@ -52,24 +52,25 @@ public class PreInscricaoService {
         PreInscricao preInscricao = validateTokenOrThrow(token);
 
         try {
-            Map<String, String> documentUpload = cloudinaryService.uploadImage(dto.document());
-            Map<String, String> proofUpload = cloudinaryService.uploadImage(dto.proofOfAdress());
+            String nomeDoc = localStorageService.salvar(dto.document());
+            String nomeComprovante = localStorageService.salvar(dto.proofOfAdress());
 
             preInscricao.setBirthDate(dto.birthDate());
             preInscricao.setMunicipality(dto.municipality());
             preInscricao.setCpf(dto.cpf());
             preInscricao.setRg(dto.rg());
-            preInscricao.setDocumentUrl(documentUpload.get("url"));
-            preInscricao.setProofOfAdressUrl(proofUpload.get("url"));
+            preInscricao.setDocumentUrl("/arquivos/" + nomeDoc);
+            preInscricao.setProofOfAdressUrl("/arquivos/" + nomeComprovante);
 
             preInscricao.setStatus(StatusPreInscricao.COMPLETO);
 
             preInscricaoRepository.save(preInscricao);
 
         } catch (IOException e) {
-            throw new RuntimeException("Erro ao enviar arquivos para o Cloudinary.", e);
+            throw new RuntimeException("Erro ao salvar arquivos localmente.", e);
         }
     }
+
 
 
 
