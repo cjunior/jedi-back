@@ -32,4 +32,11 @@ public class FaqSectionController {
             @RequestBody FaqSectionHeaderUpdateDto dto) {
         return ResponseEntity.ok(service.updateHeader(dto));
     }
+    // FaqSectionController.java
+    @PostMapping("/items")
+    @PreAuthorize("hasRole('ADMIN')")
+    public ResponseEntity<FaqSectionResponseDto> addItem(
+            @RequestBody FaqItemCreateDto dto) {
+        return ResponseEntity.ok(service.addItem(dto));
+    }
 }

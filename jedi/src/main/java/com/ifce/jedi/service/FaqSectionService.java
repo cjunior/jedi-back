@@ -88,6 +88,32 @@ public class FaqSectionService {
         return toResponse(updated); // Usa o método existente para a resposta
     }
 
+    // FaqSectionService.java
+    @Transactional
+    public FaqSectionResponseDto addItem(FaqItemCreateDto dto) {
+        // Busca a seção existente ou cria uma padrão (usando get() que já existe)
+        FaqSection section = repository.findFirstByOrderByIdAsc()
+                .orElseGet(() -> {
+                    FaqSectionResponseDto defaultSection = createDefaultSection();
+                    return repository.findById(defaultSection.id())
+                            .orElseThrow(() -> new RuntimeException("FAQ Section não encontrada após criação"));
+                });
+
+        // Cria o novo item
+        FaqItem newItem = new FaqItem();
+        newItem.setQuestion(dto.question());
+        newItem.setAnswer(dto.answer());
+        newItem.setPosition(section.getItems().size() + 1);
+        newItem.setFaqSection(section);
+
+        // Adiciona à seção
+        section.getItems().add(newItem);
+
+        // Salva e retorna a resposta usando o toResponse existente
+        FaqSection updatedSection = repository.save(section);
+        return toResponse(updatedSection);
+    }
+
     private FaqSectionResponseDto toResponse(FaqSection entity) {
         List<FaqItemResponseDto> items = entity.getItems().stream()
                 .sorted((a, b) -> a.getPosition().compareTo(b.getPosition()))
