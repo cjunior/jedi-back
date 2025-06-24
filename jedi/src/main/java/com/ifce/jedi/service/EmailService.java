@@ -21,13 +21,13 @@ public class EmailService {
         mailSender.send(mensagem);
     }
 
-    public void contactFormEmail(ContactFormEmailDto dto){
+    public void contactFormEmail(ContactFormEmailDto dto) {
         SimpleMailMessage message = new SimpleMailMessage();
-        message.setTo("juliano.magalhaes06@aluno.ifce.edu.br"); // mudar depois para o email da fundação
-        message.setFrom(dto.getName());
+        message.setTo("juliano.magalhaes06@aluno.ifce.edu.br");
+        message.setFrom("aglis.silva62@aluno.ifce.edu.br");
         message.setReplyTo(dto.getEmail());
         message.setSubject(dto.getSubject());
-        message.setText(dto.getMessage());
+        message.setText("Nome: " + dto.getName() + "\n\nMensagem:\n" + dto.getMessage());
 
         mailSender.send(message);
     }
