@@ -30,4 +30,10 @@ public class BlogSectionController {
             @ModelAttribute BlogItemUpdateDto dto) throws IOException {
         return ResponseEntity.ok(service.updateBlogItem(itemId, dto));
     }
+    @PostMapping(value = "/item", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+    @PreAuthorize("hasRole('ADMIN')")
+    public ResponseEntity<BlogSectionResponseDto> createBlogItem(
+            @ModelAttribute BlogItemCreateDto dto) throws IOException {
+        return ResponseEntity.ok(service.addBlogItem(dto));
+    }
 }
