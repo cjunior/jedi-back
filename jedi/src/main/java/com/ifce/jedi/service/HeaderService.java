@@ -36,7 +36,9 @@ public class HeaderService {
                 localStorageService.deletar(header.getCloudinaryPublicId());
             }
             var uploadResult = localStorageService.salvar(dto.getFile());
-            header.setLogoUrl(localStorageService.carregar(uploadResult).toString());
+            var linkCru = "http://localhost:8080/publicos/"+uploadResult;
+            var linkSanitizado = linkCru.replaceAll("\\s+", "_");
+            header.setLogoUrl(linkSanitizado);
             header.setCloudinaryPublicId(uploadResult);
         }
 

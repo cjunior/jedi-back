@@ -56,6 +56,7 @@ public class SecurityConfigurations {
                         .requestMatchers(HttpMethod.DELETE, "/banner/slide/{slideId}").hasRole("ADMIN")
                         .requestMatchers(HttpMethod.PUT, "/banner/update").hasRole("ADMIN")
                         .requestMatchers(HttpMethod.GET, "/banner/get").permitAll()
+                        .requestMatchers(HttpMethod.GET, "/publicos/**").permitAll()
 
                         // Equipe
                         .requestMatchers(HttpMethod.GET, "/team/get").permitAll()
