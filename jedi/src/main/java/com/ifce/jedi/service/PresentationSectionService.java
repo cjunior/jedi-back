@@ -18,9 +18,6 @@ public class PresentationSectionService {
     private PresentationSectionRepository repository;
 
     @Autowired
-    private CloudinaryService cloudinaryService;
-
-    @Autowired
     private LocalStorageService localStorageService;
 
     @Transactional
