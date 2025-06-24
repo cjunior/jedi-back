@@ -62,8 +62,8 @@ public class UserService {
                     builder.isNotNull(root.get("municipality")),
                     builder.isNotNull(root.get("cpf")),
                     builder.isNotNull(root.get("rg")),
-                    builder.isNotNull(root.get("document")),
-                    builder.isNotNull(root.get("proofOfAdress"))
+                    builder.isNotNull(root.get("documentUrl")),
+                    builder.isNotNull(root.get("proofOfAdressUrl"))
             ));
         }
 
