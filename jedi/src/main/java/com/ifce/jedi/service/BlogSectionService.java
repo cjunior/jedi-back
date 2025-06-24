@@ -13,7 +13,6 @@ import java.io.IOException;
 import java.util.Comparator;
 import java.util.List;
 import java.util.Optional;
-import java.util.stream.Collectors;
 
 @Service
 public class BlogSectionService {
@@ -27,26 +26,38 @@ public class BlogSectionService {
     @Transactional
     public BlogSectionResponseDto get() {
         Optional<BlogSection> entity = repository.findFirstByOrderByIdAsc();
-        return entity.map(this::toResponse).orElseGet(this::createDefaultSection);
+        return entity.map(this::toResponse).orElseGet(this::createDefaultSectionResponse);
     }
 
-    private BlogSectionResponseDto createDefaultSection() {
+    private BlogSection createDefaultSection() {
         BlogSection section = new BlogSection();
         section.setTitle("Últimas postagens do blog");
 
         List<BlogItem> items = List.of(
-                createItem(section, "Lorem ipsum dolor sit amet, consectetur", "Maria", "08 de Abril", "2 min de leitura", "https://res.cloudinary.com/dp98r2imm/image/upload/v1749996488/d750ae3dcaf62a93289de01f9b7384e86d42784e_kmfia6.png", "Imagem ilustrativa 1"),
-                createItem(section, "Segundo post de exemplo", "João", "10 de Abril", "3 min de leitura", "https://res.cloudinary.com/dp98r2imm/image/upload/v1749996488/d750ae3dcaf62a93289de01f9b7384e86d42784e_kmfia6.png", "Imagem ilustrativa 2"),
-                createItem(section, "Terceiro post de exemplo", "Ana", "12 de Abril", "4 min de leitura", "https://res.cloudinary.com/dp98r2imm/image/upload/v1749996488/d750ae3dcaf62a93289de01f9b7384e86d42784e_kmfia6.png", "Imagem ilustrativa 3"),
-                createItem(section, "Quarto post de exemplo", "Genilton", "12 de Abril", "4 min de leitura", "https://res.cloudinary.com/dp98r2imm/image/upload/v1749996488/d750ae3dcaf62a93289de01f9b7384e86d42784e_kmfia6.png", "Imagem ilustrativa 4")
+                createItem(section, "Lorem ipsum dolor sit amet, consectetur", "Maria", "08 de Abril", "2 min de leitura",
+                        "https://res.cloudinary.com/dp98r2imm/image/upload/v1749996488/d750ae3dcaf62a93289de01f9b7384e86d42784e_kmfia6.png",
+                        "Imagem ilustrativa 1"),
+                createItem(section, "Segundo post de exemplo", "João", "10 de Abril", "3 min de leitura",
+                        "https://res.cloudinary.com/dp98r2imm/image/upload/v1749996488/d750ae3dcaf62a93289de01f9b7384e86d42784e_kmfia6.png",
+                        "Imagem ilustrativa 2"),
+                createItem(section, "Terceiro post de exemplo", "Ana", "12 de Abril", "4 min de leitura",
+                        "https://res.cloudinary.com/dp98r2imm/image/upload/v1749996488/d750ae3dcaf62a93289de01f9b7384e86d42784e_kmfia6.png",
+                        "Imagem ilustrativa 3"),
+                createItem(section, "Quarto post de exemplo", "Genilton", "12 de Abril", "4 min de leitura",
+                        "https://res.cloudinary.com/dp98r2imm/image/upload/v1749996488/d750ae3dcaf62a93289de01f9b7384e86d42784e_kmfia6.png",
+                        "Imagem ilustrativa 4")
         );
 
         section.setItems(items);
-        BlogSection saved = repository.save(section);
-        return toResponse(saved);
+        return repository.save(section);
     }
 
-    private BlogItem createItem(BlogSection section, String title, String author, String date, String readingTime, String imageUrl, String imageDescription) {
+    private BlogSectionResponseDto createDefaultSectionResponse() {
+        return toResponse(createDefaultSection());
+    }
+
+    private BlogItem createItem(BlogSection section, String title, String author, String date,
+                                String readingTime, String imageUrl, String imageDescription) {
         BlogItem item = new BlogItem();
         item.setTitle(title);
         item.setAuthor(author);
@@ -59,6 +70,31 @@ public class BlogSectionService {
     }
 
     @Transactional
+    public BlogSectionResponseDto addBlogItem(BlogItemCreateDto dto) throws IOException {
+        BlogSection section = repository.findFirstByOrderByIdAsc()
+                .orElseGet(this::createDefaultSection);
+
+        BlogItem newItem = new BlogItem();
+        newItem.setTitle(dto.title());
+        newItem.setAuthor(dto.author());
+        newItem.setDate(dto.date());
+        newItem.setReadingTime(dto.readingTime());
+        newItem.setImageDescription(dto.imageDescription());
+        newItem.setBlogSection(section);
+
+        if (dto.file() != null && !dto.file().isEmpty()) {
+            var uploadResult = cloudinaryService.uploadImage(dto.file());
+            newItem.setImageUrl(uploadResult.get("url"));
+            newItem.setCloudinaryPublicId(uploadResult.get("public_id"));
+        }
+
+        section.getItems().add(newItem);
+        repository.save(section);
+
+        return toResponse(section);
+    }
+
+    @Transactional
     public BlogSectionResponseDto updateBlogItem(Long itemId, BlogItemUpdateDto dto) throws IOException {
         BlogSection section = repository.findFirstByOrderByIdAsc()
                 .orElseThrow(() -> new RuntimeException("Blog Section não encontrada"));
@@ -68,14 +104,12 @@ public class BlogSectionService {
                 .findFirst()
                 .orElseThrow(() -> new RuntimeException("Item Blog não encontrado"));
 
-        // Atualiza campos textuais
         if (dto.title() != null) item.setTitle(dto.title());
         if (dto.author() != null) item.setAuthor(dto.author());
         if (dto.date() != null) item.setDate(dto.date());
         if (dto.readingTime() != null) item.setReadingTime(dto.readingTime());
         if (dto.imageDescription() != null) item.setImageDescription(dto.imageDescription());
 
-        // Atualiza imagem se for fornecida
         if (dto.file() != null && !dto.file().isEmpty()) {
             if (item.getCloudinaryPublicId() != null) {
                 cloudinaryService.deleteImage(item.getCloudinaryPublicId());
