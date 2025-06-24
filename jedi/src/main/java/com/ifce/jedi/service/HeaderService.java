@@ -17,8 +17,9 @@ public class HeaderService {
 
     @Autowired
     private HeaderRepository headerRepository;
+
     @Autowired
-    private CloudinaryService cloudinaryService;
+    private LocalStorageService localStorageService;
 
     public HeaderResponseDto getHeader() {
         List<Header> headers = headerRepository.findAll();
@@ -32,11 +33,11 @@ public class HeaderService {
 
         if (dto.getFile() != null && !dto.getFile().isEmpty()) {
             if (header.getCloudinaryPublicId() != null) {
-                cloudinaryService.deleteImage(header.getCloudinaryPublicId());
+                localStorageService.deletar(header.getCloudinaryPublicId());
             }
-            var uploadResult = cloudinaryService.uploadImage(dto.getFile());
-            header.setLogoUrl(uploadResult.get("url"));
-            header.setCloudinaryPublicId(uploadResult.get("public_id"));
+            var uploadResult = localStorageService.salvar(dto.getFile());
+            header.setLogoUrl(localStorageService.carregar(uploadResult).toString());
+            header.setCloudinaryPublicId(uploadResult);
         }
 
         header.setText1(dto.getText1());
