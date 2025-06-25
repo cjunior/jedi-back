@@ -4,6 +4,7 @@ package com.ifce.jedi.service;
 import com.ifce.jedi.dto.PreInscricao.PreInscricaoDadosDto;
 import com.ifce.jedi.dto.User.RegisterDto;
 import com.ifce.jedi.model.User.PreInscricao;
+import com.ifce.jedi.model.User.StatusPreInscricao;
 import com.ifce.jedi.model.User.User;
 import com.ifce.jedi.model.User.UserRole;
 import com.ifce.jedi.repository.PreInscricaoRepository;
@@ -40,7 +41,12 @@ public class UserService {
         userRepository.save(newUser);
     }
 
-    public Page<PreInscricaoDadosDto> getAllPreInscricoes(String nome, String email, Boolean somenteCompletos, Pageable pageable) {
+    public Page<PreInscricaoDadosDto> getAllPreInscricoes(
+            String nome,
+            String email,
+            StatusPreInscricao status,
+            Pageable pageable
+    ) {
         Specification<PreInscricao> spec = (root, query, builder) -> builder.conjunction();
 
         if (nome != null && !nome.isBlank()) {
@@ -53,24 +59,23 @@ public class UserService {
                     builder.like(builder.lower(root.get("email")), "%" + email.toLowerCase() + "%"));
         }
 
-        if (Boolean.TRUE.equals(somenteCompletos)) {
-            spec = spec.and((root, query, builder) -> builder.and(
-                    builder.isNotNull(root.get("completeName")),
-                    builder.isNotNull(root.get("email")),
-                    builder.isNotNull(root.get("cellPhone")),
-                    builder.isNotNull(root.get("birthDate")),
-                    builder.isNotNull(root.get("municipality")),
-                    builder.isNotNull(root.get("cpf")),
-                    builder.isNotNull(root.get("rg")),
-                    builder.isNotNull(root.get("documentUrl")),
-                    builder.isNotNull(root.get("proofOfAdressUrl"))
-            ));
+        if (status != null) {
+            if (status == StatusPreInscricao.TODOS) {
+                spec = spec.and((root, query, builder) ->
+                        builder.or(
+                                builder.equal(root.get("status"), StatusPreInscricao.COMPLETO),
+                                builder.equal(root.get("status"), StatusPreInscricao.INCOMPLETO),
+                                builder.isNull(root.get("status"))
+                        ));
+            } else {
+                spec = spec.and((root, query, builder) ->
+                        builder.equal(root.get("status"), status));
+            }
         }
 
         return preInscricaoRepository.findAll(spec, pageable)
-                .map(PreInscricaoDadosDto::fromEntity); // <-- Aqui está a correção
+                .map(PreInscricaoDadosDto::fromEntity);
     }
-
 
 
 

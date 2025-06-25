@@ -6,6 +6,7 @@ import com.ifce.jedi.exception.custom.EmailAlreadyUsedException;
 import com.ifce.jedi.exception.custom.TokenExpiredException;
 import com.ifce.jedi.exception.custom.TokenNotFoundException;
 import com.ifce.jedi.model.User.PreInscricao;
+import com.ifce.jedi.model.User.StatusPreInscricao;
 import com.ifce.jedi.repository.PreInscricaoRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -37,6 +38,8 @@ public class PreInscricaoService {
                 preInscricaoDto.cellphone()
         );
 
+        preInscricao.setStatus(StatusPreInscricao.INCOMPLETO);
+
         String token = UUID.randomUUID().toString();
         preInscricao.setContinuationToken(token);
         preInscricao.setTokenExpiration(LocalDateTime.now().plusHours(24));
@@ -58,6 +61,8 @@ public class PreInscricaoService {
             preInscricao.setRg(dto.rg());
             preInscricao.setDocumentUrl(documentUpload.get("url"));
             preInscricao.setProofOfAdressUrl(proofUpload.get("url"));
+
+            preInscricao.setStatus(StatusPreInscricao.COMPLETO);
 
             preInscricaoRepository.save(preInscricao);
 
