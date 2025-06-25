@@ -6,6 +6,7 @@ import com.ifce.jedi.model.SecoesSite.Team.TeamItem;
 import com.ifce.jedi.repository.TeamRepository;
 import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -19,8 +20,10 @@ public class TeamService {
     @Autowired
     private TeamRepository teamRepository;
     @Autowired
-    private CloudinaryService cloudinaryService;
+    private LocalStorageService localStorageService;
 
+    @Value("${app.base-url}")
+    private String baseUrl;
     @Transactional
     public TeamResponseDto createTeam(TeamDto dto) {
         Team team = new Team();
@@ -60,12 +63,14 @@ public class TeamService {
                 .orElseThrow(() -> new RuntimeException("Membro não encontrado."));
 
         if (file != null && !file.isEmpty()) {
-            if (item.getCloudinaryPublicId() != null) {
-                cloudinaryService.deleteImage(item.getCloudinaryPublicId());
+            if (item.getFileName() != null) {
+                localStorageService.deletar(item.getFileName());
             }
-            var uploadResult = cloudinaryService.uploadImage(file);
-            item.setImgUrl(uploadResult.get("url"));
-            item.setCloudinaryPublicId(uploadResult.get("public_id"));
+            var uploadResult = localStorageService.salvar(file);
+            var linkCru = baseUrl + "/publicos/" + uploadResult;
+            var linkSanitizado = linkCru.replaceAll("\\s+", "_");
+            item.setImgUrl(linkSanitizado);
+            item.setFileName(uploadResult);
         }
 
         Team updated = teamRepository.save(team);
@@ -89,9 +94,11 @@ public class TeamService {
 
         for (MultipartFile file : files){
             TeamItem item = new TeamItem();
-            var uploadResult = cloudinaryService.uploadImage(file);
-            item.setImgUrl(uploadResult.get("url"));
-            item.setCloudinaryPublicId(uploadResult.get("public_id"));
+            var uploadResult = localStorageService.salvar(file);
+            var linkCru = baseUrl + "/publicos/" + uploadResult;
+            var linkSanitizado = linkCru.replaceAll("\\s+", "_");
+            item.setImgUrl(linkSanitizado);
+            item.setFileName(uploadResult);
             item.setTeam(team);
             team.getItems().add(item);
         }
@@ -114,7 +121,7 @@ public class TeamService {
                 .findFirst()
                 .orElseThrow(() -> new RuntimeException("Membro não encontrado."));
 
-        cloudinaryService.deleteImage(itemToRemove.getCloudinaryPublicId());
+        localStorageService.deletar(itemToRemove.getFileName());
         team.getItems().remove(itemToRemove);
 
         teamRepository.save(team);

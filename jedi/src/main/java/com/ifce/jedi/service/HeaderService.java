@@ -6,6 +6,7 @@ import com.ifce.jedi.dto.Header.HeaderUrlDto;
 import com.ifce.jedi.model.SecoesSite.Header.Header;
 import com.ifce.jedi.repository.HeaderRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -17,8 +18,12 @@ public class HeaderService {
 
     @Autowired
     private HeaderRepository headerRepository;
+
     @Autowired
-    private CloudinaryService cloudinaryService;
+    private LocalStorageService localStorageService;
+
+    @Value("${app.base-url}")
+    private String baseUrl;
 
     public HeaderResponseDto getHeader() {
         List<Header> headers = headerRepository.findAll();
@@ -32,11 +37,13 @@ public class HeaderService {
 
         if (dto.getFile() != null && !dto.getFile().isEmpty()) {
             if (header.getCloudinaryPublicId() != null) {
-                cloudinaryService.deleteImage(header.getCloudinaryPublicId());
+                localStorageService.deletar(header.getCloudinaryPublicId());
             }
-            var uploadResult = cloudinaryService.uploadImage(dto.getFile());
-            header.setLogoUrl(uploadResult.get("url"));
-            header.setCloudinaryPublicId(uploadResult.get("public_id"));
+            var uploadResult = localStorageService.salvar(dto.getFile());
+            var linkCru = baseUrl + "/publicos/" + uploadResult;
+            var linkSanitizado = linkCru.replaceAll("\\s+", "_");
+            header.setLogoUrl(linkSanitizado);
+            header.setCloudinaryPublicId(uploadResult);
         }
 
         header.setText1(dto.getText1());

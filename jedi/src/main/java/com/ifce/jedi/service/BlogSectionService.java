@@ -5,6 +5,7 @@ import com.ifce.jedi.model.SecoesSite.BlogSection.BlogItem;
 import com.ifce.jedi.model.SecoesSite.BlogSection.BlogSection;
 import com.ifce.jedi.repository.BlogSectionRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -21,7 +22,10 @@ public class BlogSectionService {
     private BlogSectionRepository repository;
 
     @Autowired
-    private CloudinaryService cloudinaryService;
+    private LocalStorageService localStorageService;
+
+    @Value("${app.base-url}")
+    private String baseUrl;
 
     @Transactional
     public BlogSectionResponseDto get() {
@@ -83,9 +87,11 @@ public class BlogSectionService {
         newItem.setBlogSection(section);
 
         if (dto.file() != null && !dto.file().isEmpty()) {
-            var uploadResult = cloudinaryService.uploadImage(dto.file());
-            newItem.setImageUrl(uploadResult.get("url"));
-            newItem.setCloudinaryPublicId(uploadResult.get("public_id"));
+            var uploadResult = localStorageService.salvar(dto.file());
+            var linkCru = baseUrl + "/publicos/" + uploadResult;
+            var linkSanitizado = linkCru.replaceAll("\\s+", "_");
+            newItem.setImageUrl(linkSanitizado);
+            newItem.setFileName(uploadResult);
         }
 
         section.getItems().add(newItem);
@@ -111,12 +117,14 @@ public class BlogSectionService {
         if (dto.imageDescription() != null) item.setImageDescription(dto.imageDescription());
 
         if (dto.file() != null && !dto.file().isEmpty()) {
-            if (item.getCloudinaryPublicId() != null) {
-                cloudinaryService.deleteImage(item.getCloudinaryPublicId());
+            if (item.getFileName() != null) {
+                localStorageService.deletar(item.getFileName());
             }
-            var uploadResult = cloudinaryService.uploadImage(dto.file());
-            item.setImageUrl(uploadResult.get("url"));
-            item.setCloudinaryPublicId(uploadResult.get("public_id"));
+            var uploadResult = localStorageService.salvar(dto.file());
+            var linkCru = baseUrl + "/publicos/" + uploadResult;
+            var linkSanitizado = linkCru.replaceAll("\\s+", "_");
+            item.setImageUrl(linkSanitizado);
+            item.setFileName(uploadResult);
         }
 
         repository.save(section);

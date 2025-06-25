@@ -1,19 +1,12 @@
 package com.ifce.jedi.service;
 
-import com.ifce.jedi.dto.Banner.BannerDto;
-import com.ifce.jedi.dto.Banner.BannerItemDto;
-import com.ifce.jedi.dto.Banner.BannerItemResponseDto;
-import com.ifce.jedi.dto.Banner.BannerResponseDto;
 import com.ifce.jedi.dto.Contents.*;
-import com.ifce.jedi.dto.Header.HeaderResponseDto;
-import com.ifce.jedi.model.SecoesSite.Banner.Banner;
-import com.ifce.jedi.model.SecoesSite.Banner.BannerItem;
 import com.ifce.jedi.model.SecoesSite.Contents.Content;
 import com.ifce.jedi.model.SecoesSite.Contents.ContentItem;
-import com.ifce.jedi.model.SecoesSite.Header.Header;
 import com.ifce.jedi.repository.ContentRepository;
 import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -26,8 +19,10 @@ public class ContentService {
     @Autowired
     private ContentRepository contentRepository;
     @Autowired
-    private CloudinaryService cloudinaryService;
+    private LocalStorageService localStorageService;
 
+    @Value("${app.base-url}")
+    private String baseUrl;
 
     @Transactional
     public ContentResponseDto getContent() {
@@ -75,12 +70,14 @@ public class ContentService {
 
         }
         if(dto.getMainImage() != null && !dto.getMainImage().isEmpty()){
-            if (content.getCloudinaryPublicId() != null) {
-                cloudinaryService.deleteImage(content.getCloudinaryPublicId());
+            if (content.getFileName() != null) {
+                localStorageService.deletar(content.getFileName());
             }
-            var uploadResult = cloudinaryService.uploadImage(dto.getMainImage());
-            content.setMainImageUrl(uploadResult.get("url"));
-            content.setCloudinaryPublicId(uploadResult.get("public_id"));
+            var uploadResult = localStorageService.salvar(dto.getMainImage());
+            var linkCru = baseUrl + "/publicos/" + uploadResult;
+            var linkSanitizado = linkCru.replaceAll("\\s+", "_");
+            content.setMainImageUrl(linkSanitizado);
+            content.setFileName(uploadResult);
         }
 
         Content updated = contentRepository.save(content);
@@ -94,9 +91,11 @@ public class ContentService {
 
 
         ContentItem item = new ContentItem();
-        var uploadResult = cloudinaryService.uploadImage(file);
-        item.setImgUrl(uploadResult.get("url"));
-        item.setCloudinaryPublicId(uploadResult.get("public_id"));
+        var uploadResult = localStorageService.salvar(file);
+        var linkCru = baseUrl + "/publicos/" + uploadResult;
+        var linkSanitizado = linkCru.replaceAll("\\s+", "_");
+        item.setImgUrl(linkSanitizado);
+        item.setFileName(uploadResult);
         item.setImgText(dto.getImgTexts());
         item.setContent(content);
         content.getImgCarousel().add(item);
@@ -141,7 +140,7 @@ public class ContentService {
                 .findFirst()
                 .orElseThrow(() -> new RuntimeException("Slide não encontrado"));
 
-        cloudinaryService.deleteImage(itemToRemove.getCloudinaryPublicId());
+        localStorageService.deletar(itemToRemove.getFileName());
         content.getImgCarousel().remove(itemToRemove);
 
         contentRepository.save(content);
@@ -164,12 +163,14 @@ public class ContentService {
         }
 
         if (file != null && !file.isEmpty()) {
-            if (item.getCloudinaryPublicId() != null) {
-                cloudinaryService.deleteImage(item.getCloudinaryPublicId());
+            if (item.getFileName() != null) {
+                localStorageService.deletar(item.getFileName());
             }
-            var uploadResult = cloudinaryService.uploadImage(file);
-            item.setImgUrl(uploadResult.get("url"));
-            item.setCloudinaryPublicId(uploadResult.get("public_id"));
+            var uploadResult = localStorageService.salvar(file);
+            var linkCru = baseUrl + "/publicos/" + uploadResult;
+            var linkSanitizado = linkCru.replaceAll("\\s+", "_");
+            item.setImgUrl(linkSanitizado);
+            item.setFileName(uploadResult);
         }
 
         contentRepository.save(content);

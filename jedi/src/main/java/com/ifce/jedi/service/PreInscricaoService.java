@@ -9,6 +9,7 @@ import com.ifce.jedi.model.User.PreInscricao;
 import com.ifce.jedi.model.User.StatusPreInscricao;
 import com.ifce.jedi.repository.PreInscricaoRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 import java.io.IOException;
@@ -24,7 +25,10 @@ public class PreInscricaoService {
     PreInscricaoRepository preInscricaoRepository;
 
     @Autowired
-    CloudinaryService  cloudinaryService;
+    LocalStorageService localStorageService;
+
+    @Value("${app.base-url}")
+    private String baseUrl;
 
     public PreInscricao createRegistration(PreInscricaoDto preInscricaoDto) {
 
@@ -52,24 +56,29 @@ public class PreInscricaoService {
         PreInscricao preInscricao = validateTokenOrThrow(token);
 
         try {
-            Map<String, String> documentUpload = cloudinaryService.uploadImage(dto.document());
-            Map<String, String> proofUpload = cloudinaryService.uploadImage(dto.proofOfAdress());
+            String nomeDoc = localStorageService.salvar(dto.document());
+            String nomeComprovante = localStorageService.salvar(dto.proofOfAdress());
 
             preInscricao.setBirthDate(dto.birthDate());
             preInscricao.setMunicipality(dto.municipality());
             preInscricao.setCpf(dto.cpf());
             preInscricao.setRg(dto.rg());
-            preInscricao.setDocumentUrl(documentUpload.get("url"));
-            preInscricao.setProofOfAdressUrl(proofUpload.get("url"));
+            var linkNomeDoc = baseUrl + "/sensiveis/" + nomeDoc;
+            var linkNomeComprovante = baseUrl + "/sensiveis/" + nomeComprovante;
+            var linkSanitizadoDoc = linkNomeDoc.replaceAll("\\s+", "_");
+            var linkSanitizadoComprovante = linkNomeComprovante.replaceAll("\\s+", "_");
+            preInscricao.setDocumentUrl(linkSanitizadoDoc);
+            preInscricao.setProofOfAdressUrl(linkSanitizadoComprovante);
 
             preInscricao.setStatus(StatusPreInscricao.COMPLETO);
 
             preInscricaoRepository.save(preInscricao);
 
         } catch (IOException e) {
-            throw new RuntimeException("Erro ao enviar arquivos para o Cloudinary.", e);
+            throw new RuntimeException("Erro ao salvar arquivos localmente.", e);
         }
     }
+
 
 
 
