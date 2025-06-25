@@ -8,6 +8,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -26,6 +27,9 @@ public class BlogSectionService {
 
     @Autowired
     private LocalStorageService localStorageService;
+
+    @Value("${app.base-url}")
+    private String baseUrl;
 
     @Transactional
     public BlogSectionResponseDto get() {
@@ -89,9 +93,11 @@ public class BlogSectionService {
 
         // Upload da imagem principal (existente)
         if (dto.file() != null && !dto.file().isEmpty()) {
-            var uploadResult = cloudinaryService.uploadImage(dto.file());
-            newItem.setImageUrl(uploadResult.get("url"));
-            newItem.setCloudinaryPublicId(uploadResult.get("public_id"));
+            var uploadResult = localStorageService.salvar(dto.file());
+            var linkCru = baseUrl + "/publicos/" + uploadResult;
+            var linkSanitizado = linkCru.replaceAll("\\s+", "_");
+            newItem.setImageUrl(linkSanitizado);
+            newItem.setFileName(uploadResult);
         }
 
         // Upload do ícone (novo)
@@ -131,7 +137,9 @@ public class BlogSectionService {
                 localStorageService.deletar(item.getFileName());
             }
             var uploadResult = localStorageService.salvar(dto.file());
-            item.setImageUrl(localStorageService.carregar(uploadResult).toString());
+            var linkCru = baseUrl + "/publicos/" + uploadResult;
+            var linkSanitizado = linkCru.replaceAll("\\s+", "_");
+            item.setImageUrl(linkSanitizado);
             item.setFileName(uploadResult);
         }
 
