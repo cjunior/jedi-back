@@ -6,6 +6,7 @@ import com.ifce.jedi.model.SecoesSite.Contents.ContentItem;
 import com.ifce.jedi.repository.ContentRepository;
 import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -19,6 +20,9 @@ public class ContentService {
     private ContentRepository contentRepository;
     @Autowired
     private LocalStorageService localStorageService;
+
+    @Value("${app.base-url}")
+    private String baseUrl;
 
     @Transactional
     public ContentResponseDto getContent() {
@@ -70,7 +74,9 @@ public class ContentService {
                 localStorageService.deletar(content.getFileName());
             }
             var uploadResult = localStorageService.salvar(dto.getMainImage());
-            content.setMainImageUrl(localStorageService.carregar(uploadResult).toString());
+            var linkCru = baseUrl + "/publicos/" + uploadResult;
+            var linkSanitizado = linkCru.replaceAll("\\s+", "_");
+            content.setMainImageUrl(linkSanitizado);
             content.setFileName(uploadResult);
         }
 
@@ -86,7 +92,9 @@ public class ContentService {
 
         ContentItem item = new ContentItem();
         var uploadResult = localStorageService.salvar(file);
-        item.setImgUrl(localStorageService.carregar(uploadResult).toString());
+        var linkCru = baseUrl + "/publicos/" + uploadResult;
+        var linkSanitizado = linkCru.replaceAll("\\s+", "_");
+        item.setImgUrl(linkSanitizado);
         item.setFileName(uploadResult);
         item.setImgText(dto.getImgTexts());
         item.setContent(content);
@@ -159,7 +167,9 @@ public class ContentService {
                 localStorageService.deletar(item.getFileName());
             }
             var uploadResult = localStorageService.salvar(file);
-            item.setImgUrl(localStorageService.carregar(uploadResult).toString());
+            var linkCru = baseUrl + "/publicos/" + uploadResult;
+            var linkSanitizado = linkCru.replaceAll("\\s+", "_");
+            item.setImgUrl(linkSanitizado);
             item.setFileName(uploadResult);
         }
 

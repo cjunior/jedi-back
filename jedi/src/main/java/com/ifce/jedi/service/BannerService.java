@@ -7,6 +7,7 @@ import com.ifce.jedi.repository.BannerItemRepository;
 import com.ifce.jedi.repository.BannerRepository;
 import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -23,6 +24,10 @@ public class BannerService {
     private BannerItemRepository bannerItemRepository;
     @Autowired
     private LocalStorageService localStorageService;
+
+    @Value("${app.base-url}")
+    private String baseUrl;
+
     @Transactional
     public BannerResponseDto createBanner(BannerDto dto) {
         Banner banner = new Banner();
@@ -87,8 +92,10 @@ public class BannerService {
             }
 
             // 3. Atualiza campos
+            var linkCru = baseUrl + "/publicos/" + uploadResult;
+            var linkSanitizado = linkCru.replaceAll("\\s+", "_");
             item.setFileName(uploadResult);
-            item.setImgUrl(localStorageService.carregar(uploadResult).toString());
+            item.setImgUrl(linkSanitizado);
         }
 
         // Salva apenas o item (não o banner inteiro)
@@ -120,7 +127,9 @@ public class BannerService {
 
         BannerItem item = new BannerItem();
         var uploadResult = localStorageService.salvar(file);
-        item.setImgUrl(localStorageService.carregar(uploadResult).toString());
+        var linkCru = baseUrl + "/publicos/" + uploadResult;
+        var linkSanitizado = linkCru.replaceAll("\\s+", "_");
+        item.setImgUrl(linkSanitizado);
         item.setFileName(uploadResult);
         item.setButtonText(dto.buttonText());
         item.setButtonUrl(dto.buttonUrl());

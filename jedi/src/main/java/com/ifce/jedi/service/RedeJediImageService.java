@@ -6,6 +6,7 @@ import com.ifce.jedi.model.SecoesSite.Rede.RedeJediSection;
 import com.ifce.jedi.repository.RedeJediImageRepository;
 import com.ifce.jedi.repository.RedeJediSectionRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -26,6 +27,9 @@ public class RedeJediImageService {
     @Autowired
     private LocalStorageService localStorageService;
 
+    @Value("${app.base-url}")
+    private String baseUrl;
+
     public List<RedeJediImageDto> uploadMultiplas(MultipartFile[] imagens) throws IOException {
         List<RedeJediImageDto> dtos = new ArrayList<>();
 
@@ -36,7 +40,9 @@ public class RedeJediImageService {
             var uploadResult = localStorageService.salvar(imagem);
 
             RedeJediImage entity = new RedeJediImage();
-            entity.setUrl(localStorageService.carregar(uploadResult).toString());
+            var linkCru = baseUrl + "/publicos/" + uploadResult;
+            var linkSanitizado = linkCru.replaceAll("\\s+", "_");
+            entity.setUrl(linkSanitizado);
             entity.setFileName(uploadResult);
             entity.setSection(section);
 
@@ -93,7 +99,9 @@ public class RedeJediImageService {
                 if(imagemExistente.getFileName() != null){
                     localStorageService.deletar(imagemExistente.getFileName());
                 }
-                imagemExistente.setUrl(localStorageService.carregar(uploadResult).toString());
+                var linkCru = baseUrl + "/publicos/" + uploadResult;
+                var linkSanitizado = linkCru.replaceAll("\\s+", "_");
+                imagemExistente.setUrl(linkSanitizado);
                 imagemExistente.setFileName(uploadResult);
 
             }
