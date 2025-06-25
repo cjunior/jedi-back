@@ -8,5 +8,7 @@ public record BlogItemCreateDto(
         String date,
         String readingTime,
         String imageDescription,
-        MultipartFile file  // Arquivo da imagem
+        MultipartFile file,  // Arquivo da imagem
+        MultipartFile iconFile,
+        String description
 ) {}

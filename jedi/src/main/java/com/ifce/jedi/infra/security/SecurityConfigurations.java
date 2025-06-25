@@ -93,6 +93,7 @@ public class SecurityConfigurations {
 
 
                         .requestMatchers(HttpMethod.GET, "/blog-section/get").permitAll()
+                        .requestMatchers(HttpMethod.GET, "/blog-section/item/{itemId}").permitAll() // Nova linha
                         .requestMatchers(HttpMethod.POST, "/blog-section/item").hasRole("ADMIN")
                         .requestMatchers(HttpMethod.PUT, "/blog-section/item/{itemId}").hasRole("ADMIN")
 

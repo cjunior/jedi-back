@@ -8,5 +8,7 @@ public record BlogItemUpdateDto(
         String date,
         String readingTime,
         String imageDescription,
-        MultipartFile file
+        MultipartFile file,
+        MultipartFile iconFile,   // Novo campo: arquivo do ícone
+        String description
 ) {}

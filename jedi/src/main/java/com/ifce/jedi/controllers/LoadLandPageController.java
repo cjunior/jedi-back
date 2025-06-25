@@ -175,7 +175,9 @@ public class LoadLandPageController {
                         obj.getDate(),
                         obj.getReadingTime(),
                         obj.getImageDescription(),
-                        obj.getFile()
+                        obj.getFile(),
+                        null,  // iconFile (adicione ao DTO se necessário)
+                        null   // description (adicione ao DTO se necessário)
                 ));
             }
         }

@@ -17,6 +17,8 @@ public class BlogItem {
     private String imageUrl;
     private String imageDescription;
     private String fileName;
+    private String iconUrl;
+    private String description;
 
     @ManyToOne
     @JoinColumn(name = "blog_section_id")
@@ -41,4 +43,8 @@ public class BlogItem {
     public void setFileName(String fileName) { this.fileName = fileName; }
     public BlogSection getBlogSection() { return blogSection; }
     public void setBlogSection(BlogSection blogSection) { this.blogSection = blogSection; }
+    public String getIconUrl() { return iconUrl; }
+    public void setIconUrl(String iconUrl) { this.iconUrl = iconUrl; }
+    public String getDescription() { return description; }
+    public void setDescription(String description) { this.description = description; }
 }
