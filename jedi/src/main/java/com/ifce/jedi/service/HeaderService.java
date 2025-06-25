@@ -6,6 +6,7 @@ import com.ifce.jedi.dto.Header.HeaderUrlDto;
 import com.ifce.jedi.model.SecoesSite.Header.Header;
 import com.ifce.jedi.repository.HeaderRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -20,6 +21,9 @@ public class HeaderService {
 
     @Autowired
     private LocalStorageService localStorageService;
+
+    @Value("${app.base-url}")
+    private String baseUrl;
 
     public HeaderResponseDto getHeader() {
         List<Header> headers = headerRepository.findAll();
@@ -36,7 +40,9 @@ public class HeaderService {
                 localStorageService.deletar(header.getCloudinaryPublicId());
             }
             var uploadResult = localStorageService.salvar(dto.getFile());
-            header.setLogoUrl(localStorageService.carregar(uploadResult).toString());
+            var linkCru = baseUrl + "/publicos/" + uploadResult;
+            var linkSanitizado = linkCru.replaceAll("\\s+", "_");
+            header.setLogoUrl(linkSanitizado);
             header.setCloudinaryPublicId(uploadResult);
         }
 

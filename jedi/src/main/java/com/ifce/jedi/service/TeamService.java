@@ -6,6 +6,7 @@ import com.ifce.jedi.model.SecoesSite.Team.TeamItem;
 import com.ifce.jedi.repository.TeamRepository;
 import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -20,6 +21,9 @@ public class TeamService {
     private TeamRepository teamRepository;
     @Autowired
     private LocalStorageService localStorageService;
+
+    @Value("${app.base-url}")
+    private String baseUrl;
     @Transactional
     public TeamResponseDto createTeam(TeamDto dto) {
         Team team = new Team();
@@ -63,7 +67,9 @@ public class TeamService {
                 localStorageService.deletar(item.getFileName());
             }
             var uploadResult = localStorageService.salvar(file);
-            item.setImgUrl(localStorageService.carregar(uploadResult).toString());
+            var linkCru = baseUrl + "/publicos/" + uploadResult;
+            var linkSanitizado = linkCru.replaceAll("\\s+", "_");
+            item.setImgUrl(linkSanitizado);
             item.setFileName(uploadResult);
         }
 
@@ -89,7 +95,9 @@ public class TeamService {
         for (MultipartFile file : files){
             TeamItem item = new TeamItem();
             var uploadResult = localStorageService.salvar(file);
-            item.setImgUrl(localStorageService.carregar(uploadResult).toString());
+            var linkCru = baseUrl + "/publicos/" + uploadResult;
+            var linkSanitizado = linkCru.replaceAll("\\s+", "_");
+            item.setImgUrl(linkSanitizado);
             item.setFileName(uploadResult);
             item.setTeam(team);
             team.getItems().add(item);

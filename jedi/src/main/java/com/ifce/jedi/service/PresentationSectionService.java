@@ -4,6 +4,7 @@ import com.ifce.jedi.dto.PresentationSection.*;
 import com.ifce.jedi.model.SecoesSite.PresentationSection;
 import com.ifce.jedi.repository.PresentationSectionRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -19,6 +20,9 @@ public class PresentationSectionService {
 
     @Autowired
     private LocalStorageService localStorageService;
+
+    @Value("${app.base-url}")
+    private String baseUrl;
 
     @Transactional
     public PresentationSectionResponseDto get() {
@@ -67,7 +71,9 @@ public class PresentationSectionService {
             if(entity.getFileName() != null){
                 localStorageService.deletar(entity.getFileName());
             }
-            entity.setImgUrl(localStorageService.carregar(uploadResult).toString());
+            var linkCru = baseUrl + "/publicos/" + uploadResult;
+            var linkSanitizado = linkCru.replaceAll("\\s+", "_");
+            entity.setImgUrl(linkSanitizado);
             entity.setFileName(uploadResult);
         }
 
