@@ -24,9 +24,6 @@ public class PreInscricao {
     @Column(nullable = false)
     private String cellPhone;
 
-    @Enumerated(EnumType.STRING)
-    private UserRole role;
-
     private LocalDate birthDate;
 
     private String municipality;
@@ -47,6 +44,9 @@ public class PreInscricao {
     @Column(name = "token_expiration")
     private LocalDateTime tokenExpiration;
 
+    @Enumerated(EnumType.STRING)
+    private StatusPreInscricao status = StatusPreInscricao.INCOMPLETO;
+
     public PreInscricao() {
 
     }
@@ -56,7 +56,6 @@ public class PreInscricao {
         this.email = email;
         this.cellPhone = cellPhone;
     }
-
 
     public String getDocumentUrl() {
         return documentUrl;
@@ -90,10 +89,6 @@ public class PreInscricao {
         return cellPhone;
     }
 
-    public UserRole getRole() {
-        return role;
-    }
-
     public LocalDate getBirthDate() {
         return birthDate;
     }
@@ -118,6 +113,10 @@ public class PreInscricao {
         return tokenExpiration;
     }
 
+    public StatusPreInscricao getStatus() {
+        return status;
+    }
+
     public void setCompleteName(String completeName) {
         this.completeName = completeName;
     }
@@ -128,10 +127,6 @@ public class PreInscricao {
 
     public void setCellPhone(String cellPhone) {
         this.cellPhone = cellPhone;
-    }
-
-    public void setRole(UserRole role) {
-        this.role = role;
     }
 
     public void setBirthDate(LocalDate birthDate) {
@@ -156,5 +151,9 @@ public class PreInscricao {
 
     public void setTokenExpiration(LocalDateTime tokenExpiration) {
         this.tokenExpiration = tokenExpiration;
+    }
+
+    public void setStatus(StatusPreInscricao status) {
+        this.status = status;
     }
 }

@@ -1,6 +1,7 @@
 package com.ifce.jedi.dto.PreInscricao;
 
 import com.ifce.jedi.model.User.PreInscricao;
+import com.ifce.jedi.model.User.StatusPreInscricao;
 
 import java.time.LocalDate;
 
@@ -13,7 +14,8 @@ public record PreInscricaoDadosDto(
         String cpf,
         String rg,
         String documentUrl,
-        String proofOfAdressUrl
+        String proofOfAdressUrl,
+        StatusPreInscricao status
 ) {
     public static PreInscricaoDadosDto fromEntity(PreInscricao pre) {
         return new PreInscricaoDadosDto(
@@ -25,7 +27,8 @@ public record PreInscricaoDadosDto(
                 pre.getCpf(),
                 pre.getRg(),
                 pre.getDocumentUrl(),
-                pre.getProofOfAdressUrl()
+                pre.getProofOfAdressUrl(),
+                pre.getStatus()
         );
     }
 }
