@@ -57,6 +57,8 @@ public class SecurityConfigurations {
                         .requestMatchers(HttpMethod.PUT, "/banner/update").hasRole("ADMIN")
                         .requestMatchers(HttpMethod.GET, "/banner/get").permitAll()
                         .requestMatchers(HttpMethod.GET, "/publicos/**").permitAll()
+                        .requestMatchers(HttpMethod.GET, "/sensiveis/**").permitAll()
+
 
                         // Equipe
                         .requestMatchers(HttpMethod.GET, "/team/get").permitAll()

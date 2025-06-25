@@ -9,6 +9,7 @@ import com.ifce.jedi.model.User.PreInscricao;
 import com.ifce.jedi.model.User.StatusPreInscricao;
 import com.ifce.jedi.repository.PreInscricaoRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 import java.io.IOException;
@@ -25,6 +26,9 @@ public class PreInscricaoService {
 
     @Autowired
     LocalStorageService localStorageService;
+
+    @Value("${app.base-url}")
+    private String baseUrl;
 
     public PreInscricao createRegistration(PreInscricaoDto preInscricaoDto) {
 
@@ -59,8 +63,12 @@ public class PreInscricaoService {
             preInscricao.setMunicipality(dto.municipality());
             preInscricao.setCpf(dto.cpf());
             preInscricao.setRg(dto.rg());
-            preInscricao.setDocumentUrl("/arquivos/" + nomeDoc);
-            preInscricao.setProofOfAdressUrl("/arquivos/" + nomeComprovante);
+            var linkNomeDoc = baseUrl + "/sensiveis/" + nomeDoc;
+            var linkNomeComprovante = baseUrl + "/sensiveis/" + nomeComprovante;
+            var linkSanitizadoDoc = linkNomeDoc.replaceAll("\\s+", "_");
+            var linkSanitizadoComprovante = linkNomeComprovante.replaceAll("\\s+", "_");
+            preInscricao.setDocumentUrl(linkSanitizadoDoc);
+            preInscricao.setProofOfAdressUrl(linkSanitizadoComprovante);
 
             preInscricao.setStatus(StatusPreInscricao.COMPLETO);
 
