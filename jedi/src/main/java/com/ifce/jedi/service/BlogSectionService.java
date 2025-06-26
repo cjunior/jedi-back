@@ -144,6 +144,28 @@ public class BlogSectionService {
         repository.save(section);
         return toResponse(section);
     }
+    @Transactional
+    public BlogItemResponseDto getBlogItemById(Long itemId) {
+        BlogSection section = repository.findFirstByOrderByIdAsc()
+                .orElseThrow(() -> new RuntimeException("Blog Section não encontrada"));
+
+        BlogItem item = section.getItems().stream()
+                .filter(i -> i.getId().equals(itemId))
+                .findFirst()
+                .orElseThrow(() -> new RuntimeException("Item Blog não encontrado"));
+
+        return new BlogItemResponseDto(
+                item.getId(),
+                item.getTitle(),
+                item.getAuthor(),
+                item.getDate(),
+                item.getReadingTime(),
+                item.getImageUrl(),
+                item.getImageDescription(),
+                item.getIconUrl(),
+                item.getDescription()
+        );
+    }
     private BlogSectionResponseDto toResponse(BlogSection entity) {
         List<BlogItemResponseDto> items = entity.getItems().stream()
                 .sorted(Comparator.comparing(BlogItem::getId))

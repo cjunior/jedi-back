@@ -36,4 +36,8 @@ public class BlogSectionController {
             @ModelAttribute BlogItemCreateDto dto) throws IOException {
         return ResponseEntity.ok(service.addBlogItem(dto));
     }
+    @GetMapping("/item/{itemId}")
+    public ResponseEntity<BlogItemResponseDto> getBlogItemById(@PathVariable Long itemId) {
+        return ResponseEntity.ok(service.getBlogItemById(itemId));
+    }
 }
