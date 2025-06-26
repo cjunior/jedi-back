@@ -17,6 +17,9 @@ public class BlogItem {
     private String imageUrl;
     private String imageDescription;
     private String cloudinaryPublicId;
+    private String iconUrl;              // Novo campo
+    private String iconCloudinaryPublicId; // ID no Cloudinary (para exclusão)
+    private String description;          // Novo campo (texto longo)
 
     @ManyToOne
     @JoinColumn(name = "blog_section_id")
@@ -41,4 +44,12 @@ public class BlogItem {
     public void setCloudinaryPublicId(String cloudinaryPublicId) { this.cloudinaryPublicId = cloudinaryPublicId; }
     public BlogSection getBlogSection() { return blogSection; }
     public void setBlogSection(BlogSection blogSection) { this.blogSection = blogSection; }
+    public String getIconUrl() { return iconUrl; }
+    public void setIconUrl(String iconUrl) { this.iconUrl = iconUrl; }
+
+    public String getIconCloudinaryPublicId() { return iconCloudinaryPublicId; }
+    public void setIconCloudinaryPublicId(String iconCloudinaryPublicId) { this.iconCloudinaryPublicId = iconCloudinaryPublicId; }
+
+    public String getDescription() { return description; }
+    public void setDescription(String description) { this.description = description; }
 }

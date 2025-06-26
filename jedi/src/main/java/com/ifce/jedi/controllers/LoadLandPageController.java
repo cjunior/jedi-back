@@ -175,7 +175,9 @@ public class LoadLandPageController {
                         obj.getDate(),
                         obj.getReadingTime(),
                         obj.getImageDescription(),
-                        obj.getFile()
+                        obj.getDescription(), // Novo campo
+                        obj.getFile(),
+                        obj.getIconFile() // Novo campo
                 ));
             }
         }

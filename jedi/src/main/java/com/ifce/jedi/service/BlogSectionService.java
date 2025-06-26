@@ -80,12 +80,21 @@ public class BlogSectionService {
         newItem.setDate(dto.date());
         newItem.setReadingTime(dto.readingTime());
         newItem.setImageDescription(dto.imageDescription());
+        newItem.setDescription(dto.description()); // Novo campo
         newItem.setBlogSection(section);
 
+        // Upload da imagem principal (existente)
         if (dto.file() != null && !dto.file().isEmpty()) {
             var uploadResult = cloudinaryService.uploadImage(dto.file());
             newItem.setImageUrl(uploadResult.get("url"));
             newItem.setCloudinaryPublicId(uploadResult.get("public_id"));
+        }
+
+        // Upload do ícone (novo)
+        if (dto.iconFile() != null && !dto.iconFile().isEmpty()) {
+            var iconUploadResult = cloudinaryService.uploadImage(dto.iconFile());
+            newItem.setIconUrl(iconUploadResult.get("url"));
+            newItem.setIconCloudinaryPublicId(iconUploadResult.get("public_id"));
         }
 
         section.getItems().add(newItem);
@@ -104,12 +113,15 @@ public class BlogSectionService {
                 .findFirst()
                 .orElseThrow(() -> new RuntimeException("Item Blog não encontrado"));
 
+        // Atualiza campos básicos
         if (dto.title() != null) item.setTitle(dto.title());
         if (dto.author() != null) item.setAuthor(dto.author());
         if (dto.date() != null) item.setDate(dto.date());
         if (dto.readingTime() != null) item.setReadingTime(dto.readingTime());
         if (dto.imageDescription() != null) item.setImageDescription(dto.imageDescription());
+        if (dto.description() != null) item.setDescription(dto.description()); // Novo campo
 
+        // Atualiza imagem principal (existente)
         if (dto.file() != null && !dto.file().isEmpty()) {
             if (item.getCloudinaryPublicId() != null) {
                 cloudinaryService.deleteImage(item.getCloudinaryPublicId());
@@ -119,10 +131,19 @@ public class BlogSectionService {
             item.setCloudinaryPublicId(uploadResult.get("public_id"));
         }
 
+        // Atualiza ícone (novo)
+        if (dto.iconFile() != null && !dto.iconFile().isEmpty()) {
+            if (item.getIconCloudinaryPublicId() != null) {
+                cloudinaryService.deleteImage(item.getIconCloudinaryPublicId());
+            }
+            var iconUploadResult = cloudinaryService.uploadImage(dto.iconFile());
+            item.setIconUrl(iconUploadResult.get("url"));
+            item.setIconCloudinaryPublicId(iconUploadResult.get("public_id"));
+        }
+
         repository.save(section);
         return toResponse(section);
     }
-
     private BlogSectionResponseDto toResponse(BlogSection entity) {
         List<BlogItemResponseDto> items = entity.getItems().stream()
                 .sorted(Comparator.comparing(BlogItem::getId))
@@ -133,7 +154,9 @@ public class BlogSectionService {
                         item.getDate(),
                         item.getReadingTime(),
                         item.getImageUrl(),
-                        item.getImageDescription()
+                        item.getImageDescription(),
+                        item.getIconUrl(),       // Novo campo
+                        item.getDescription()     // Novo campo
                 ))
                 .toList();
 
