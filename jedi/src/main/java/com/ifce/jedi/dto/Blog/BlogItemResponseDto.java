@@ -7,5 +7,7 @@ public record BlogItemResponseDto(
         String date,
         String readingTime,
         String imageUrl,
-        String imageDescription
+        String imageDescription,
+        String iconUrl,              // Novo campo
+        String description           // Novo campo
 ) {}
