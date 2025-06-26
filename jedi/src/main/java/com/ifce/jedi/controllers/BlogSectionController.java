@@ -40,4 +40,10 @@ public class BlogSectionController {
     public ResponseEntity<BlogItemResponseDto> getBlogItemById(@PathVariable Long itemId) {
         return ResponseEntity.ok(service.getBlogItemById(itemId));
     }
+    @DeleteMapping("/item/{itemId}")
+    @PreAuthorize("hasRole('ADMIN')")
+    public ResponseEntity<Void> deleteBlogItem(@PathVariable Long itemId) throws IOException {
+        service.deleteBlogItem(itemId);
+        return ResponseEntity.noContent().build();
+    }
 }

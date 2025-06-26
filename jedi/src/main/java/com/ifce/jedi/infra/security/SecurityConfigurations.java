@@ -93,6 +93,7 @@ public class SecurityConfigurations {
                         .requestMatchers(HttpMethod.POST, "/blog-section/item").hasRole("ADMIN")
                         .requestMatchers(HttpMethod.PUT, "/blog-section/item/{itemId}").hasRole("ADMIN")
                         .requestMatchers(HttpMethod.GET, "/blog-section/item/{itemId}").permitAll()
+                        .requestMatchers(HttpMethod.DELETE, "/blog-section/item/{itemId}").hasRole("ADMIN")
 
                         .requestMatchers(HttpMethod.GET, "/rede-jedi").permitAll()
                         .requestMatchers(HttpMethod.POST, "/rede-jedi").hasRole("ADMIN")

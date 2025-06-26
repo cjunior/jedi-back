@@ -166,6 +166,30 @@ public class BlogSectionService {
                 item.getDescription()
         );
     }
+    @Transactional
+    public void deleteBlogItem(Long itemId) throws IOException {
+        BlogSection section = repository.findFirstByOrderByIdAsc()
+                .orElseThrow(() -> new RuntimeException("Blog Section não encontrada"));
+
+        BlogItem item = section.getItems().stream()
+                .filter(i -> i.getId().equals(itemId))
+                .findFirst()
+                .orElseThrow(() -> new RuntimeException("Item Blog não encontrado"));
+
+        // Deleta a imagem principal do Cloudinary (se existir)
+        if (item.getCloudinaryPublicId() != null) {
+            cloudinaryService.deleteImage(item.getCloudinaryPublicId());
+        }
+
+        // Deleta o ícone do Cloudinary (se existir)
+        if (item.getIconCloudinaryPublicId() != null) {
+            cloudinaryService.deleteImage(item.getIconCloudinaryPublicId());
+        }
+
+        // Remove o item da lista e salva a seção
+        section.getItems().remove(item);
+        repository.save(section);
+    }
     private BlogSectionResponseDto toResponse(BlogSection entity) {
         List<BlogItemResponseDto> items = entity.getItems().stream()
                 .sorted(Comparator.comparing(BlogItem::getId))
