@@ -5,11 +5,15 @@ import com.ifce.jedi.model.SecoesSite.BlogSection.BlogItem;
 import com.ifce.jedi.model.SecoesSite.BlogSection.BlogSection;
 import com.ifce.jedi.repository.BlogSectionRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
 import jakarta.transaction.Transactional;
 import java.io.IOException;
+import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
 import java.util.Optional;
@@ -190,9 +194,37 @@ public class BlogSectionService {
         section.getItems().remove(item);
         repository.save(section);
     }
-    private BlogSectionResponseDto toResponse(BlogSection entity) {
-        List<BlogItemResponseDto> items = entity.getItems().stream()
-                .sorted(Comparator.comparing(BlogItem::getId))
+    @Transactional
+    public Page<BlogItemResponseDto> getPaginatedBlogItems(Pageable pageable) {
+        Optional<BlogSection> entity = repository.findFirstByOrderByIdAsc();
+
+        if (entity.isEmpty()) {
+            return Page.empty(); // Retorna página vazia se não houver seção
+        }
+
+        List<BlogItem> allItems = entity.get().getItems();
+
+        // Ordena por ID decrescente
+        List<BlogItem> sortedItems = allItems.stream()
+                .sorted(Comparator.comparing(BlogItem::getId).reversed())
+                .toList();
+
+        // Implementa paginação manual
+        int totalItems = sortedItems.size();
+        int pageSize = pageable.getPageSize();
+        int currentPage = pageable.getPageNumber();
+        int startItem = currentPage * pageSize;
+
+        List<BlogItem> pageItems;
+        if (startItem >= totalItems) {
+            pageItems = Collections.emptyList();
+        } else {
+            int toIndex = Math.min(startItem + pageSize, totalItems);
+            pageItems = sortedItems.subList(startItem, toIndex);
+        }
+
+        // Converte para DTOs
+        List<BlogItemResponseDto> dtos = pageItems.stream()
                 .map(item -> new BlogItemResponseDto(
                         item.getId(),
                         item.getTitle(),
@@ -201,8 +233,26 @@ public class BlogSectionService {
                         item.getReadingTime(),
                         item.getImageUrl(),
                         item.getImageDescription(),
-                        item.getIconUrl(),       // Novo campo
-                        item.getDescription()     // Novo campo
+                        item.getIconUrl(),
+                        item.getDescription()
+                ))
+                .toList();
+
+        return new PageImpl<>(dtos, pageable, totalItems);
+    }
+    private BlogSectionResponseDto toResponse(BlogSection entity) {
+        List<BlogItemResponseDto> items = entity.getItems().stream()
+                .sorted(Comparator.comparing(BlogItem::getId).reversed()) // 🔥 Ordem decrescente por ID
+                .map(item -> new BlogItemResponseDto(
+                        item.getId(),
+                        item.getTitle(),
+                        item.getAuthor(),
+                        item.getDate(),
+                        item.getReadingTime(),
+                        item.getImageUrl(),
+                        item.getImageDescription(),
+                        item.getIconUrl(),
+                        item.getDescription()
                 ))
                 .toList();
 

@@ -3,6 +3,10 @@ package com.ifce.jedi.controllers;
 import com.ifce.jedi.dto.Blog.*;
 import com.ifce.jedi.service.BlogSectionService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -19,8 +23,12 @@ public class BlogSectionController {
     private BlogSectionService service;
 
     @GetMapping("/get")
-    public ResponseEntity<BlogSectionResponseDto> get() {
-        return ResponseEntity.ok(service.get());
+    public ResponseEntity<Page<BlogItemResponseDto>> getPaginatedBlogItems(
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "10") int size) {
+
+        Pageable pageable = PageRequest.of(page, size, Sort.by("id").descending());
+        return ResponseEntity.ok(service.getPaginatedBlogItems(pageable));
     }
 
     @PutMapping(value = "/item/{itemId}", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
