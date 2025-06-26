@@ -19,6 +19,8 @@ public class BlogItem {
     private String cloudinaryPublicId;
     private String iconUrl;              // Novo campo
     private String iconCloudinaryPublicId; // ID no Cloudinary (para exclusão)
+
+    @Lob
     private String description;          // Novo campo (texto longo)
 
     @ManyToOne
