@@ -144,6 +144,52 @@ public class BlogSectionService {
         repository.save(section);
         return toResponse(section);
     }
+    @Transactional
+    public BlogItemResponseDto getBlogItemById(Long itemId) {
+        BlogSection section = repository.findFirstByOrderByIdAsc()
+                .orElseThrow(() -> new RuntimeException("Blog Section não encontrada"));
+
+        BlogItem item = section.getItems().stream()
+                .filter(i -> i.getId().equals(itemId))
+                .findFirst()
+                .orElseThrow(() -> new RuntimeException("Item Blog não encontrado"));
+
+        return new BlogItemResponseDto(
+                item.getId(),
+                item.getTitle(),
+                item.getAuthor(),
+                item.getDate(),
+                item.getReadingTime(),
+                item.getImageUrl(),
+                item.getImageDescription(),
+                item.getIconUrl(),
+                item.getDescription()
+        );
+    }
+    @Transactional
+    public void deleteBlogItem(Long itemId) throws IOException {
+        BlogSection section = repository.findFirstByOrderByIdAsc()
+                .orElseThrow(() -> new RuntimeException("Blog Section não encontrada"));
+
+        BlogItem item = section.getItems().stream()
+                .filter(i -> i.getId().equals(itemId))
+                .findFirst()
+                .orElseThrow(() -> new RuntimeException("Item Blog não encontrado"));
+
+        // Deleta a imagem principal do Cloudinary (se existir)
+        if (item.getCloudinaryPublicId() != null) {
+            cloudinaryService.deleteImage(item.getCloudinaryPublicId());
+        }
+
+        // Deleta o ícone do Cloudinary (se existir)
+        if (item.getIconCloudinaryPublicId() != null) {
+            cloudinaryService.deleteImage(item.getIconCloudinaryPublicId());
+        }
+
+        // Remove o item da lista e salva a seção
+        section.getItems().remove(item);
+        repository.save(section);
+    }
     private BlogSectionResponseDto toResponse(BlogSection entity) {
         List<BlogItemResponseDto> items = entity.getItems().stream()
                 .sorted(Comparator.comparing(BlogItem::getId))
