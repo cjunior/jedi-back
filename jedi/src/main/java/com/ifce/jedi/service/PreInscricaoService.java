@@ -2,9 +2,7 @@ package com.ifce.jedi.service;
 
 import com.ifce.jedi.dto.PreInscricao.PreInscricaoComplementarDto;
 import com.ifce.jedi.dto.PreInscricao.PreInscricaoDto;
-import com.ifce.jedi.exception.custom.EmailAlreadyUsedException;
-import com.ifce.jedi.exception.custom.TokenExpiredException;
-import com.ifce.jedi.exception.custom.TokenNotFoundException;
+import com.ifce.jedi.exception.custom.*;
 import com.ifce.jedi.model.User.PreInscricao;
 import com.ifce.jedi.model.User.StatusPreInscricao;
 import com.ifce.jedi.repository.PreInscricaoRepository;
@@ -51,6 +49,10 @@ public class PreInscricaoService {
     public void completeRegistration(String token, PreInscricaoComplementarDto dto) {
         PreInscricao preInscricao = validateTokenOrThrow(token);
 
+        if (preInscricao.getStatus() == StatusPreInscricao.COMPLETO) {
+            throw new RegistrationAlreadyMadeException("Inscrição já finalizada, não é possível completar novamente.");
+        }
+
         try {
             Map<String, String> documentUpload = cloudinaryService.uploadImage(dto.document());
             Map<String, String> proofUpload = cloudinaryService.uploadImage(dto.proofOfAdress());
@@ -67,9 +69,10 @@ public class PreInscricaoService {
             preInscricaoRepository.save(preInscricao);
 
         } catch (IOException e) {
-            throw new RuntimeException("Erro ao enviar arquivos para o Cloudinary.", e);
+            throw new UploadException("Erro ao fazer uploads.", e);
         }
     }
+
 
 
 

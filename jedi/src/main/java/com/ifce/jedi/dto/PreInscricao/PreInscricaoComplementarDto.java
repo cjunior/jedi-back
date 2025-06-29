@@ -3,6 +3,7 @@ package com.ifce.jedi.dto.PreInscricao;
 import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Pattern;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.time.LocalDate;
@@ -15,11 +16,18 @@ public record PreInscricaoComplementarDto(
         @NotBlank(message = "O município é obrigatório.")
         String municipality,
 
-        @NotBlank(message = "O CPF é obrigatório.")
+        @Pattern(
+                regexp = "^(\\d{3}\\.\\d{3}\\.\\d{3}-\\d{2}|\\d{11})$",
+                message = "CPF inválido. Use o formato 000.000.000-00 ou apenas números."
+        )
         String cpf,
 
-        @NotBlank(message = "O RG é obrigatório.")
+        @Pattern(
+                regexp = "^(\\d{1,2}\\.\\d{3}\\.\\d{3}|\\d{5,15})$",
+                message = "RG inválido. Use um formato numérico válido."
+        )
         String rg,
+
 
         @NotNull(message = "O documento é obrigatório.")
         MultipartFile document,
