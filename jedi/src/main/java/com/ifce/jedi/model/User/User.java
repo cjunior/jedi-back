@@ -38,6 +38,9 @@ public class User implements UserDetails {
     @Enumerated(EnumType.STRING)
     private UserRole role;
 
+    @Column(name = "photo_url")
+    private String photoUrl;
+
     public User() {
     }
 
@@ -69,6 +72,23 @@ public class User implements UserDetails {
         this.password = password;
         this.role = role;
         this.name = name;
+    }
+
+
+    public User(String name, String login, UserRole role, String password, String photoUrl) {
+        this.name = name;
+        this.login = login;
+        this.role = role;
+        this.password = password;
+        this.photoUrl = photoUrl;
+    }
+
+    public String getPhotoUrl() {
+        return photoUrl;
+    }
+
+    public void setPhotoUrl(String photoUrl) {
+        this.photoUrl = photoUrl;
     }
 
     public LocalDateTime getCreatedAt() {
