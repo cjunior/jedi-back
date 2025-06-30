@@ -29,8 +29,11 @@ public class TokenService {
                     .withIssuer("auth-api")
                     .withSubject(user.getLogin())
                     .withClaim("role", roleName)
+                    .withClaim("name", user.getName())
+                    .withClaim("photo", user.getPhotoUrl())
                     .withExpiresAt(getExpirationDate())
                     .sign(algorithm);
+
         } catch (JWTCreationException exception) {
             throw new RuntimeException("Error while generating token", exception);
         }
