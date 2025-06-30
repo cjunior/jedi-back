@@ -8,6 +8,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.AccessDeniedException;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.DisabledException;
 import org.springframework.validation.FieldError;
@@ -127,10 +128,9 @@ public class GlobalExceptionHandler {
         return buildErrorResponse(HttpStatus.INTERNAL_SERVER_ERROR, "Erro ao enviar arquivos: " + ex.getMessage(), request);
     }
 
-    // TokenInvalidException
     @ExceptionHandler(TokenInvalidException.class)
     public ResponseEntity<ErrorResponse> handleTokenInvalidException(TokenInvalidException ex, HttpServletRequest request) {
-        return buildErrorResponse(HttpStatus.BAD_REQUEST, ex.getMessage(), request);
+        return buildErrorResponse(HttpStatus.UNAUTHORIZED, ex.getMessage(), request);
     }
 
     // RegistrationAlreadyMadeException
@@ -147,6 +147,11 @@ public class GlobalExceptionHandler {
     @ExceptionHandler(DisabledException.class)
     public ResponseEntity<ErrorResponse> handleDisabledUser(DisabledException ex, HttpServletRequest request) {
         return buildErrorResponse(HttpStatus.FORBIDDEN, "Usuário desabilitado. Contate o suporte.", request);
+    }
+
+    @ExceptionHandler(AccessDeniedException.class)
+    public ResponseEntity<ErrorResponse> handleAccessDenied(AccessDeniedException ex, HttpServletRequest request) {
+        return buildErrorResponse(HttpStatus.FORBIDDEN, "Acesso negado: você não tem permissão para acessar este recurso.", request);
     }
 
     // Método utilitário para criar a resposta padronizada

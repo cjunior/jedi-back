@@ -68,7 +68,7 @@ public class LoadLandPageController {
     }
 
     @PutMapping(value = "/update-all", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
-    @PreAuthorize("hasRole('ADMIN')")
+    @PreAuthorize("hasAnyRole('ADMIN', 'GERENTE')")
     public ResponseEntity<?> updateAll(@ModelAttribute UpdateLoadLandPageDto dto) throws IOException {
 
         if (dto.getBannerItems() != null && !dto.getBannerItems().isEmpty()) {

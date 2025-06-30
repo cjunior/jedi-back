@@ -29,13 +29,13 @@ public class ContentController {
     }
 
     @PutMapping(value = "/update", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
-    @PreAuthorize("hasRole('ADMIN')")
+    @PreAuthorize("hasAnyRole('ADMIN', 'GERENTE')")
     public ResponseEntity<ContentResponseDto> update(@ModelAttribute UpdateContentDto dto) throws IOException {
         return ResponseEntity.ok(contentService.updateContent(dto));
     }
 
     @PutMapping(value = "/slide/update", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
-    @PreAuthorize("hasRole('ADMIN')")
+    @PreAuthorize("hasAnyRole('ADMIN', 'GERENTE')")
     public ResponseEntity<?> updateSlide(@ModelAttribute ContentUpdateWrapperDto wrapperDto) throws IOException {
         List<ContentItemUpdateDto> contentItems = wrapperDto.getItems();
 
@@ -49,7 +49,7 @@ public class ContentController {
 
 
     @PostMapping(value = "/slides/add", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
-    @PreAuthorize("hasRole('ADMIN')")
+    @PreAuthorize("hasAnyRole('ADMIN', 'GERENTE')")
     public ResponseEntity<?> addSlide(@ModelAttribute ContentItemUploadDto form) throws IOException {
 
         List<MultipartFile> files = form.getFiles();
@@ -69,7 +69,7 @@ public class ContentController {
     }
 
     @DeleteMapping("/slide/{slideId}")
-    @PreAuthorize("hasRole('ADMIN')")
+    @PreAuthorize("hasAnyRole('ADMIN', 'GERENTE')")
     public ResponseEntity<?> deleteSlide(
             @PathVariable List<Long> slideId) throws IOException {
         for (int i = 0; i < slideId.size(); i++)

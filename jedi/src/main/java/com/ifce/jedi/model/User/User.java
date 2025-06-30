@@ -111,6 +111,11 @@ public class User implements UserDetails {
         return login;
     }
 
+
+    public UserRole getRole() {
+        return role;
+    }
+
     @Override
     public String getPassword() {
         return password;

@@ -26,13 +26,13 @@ public class TeamController {
     }
 
     @PutMapping("/update")
-    @PreAuthorize("hasRole('ADMIN')")
+    @PreAuthorize("hasAnyRole('ADMIN', 'GERENTE')")
     public ResponseEntity<TeamResponseDto> update(@RequestBody TeamUpdateDto dto) {
         return ResponseEntity.ok(teamService.updateTeam(dto));
     }
 
     @PostMapping(value = "/members/add", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
-    @PreAuthorize("hasRole('ADMIN')")
+    @PreAuthorize("hasAnyRole('ADMIN', 'GERENTE')")
     public ResponseEntity<TeamResponseDto> addMember(
             @RequestPart("file") MultipartFile[] files) throws IOException {
 
@@ -41,7 +41,7 @@ public class TeamController {
     }
 
     @PutMapping(value = "/member/{memberId}", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
-    @PreAuthorize("hasRole('ADMIN')")
+    @PreAuthorize("hasAnyRole('ADMIN', 'GERENTE')")
     public ResponseEntity<?> updateMember(
             @PathVariable List<Long> memberId,
             @RequestPart(name = "file", required = false) MultipartFile[] files) throws IOException {
@@ -57,7 +57,7 @@ public class TeamController {
     }
 
     @DeleteMapping("/member/{memberId}")
-    @PreAuthorize("hasRole('ADMIN')")
+    @PreAuthorize("hasAnyRole('ADMIN', 'GERENTE')")
     public ResponseEntity<?> deleteMember(@PathVariable List<Long> memberId) throws IOException {
         for (int i = 0; i < memberId.size(); i++)
             teamService.deleteMember(memberId.get(i));

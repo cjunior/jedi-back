@@ -11,7 +11,6 @@ import com.ifce.jedi.model.User.User;
 import com.ifce.jedi.model.User.UserRole;
 import com.ifce.jedi.repository.PreInscricaoRepository;
 import com.ifce.jedi.repository.UserRepository;
-import jakarta.persistence.EntityNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -20,9 +19,7 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.io.IOException;
-import java.util.List;
 import java.util.Map;
-import java.util.stream.Collectors;
 
 @Service
 public class UserService {
@@ -37,7 +34,7 @@ public class UserService {
     private CloudinaryService cloudinaryService;
 
     public void register(RegisterDto dto) {
-        if (userRepository.findByLogin(dto.getLogin()) != null) {
+        if (userRepository.findByLogin(dto.getLogin()).isPresent()) {
             throw new EmailAlreadyUsedException("Usuário já existe com esse e-mail.");
         }
 

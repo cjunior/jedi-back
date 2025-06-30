@@ -1,15 +1,34 @@
 package com.ifce.jedi.dto.User;
 
-
+import io.swagger.v3.oas.annotations.media.Schema;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.Pattern;
+import jakarta.validation.constraints.Size;
 import org.springframework.web.multipart.MultipartFile;
 
+/**
+ * DTO para registro de usuário com validações.
+ */
 public class RegisterDto {
+
+    @NotBlank(message = "O nome é obrigatório.")
+    @Size(min = 2, max = 100, message = "O nome deve ter entre 2 e 100 caracteres.")
     private String name;
+
+    @Schema(example = "usuario@email.com")
+    @NotBlank(message = "O login (email) é obrigatório.")
+    @Pattern(
+            regexp = "^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\\.[a-zA-Z]{2,}$",
+            message = "O login deve ser um email válido."
+    )
     private String login;
+
+    @NotBlank(message = "A senha é obrigatória.")
     private String password;
+
     private MultipartFile photo;
 
-
+    // Getters e Setters
     public String getName() {
         return name;
     }
@@ -22,7 +41,7 @@ public class RegisterDto {
         return login;
     }
 
-    public void setLogin(String email) {
+    public void setLogin(String login) {
         this.login = login;
     }
 

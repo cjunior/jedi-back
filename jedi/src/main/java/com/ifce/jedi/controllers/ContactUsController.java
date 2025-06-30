@@ -30,7 +30,7 @@ public class ContactUsController {
     }
 
     @PutMapping("/update")
-    @PreAuthorize("hasRole('ADMIN')")
+    @PreAuthorize("hasAnyRole('ADMIN', 'GERENTE')")
     public ResponseEntity<ContactUsResponseDto> update(@RequestBody ContactUsUpdateDto dto) {
         return ResponseEntity.ok(contactUsService.updateSection(dto));
     }

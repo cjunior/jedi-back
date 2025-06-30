@@ -26,13 +26,13 @@ public class BannerController {
     }
 
     @PutMapping("/update")
-    @PreAuthorize("hasRole('ADMIN')")
+    @PreAuthorize("hasAnyRole('ADMIN', 'GERENTE')")
     public ResponseEntity<BannerResponseDto> update(@RequestBody BannerUpdateDto dto) {
         return ResponseEntity.ok(bannerService.updateBanner(dto));
     }
 
     @PostMapping(value = "/slides/add", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
-    @PreAuthorize("hasRole('ADMIN')")
+    @PreAuthorize("hasAnyRole('ADMIN', 'GERENTE')")
     public ResponseEntity<?> addSlide(@ModelAttribute BannerSlideUploadDto form) throws IOException {
 
         MultipartFile[] files = form.getFile();
@@ -56,7 +56,7 @@ public class BannerController {
 
 
     @PutMapping(value = "/slide/update", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
-    @PreAuthorize("hasRole('ADMIN')")
+    @PreAuthorize("hasAnyRole('ADMIN', 'GERENTE')")
     public ResponseEntity<?> updateSlide(@ModelAttribute BannerSlideUpdateDto dto) throws IOException {
 
         List<Long> slideIds = dto.getSlideId();
@@ -77,7 +77,7 @@ public class BannerController {
 
 
     @DeleteMapping("/slide/{slideId}")
-    @PreAuthorize("hasRole('ADMIN')")
+    @PreAuthorize("hasAnyRole('ADMIN', 'GERENTE')")
     public ResponseEntity<?> deleteSlide(
             @PathVariable List<Long> slideId) throws IOException {
         for (int i = 0; i < slideId.size(); i++)

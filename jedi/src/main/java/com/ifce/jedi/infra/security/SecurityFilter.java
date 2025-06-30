@@ -1,6 +1,7 @@
 package com.ifce.jedi.infra.security;
 
 import com.ifce.jedi.repository.UserRepository;
+import com.ifce.jedi.service.AuthorizationService;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
@@ -18,29 +19,46 @@ import java.io.IOException;
 public class SecurityFilter extends OncePerRequestFilter {
 
     @Autowired
-    TokenService tokenService;
+    private TokenService tokenService;
 
     @Autowired
-    private UserRepository userRepository;
-
+    private AuthorizationService authorizationService; // seu UserDetailsService
 
     @Override
-    protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
-        var token = this.revoerToken(request);
-        if(token != null) {
-            var login = tokenService.validateToken(token);
-            UserDetails user = userRepository.findByLogin(login);
+    protected void doFilterInternal(HttpServletRequest request,
+                                    HttpServletResponse response,
+                                    FilterChain filterChain)
+            throws ServletException, IOException {
 
-            var authentication = new UsernamePasswordAuthenticationToken(user, null, user.getAuthorities());
-            SecurityContextHolder.getContext().setAuthentication(authentication);
+        // Pega o token do cabeçalho Authorization
+        String token = recoverToken(request);
 
+        if (token != null) {
+            // Extrai o login (subject) do token
+            String login = tokenService.getSubject(token);
+
+            if (login != null && SecurityContextHolder.getContext().getAuthentication() == null) {
+                // Carrega o usuário do banco
+                UserDetails user = authorizationService.loadUserByUsername(login);
+
+                // Cria autenticação com as authorities corretas
+                var authentication = new UsernamePasswordAuthenticationToken(
+                        user, null, user.getAuthorities());
+
+                // Registra no contexto de segurança
+                SecurityContextHolder.getContext().setAuthentication(authentication);
+            }
         }
-        filterChain.doFilter(request, response); // chamando o próximo filtro (do securityconfig)
+
+        // Continua o filtro
+        filterChain.doFilter(request, response);
     }
 
-    private String revoerToken(HttpServletRequest request) {
-        var authHeader = request.getHeader("Authorization");
-        if(authHeader == null) return null;
-        return authHeader.replace("Bearer ", "");
+    private String recoverToken(HttpServletRequest request) {
+        String authHeader = request.getHeader("Authorization");
+        if (authHeader != null && authHeader.startsWith("Bearer ")) {
+            return authHeader.replace("Bearer ", "");
+        }
+        return null;
     }
 }
