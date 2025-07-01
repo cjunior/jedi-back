@@ -32,7 +32,7 @@ public class RedeController {
 
     @PostMapping(value = "/multiplas", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     @Operation(summary = "Fazer upload de múltiplas imagens para a Rede Jedi")
-    @PreAuthorize("hasRole('ADMIN')")
+    @PreAuthorize("hasAnyRole('ADMIN', 'GERENTE')")
     public List<RedeJediImageDto> uploadMultiplas(@RequestPart MultipartFile[] arquivos) throws IOException {
         return imageService.uploadMultiplas(arquivos);
     }
@@ -40,7 +40,7 @@ public class RedeController {
 
     @DeleteMapping("/{id}")
     @Operation(summary = "Deletar uma imagem da Rede Jedi pelo ID")
-    @PreAuthorize("hasRole('ADMIN')")
+    @PreAuthorize("hasAnyRole('ADMIN', 'GERENTE')")
     public ResponseEntity<Void> delete(@PathVariable Long id) throws IOException {
         imageService.delete(id);
         return ResponseEntity.noContent().build();
@@ -48,7 +48,7 @@ public class RedeController {
 
 
     @PutMapping("/titulo")
-    @PreAuthorize("hasRole('ADMIN')")
+    @PreAuthorize("hasAnyRole('ADMIN', 'GERENTE')")
     public RedeJediSectionDto atualizarTitulo(@RequestBody String novoTitulo) {
         // Supondo que você sempre usa a seção com id 1
         return sectionService.atualizarTitulo(1L, novoTitulo);
@@ -58,7 +58,7 @@ public class RedeController {
             value = "/imagens",
             consumes = MediaType.MULTIPART_FORM_DATA_VALUE
     )
-    @PreAuthorize("hasRole('ADMIN')")
+    @PreAuthorize("hasAnyRole('ADMIN', 'GERENTE')")
     @Operation(summary = "Atualiza múltiplas imagens da Rede Jedi")
     public List<RedeJediImageDto> updateMultiplasImagens(@ModelAttribute imagemRedeJedWrapperDto dto
     ) throws IOException {

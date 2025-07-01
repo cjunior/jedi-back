@@ -27,16 +27,16 @@ public class UserController {
     PdfService pdfService;
 
 
-    @PostMapping("/register")
+    @PostMapping(value = "/register", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     @PreAuthorize("hasRole('ADMIN')")
-    public ResponseEntity register(@RequestBody @Valid RegisterDto registerDto){
+    public ResponseEntity register(@ModelAttribute @Valid RegisterDto registerDto) {
         userService.register(registerDto);
         return ResponseEntity.status(HttpStatus.CREATED).build();
     }
 
 
     @GetMapping("/pre-inscricoes")
-    @PreAuthorize("hasRole('ADMIN')")
+    @PreAuthorize("hasAnyRole('ADMIN', 'GERENTE')")
     public ResponseEntity<Page<PreInscricaoDadosDto>> getAllPreInscricoes(
             @RequestParam(required = false) String nome,
             @RequestParam(required = false) String email,
@@ -48,6 +48,7 @@ public class UserController {
 
 
     @GetMapping("/relatorio/pre-inscricoes/pdf")
+    @PreAuthorize("hasAnyRole('ADMIN', 'GERENTE')")
     public ResponseEntity<byte[]> gerarRelatorioPDF(
             @RequestParam(required = false) StatusPreInscricao status
     ) {

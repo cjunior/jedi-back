@@ -25,19 +25,19 @@ public class PresentationSectionController {
     }
 
     @PostMapping("/create")
-    @PreAuthorize("hasRole('ADMIN')")
+    @PreAuthorize("hasAnyRole('ADMIN', 'GERENTE')")
     public ResponseEntity<PresentationSectionResponseDto> create(@RequestBody PresentationSectionDto dto) {
         return ResponseEntity.ok(service.create(dto));
     }
 
     @PutMapping("/update")
-    @PreAuthorize("hasRole('ADMIN')")
+    @PreAuthorize("hasAnyRole('ADMIN', 'GERENTE')")
     public ResponseEntity<PresentationSectionResponseDto> update(@RequestBody PresentationSectionUpdateDto dto) {
         return ResponseEntity.ok(service.update(dto));
     }
 
     @PutMapping(value = "/update-image", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
-    @PreAuthorize("hasRole('ADMIN')")
+    @PreAuthorize("hasAnyRole('ADMIN', 'GERENTE')")
     public ResponseEntity<PresentationSectionResponseDto> updateImage(@ModelAttribute PresentationSectionImageUploadDto dto) throws IOException {
         return ResponseEntity.ok(service.updateImage(dto.getFile()));
     }

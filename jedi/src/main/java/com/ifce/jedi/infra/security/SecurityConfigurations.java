@@ -6,6 +6,7 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpMethod;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
+import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.http.SessionCreationPolicy;
@@ -21,6 +22,7 @@ import java.util.List;
 
 @Configuration
 @EnableWebSecurity
+@EnableMethodSecurity(prePostEnabled = true)
 public class SecurityConfigurations {
 
     @Autowired
@@ -41,7 +43,10 @@ public class SecurityConfigurations {
                                 "/"
                         ).permitAll()
                         .requestMatchers(HttpMethod.POST, "/auth/login").permitAll()
-                        .requestMatchers(HttpMethod.POST, "/auth/register").hasRole("ADMIN")
+
+                        .requestMatchers(HttpMethod.POST, "/management/register").hasRole("ADMIN")
+                        .requestMatchers(HttpMethod.GET, "/management/pre-inscricoes").hasAnyRole("ADMIN", "GERENTE")
+                        .requestMatchers(HttpMethod.GET, "/management/relatorio/pre-inscricoes/pdf").hasAnyRole("ADMIN", "GERENTE")
 
                         // Pré-inscrição
                         .requestMatchers(HttpMethod.POST, "/pre-inscricao/inicial").permitAll()
@@ -49,56 +54,56 @@ public class SecurityConfigurations {
                         .requestMatchers(HttpMethod.PUT, "/pre-inscricao/continuar/**").permitAll()
 
                         // Header e Banner
-                        .requestMatchers(HttpMethod.PUT, "/header/update").hasRole("ADMIN")
+                        .requestMatchers(HttpMethod.PUT, "/header/update").hasAnyRole("ADMIN", "GERENTE")
                         .requestMatchers(HttpMethod.GET, "/header/get").permitAll()
-                        .requestMatchers(HttpMethod.POST, "/banner/slides/add").hasRole("ADMIN")
-                        .requestMatchers(HttpMethod.PUT, "/banner/slide/{slideId}").hasRole("ADMIN")
-                        .requestMatchers(HttpMethod.DELETE, "/banner/slide/{slideId}").hasRole("ADMIN")
-                        .requestMatchers(HttpMethod.PUT, "/banner/update").hasRole("ADMIN")
+                        .requestMatchers(HttpMethod.POST, "/banner/slides/add").hasAnyRole("ADMIN", "GERENTE")
+                        .requestMatchers(HttpMethod.PUT, "/banner/slide/{slideId}").hasAnyRole("ADMIN", "GERENTE")
+                        .requestMatchers(HttpMethod.DELETE, "/banner/slide/{slideId}").hasAnyRole("ADMIN", "GERENTE")
+                        .requestMatchers(HttpMethod.PUT, "/banner/update").hasAnyRole("ADMIN", "GERENTE")
                         .requestMatchers(HttpMethod.GET, "/banner/get").permitAll()
 
                         // Equipe
                         .requestMatchers(HttpMethod.GET, "/team/get").permitAll()
-                        .requestMatchers(HttpMethod.POST, "/team/members/add").hasRole("ADMIN")
-                        .requestMatchers(HttpMethod.DELETE, "/team/member/{memberId}").hasRole("ADMIN")
-                        .requestMatchers(HttpMethod.PUT, "/team/member/{memberId}").hasRole("ADMIN")
-                        .requestMatchers(HttpMethod.PUT, "/team/update").hasRole("ADMIN")
+                        .requestMatchers(HttpMethod.POST, "/team/members/add").hasAnyRole("ADMIN", "GERENTE")
+                        .requestMatchers(HttpMethod.DELETE, "/team/member/{memberId}").hasAnyRole("ADMIN", "GERENTE")
+                        .requestMatchers(HttpMethod.PUT, "/team/member/{memberId}").hasAnyRole("ADMIN", "GERENTE")
+                        .requestMatchers(HttpMethod.PUT, "/team/update").hasAnyRole("ADMIN", "GERENTE")
 
                         // Sessão de apresentação
                         .requestMatchers(HttpMethod.GET, "/presentation-section/get").permitAll()
-                        .requestMatchers(HttpMethod.POST, "/presentation-section/create").hasRole("ADMIN")
-                        .requestMatchers(HttpMethod.PUT, "/presentation-section/update").hasRole("ADMIN")
-                        .requestMatchers(HttpMethod.PUT, "/presentation-section/update-image").hasRole("ADMIN")
+                        .requestMatchers(HttpMethod.POST, "/presentation-section/create").hasAnyRole("ADMIN", "GERENTE")
+                        .requestMatchers(HttpMethod.PUT, "/presentation-section/update").hasAnyRole("ADMIN", "GERENTE")
+                        .requestMatchers(HttpMethod.PUT, "/presentation-section/update-image").hasAnyRole("ADMIN", "GERENTE")
 
                         .requestMatchers(HttpMethod.GET, "/faq-section/get").permitAll()
-                        .requestMatchers(HttpMethod.PUT, "/faq-section/item/**").hasRole("ADMIN")
-                        .requestMatchers(HttpMethod.PUT, "/faq-section/update-header").hasRole("ADMIN")
-                        .requestMatchers(HttpMethod.POST, "/faq-section/items").hasRole("ADMIN")
+                        .requestMatchers(HttpMethod.PUT, "/faq-section/item/**").hasAnyRole("ADMIN", "GERENTE")
+                        .requestMatchers(HttpMethod.PUT, "/faq-section/update-header").hasAnyRole("ADMIN", "GERENTE")
+                        .requestMatchers(HttpMethod.POST, "/faq-section/items").hasAnyRole("ADMIN", "GERENTE")
 
                         // Load Landpage
                         .requestMatchers(HttpMethod.GET, "/loadlandpage/get").permitAll()
-                        .requestMatchers(HttpMethod.PUT, "/update-all").hasRole("ADMIN")
+                        .requestMatchers(HttpMethod.PUT, "/update-all").hasAnyRole("ADMIN", "GERENTE")
 
                         .requestMatchers(HttpMethod.GET, "/content/get").permitAll()
-                        .requestMatchers(HttpMethod.POST, "/content/slides/add").hasRole("ADMIN")
-                        .requestMatchers(HttpMethod.PUT, "/content/update").hasRole("ADMIN")
-                        .requestMatchers(HttpMethod.PUT, "/content/slides/update").hasRole("ADMIN")
+                        .requestMatchers(HttpMethod.POST, "/content/slides/add").hasAnyRole("ADMIN", "GERENTE")
+                        .requestMatchers(HttpMethod.PUT, "/content/update").hasAnyRole("ADMIN", "GERENTE")
+                        .requestMatchers(HttpMethod.PUT, "/content/slides/update").hasAnyRole("ADMIN", "GERENTE")
 
                         .requestMatchers(HttpMethod.POST, "/contact/email").permitAll()
                         .requestMatchers(HttpMethod.GET, "/contact/get").permitAll()
-                        .requestMatchers(HttpMethod.PUT, "contact/update").hasRole("ADMIN")
+                        .requestMatchers(HttpMethod.PUT, "contact/update").hasAnyRole("ADMIN", "GERENTE")
 
 
                         .requestMatchers(HttpMethod.GET, "/blog-section/get").permitAll()
-                        .requestMatchers(HttpMethod.POST, "/blog-section/item").hasRole("ADMIN")
-                        .requestMatchers(HttpMethod.PUT, "/blog-section/item/{itemId}").hasRole("ADMIN")
+                        .requestMatchers(HttpMethod.POST, "/blog-section/item").hasAnyRole("ADMIN", "GERENTE")
+                        .requestMatchers(HttpMethod.PUT, "/blog-section/item/{itemId}").hasAnyRole("ADMIN", "GERENTE")
                         .requestMatchers(HttpMethod.GET, "/blog-section/item/{itemId}").permitAll()
-                        .requestMatchers(HttpMethod.DELETE, "/blog-section/item/{itemId}").hasRole("ADMIN")
+                        .requestMatchers(HttpMethod.DELETE, "/blog-section/item/{itemId}").hasAnyRole("ADMIN", "GERENTE")
 
                         .requestMatchers(HttpMethod.GET, "/rede-jedi").permitAll()
-                        .requestMatchers(HttpMethod.POST, "/rede-jedi").hasRole("ADMIN")
-                        .requestMatchers(HttpMethod.DELETE, "/rede-jedi/**").hasRole("ADMIN")
-                        .requestMatchers(HttpMethod.PUT, "/rede-jedi/titulo").hasRole("ADMIN")
+                        .requestMatchers(HttpMethod.POST, "/rede-jedi").hasAnyRole("ADMIN", "GERENTE")
+                        .requestMatchers(HttpMethod.DELETE, "/rede-jedi/**").hasAnyRole("ADMIN", "GERENTE")
+                        .requestMatchers(HttpMethod.PUT, "/rede-jedi/titulo").hasAnyRole("ADMIN", "GERENTE")
 
                         .anyRequest().authenticated()
                 )

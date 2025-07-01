@@ -4,6 +4,7 @@ import com.auth0.jwt.JWT;
 import com.auth0.jwt.algorithms.Algorithm;
 import com.auth0.jwt.exceptions.JWTCreationException;
 import com.auth0.jwt.exceptions.JWTVerificationException;
+import com.ifce.jedi.exception.custom.TokenInvalidException;
 import com.ifce.jedi.model.User.User;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
@@ -21,18 +22,25 @@ public class TokenService {
     public String generateToken(User user) {
         try {
             Algorithm algorithm = Algorithm.HMAC256(secret);
-            String token = JWT.create()
+
+            String roleName = "ROLE_" + user.getRole().name();
+
+            return JWT.create()
                     .withIssuer("auth-api")
                     .withSubject(user.getLogin())
+                    .withClaim("role", roleName)
+                    .withClaim("name", user.getName())
+                    .withClaim("photo", user.getPhotoUrl())
                     .withExpiresAt(getExpirationDate())
                     .sign(algorithm);
-            return token;
+
         } catch (JWTCreationException exception) {
             throw new RuntimeException("Error while generating token", exception);
         }
     }
 
-    public String validateToken(String token){
+
+    public String getSubject(String token){
         try {
             Algorithm algorithm = Algorithm.HMAC256(secret);
             return JWT.require(algorithm)
@@ -40,11 +48,11 @@ public class TokenService {
                     .build()
                     .verify(token)
                     .getSubject();
-        } catch (JWTVerificationException exception) {
-            return "";
+        } catch (JWTVerificationException ex) {
+            throw new TokenInvalidException("Token inválido ou expirado.");
         }
-
     }
+
 
 
     private Instant getExpirationDate(){

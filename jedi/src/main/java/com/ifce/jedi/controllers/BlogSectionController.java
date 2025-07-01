@@ -32,14 +32,14 @@ public class BlogSectionController {
     }
 
     @PutMapping(value = "/item/{itemId}", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
-    @PreAuthorize("hasRole('ADMIN')")
+    @PreAuthorize("hasAnyRole('ADMIN', 'GERENTE')")
     public ResponseEntity<BlogSectionResponseDto> updateBlogItem(
             @PathVariable Long itemId,
             @ModelAttribute BlogItemUpdateDto dto) throws IOException {
         return ResponseEntity.ok(service.updateBlogItem(itemId, dto));
     }
     @PostMapping(value = "/item", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
-    @PreAuthorize("hasRole('ADMIN')")
+    @PreAuthorize("hasAnyRole('ADMIN', 'GERENTE')")
     public ResponseEntity<BlogSectionResponseDto> createBlogItem(
             @ModelAttribute BlogItemCreateDto dto) throws IOException {
         return ResponseEntity.ok(service.addBlogItem(dto));
@@ -49,7 +49,7 @@ public class BlogSectionController {
         return ResponseEntity.ok(service.getBlogItemById(itemId));
     }
     @DeleteMapping("/item/{itemId}")
-    @PreAuthorize("hasRole('ADMIN')")
+    @PreAuthorize("hasAnyRole('ADMIN', 'GERENTE')")
     public ResponseEntity<Void> deleteBlogItem(@PathVariable Long itemId) throws IOException {
         service.deleteBlogItem(itemId);
         return ResponseEntity.noContent().build();

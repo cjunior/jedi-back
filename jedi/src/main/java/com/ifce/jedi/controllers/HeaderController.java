@@ -26,7 +26,7 @@ public class HeaderController {
     }
 
     @PutMapping(value = "/update", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
-    @PreAuthorize("hasRole('ADMIN')")
+    @PreAuthorize("hasAnyRole('ADMIN', 'GERENTE')")
     public ResponseEntity<HeaderResponseDto> updateHeader(@ModelAttribute HeaderDto dto) throws IOException {
         return ResponseEntity.ok(headerService.updateHeader(dto));
     }

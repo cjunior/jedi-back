@@ -20,21 +20,21 @@ public class FaqSectionController {
     }
 
     @PutMapping("/item/{itemId}")
-    @PreAuthorize("hasRole('ADMIN')")
+    @PreAuthorize("hasAnyRole('ADMIN', 'GERENTE')")
     public ResponseEntity<FaqSectionResponseDto> updateItem(
             @PathVariable Long itemId,
             @RequestBody FaqItemUpdateDto dto) {
         return ResponseEntity.ok(service.updateItem(itemId, dto));
     }
     @PutMapping("/update-header")
-    @PreAuthorize("hasRole('ADMIN')")
+    @PreAuthorize("hasAnyRole('ADMIN', 'GERENTE')")
     public ResponseEntity<FaqSectionResponseDto> updateHeader(
             @RequestBody FaqSectionHeaderUpdateDto dto) {
         return ResponseEntity.ok(service.updateHeader(dto));
     }
     // FaqSectionController.java
     @PostMapping("/items")
-    @PreAuthorize("hasRole('ADMIN')")
+    @PreAuthorize("hasAnyRole('ADMIN', 'GERENTE')")
     public ResponseEntity<FaqSectionResponseDto> addItem(
             @RequestBody FaqItemCreateDto dto) {
         return ResponseEntity.ok(service.addItem(dto));
