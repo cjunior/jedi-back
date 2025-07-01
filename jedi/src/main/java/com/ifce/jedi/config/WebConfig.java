@@ -13,6 +13,7 @@ public class WebConfig implements WebMvcConfigurer {
         registry
                 .addResourceHandler("/publicos/**")
                 .addResourceLocations("file:/home/app/jedi-arquivos/documentos/");
+
     }
 }
 
