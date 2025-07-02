@@ -2,8 +2,8 @@ package com.ifce.jedi.model.User;
 
 public enum UserRole {
     ADMIN("admin"),
-    GERENTE("gerente");
-
+    GERENTE("gerente"),
+    BLOG("blog");
     private final String role;
 
     UserRole(String role) {

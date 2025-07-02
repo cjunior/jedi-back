@@ -34,12 +34,18 @@ public class UserService {
     private CloudinaryService cloudinaryService;
 
     public void register(RegisterDto dto) {
+        UserRole userRole;
+        try {
+            userRole = UserRole.valueOf(dto.getRole().toUpperCase()); // Aceita string minúscula também
+        } catch (IllegalArgumentException e) {
+            throw new IllegalArgumentException("Função inválida: " + dto.getRole());
+        }
+
         if (userRepository.findByLogin(dto.getLogin()).isPresent()) {
             throw new EmailAlreadyUsedException("Usuário já existe com esse e-mail.");
         }
 
         String encryptedPassword = new BCryptPasswordEncoder().encode(dto.getPassword());
-
         String photoUrl = null;
 
         if (dto.getPhoto() != null && !dto.getPhoto().isEmpty()) {
@@ -54,13 +60,14 @@ public class UserService {
         User newUser = new User(
                 dto.getName(),
                 dto.getLogin(),
-                UserRole.GERENTE,
+                userRole,
                 encryptedPassword,
                 photoUrl
         );
 
         userRepository.save(newUser);
     }
+
 
 
     public Page<PreInscricaoDadosDto> getAllPreInscricoes(
