@@ -97,6 +97,9 @@ public class SecurityConfigurations {
                         .requestMatchers(HttpMethod.DELETE, "/rede-jedi/**").hasRole("ADMIN")
                         .requestMatchers(HttpMethod.PUT, "/rede-jedi/titulo").hasRole("ADMIN")
 
+                        .requestMatchers("/sensiveis/**").hasRole("ADMIN")
+                        .requestMatchers("/publicos/**").permitAll()
+
                         .anyRequest().authenticated()
                 )
                 .addFilterBefore(securityFilter, UsernamePasswordAuthenticationFilter.class)
