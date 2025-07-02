@@ -1,0 +1,3 @@
+api.banco.ltap.ifce.edu.br {
+  reverse_proxy jedi:8080
+}
