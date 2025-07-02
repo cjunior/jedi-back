@@ -195,22 +195,20 @@ public class BlogSectionService {
         repository.save(section);
     }
     @Transactional
-    public Page<BlogItemResponseDto> getPaginatedBlogItems(Pageable pageable) {
+    public Page<BlogItemResponseDto> getPaginatedBlogItems(Pageable pageable, String searchTerm) {
         Optional<BlogSection> entity = repository.findFirstByOrderByIdAsc();
 
         if (entity.isEmpty()) {
             return Page.empty(); // Retorna página vazia se não houver seção
         }
 
-        List<BlogItem> allItems = entity.get().getItems();
-
-        // Ordena por ID decrescente
-        List<BlogItem> sortedItems = allItems.stream()
+        List<BlogItem> filteredItems = entity.get().getItems().stream()
+                .filter(item -> searchTerm == null || searchTerm.isBlank() ||
+                        item.getTitle().toLowerCase().contains(searchTerm.toLowerCase()))
                 .sorted(Comparator.comparing(BlogItem::getId).reversed())
                 .toList();
 
-        // Implementa paginação manual
-        int totalItems = sortedItems.size();
+        int totalItems = filteredItems.size();
         int pageSize = pageable.getPageSize();
         int currentPage = pageable.getPageNumber();
         int startItem = currentPage * pageSize;
@@ -220,10 +218,9 @@ public class BlogSectionService {
             pageItems = Collections.emptyList();
         } else {
             int toIndex = Math.min(startItem + pageSize, totalItems);
-            pageItems = sortedItems.subList(startItem, toIndex);
+            pageItems = filteredItems.subList(startItem, toIndex);
         }
 
-        // Converte para DTOs
         List<BlogItemResponseDto> dtos = pageItems.stream()
                 .map(item -> new BlogItemResponseDto(
                         item.getId(),
@@ -240,6 +237,7 @@ public class BlogSectionService {
 
         return new PageImpl<>(dtos, pageable, totalItems);
     }
+
     private BlogSectionResponseDto toResponse(BlogSection entity) {
         List<BlogItemResponseDto> items = entity.getItems().stream()
                 .sorted(Comparator.comparing(BlogItem::getId).reversed()) // 🔥 Ordem decrescente por ID

@@ -25,10 +25,11 @@ public class BlogSectionController {
     @GetMapping("/get")
     public ResponseEntity<Page<BlogItemResponseDto>> getPaginatedBlogItems(
             @RequestParam(defaultValue = "0") int page,
-            @RequestParam(defaultValue = "10") int size) {
+            @RequestParam(defaultValue = "10") int size,
+            @RequestParam(required = false) String searchTerm) {
 
         Pageable pageable = PageRequest.of(page, size, Sort.by("id").descending());
-        return ResponseEntity.ok(service.getPaginatedBlogItems(pageable));
+        return ResponseEntity.ok(service.getPaginatedBlogItems(pageable, searchTerm));
     }
 
     @PutMapping(value = "/item/{itemId}", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
