@@ -92,7 +92,7 @@ public class TeamService {
             TeamItem item = new TeamItem();
             var uploadResult = minioService.create(file);
             item.setImgUrl(uploadResult.get("url"));
-            item.setStorageFilename(uploadResult.get("public_id"));
+            item.setStorageFilename(uploadResult.get("filename"));
             item.setTeam(team);
             team.getItems().add(item);
         }

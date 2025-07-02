@@ -98,7 +98,7 @@ public class BlogSectionService {
         if (dto.iconFile() != null && !dto.iconFile().isEmpty()) {
             var iconUploadResult = minioService.create(dto.iconFile());
             newItem.setIconUrl(iconUploadResult.get("url"));
-            newItem.setIconStorageFilename(iconUploadResult.get("public_id"));
+            newItem.setIconStorageFilename(iconUploadResult.get("filename"));
         }
 
         section.getItems().add(newItem);
@@ -128,7 +128,7 @@ public class BlogSectionService {
         // Atualiza imagem principal (existente)
         if (dto.file() != null && !dto.file().isEmpty()) {
             if (item.getStorageFilename() != null) {
-                minioService.deleteImage(item.getIconStorageFilename());
+                minioService.deleteImage(item.getStorageFilename());
             }
             var uploadResult = minioService.create(dto.file());
             item.setImageUrl(uploadResult.get("url"));
