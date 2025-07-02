@@ -32,7 +32,7 @@ public class StartupInitializer {
         return args -> {
             String email = "admin@example.com";
 
-            if (userRepository.findByLogin(email) == null) {
+            if (userRepository.findByLogin(email).isEmpty()) {
                 String passwordHash = passwordEncoder.encode("!Admin123");
 
                 User admin = new User(email, passwordHash, UserRole.ADMIN);
@@ -41,6 +41,78 @@ public class StartupInitializer {
                 System.out.println("Usuário admin criado com sucesso.");
             } else {
                 System.out.println("Usuário admin já existe.");
+            }
+        };
+    }
+
+    @Bean
+    public CommandLineRunner initDefaultBlogRenataUser(UserRepository userRepository, PasswordEncoder passwordEncoder) {
+        return args -> {
+            String email = "renata.jaguaribe@ifce.edu.br";
+
+            if (userRepository.findByLogin(email).isEmpty()) {
+                String passwordHash = passwordEncoder.encode("!Admin123");
+
+                User admin = new User(email, passwordHash, UserRole.ADMIN);
+                userRepository.save(admin);
+
+                System.out.println("Usuário Renata criado com sucesso.");
+            } else {
+                System.out.println("Usuário Renata já existe.");
+            }
+        };
+    }
+
+    @Bean
+    public CommandLineRunner initDefaultBlogGuilhermeUser(UserRepository userRepository, PasswordEncoder passwordEncoder) {
+        return args -> {
+            String email = "ehgmanuel@gmail.com";
+
+            if (userRepository.findByLogin(email).isEmpty()) {
+                String passwordHash = passwordEncoder.encode("!Admin123");
+
+                User admin = new User(email, passwordHash, UserRole.ADMIN);
+                userRepository.save(admin);
+
+                System.out.println("Usuário Guilherme criado com sucesso.");
+            } else {
+                System.out.println("Usuário Guilherme já existe.");
+            }
+        };
+    }
+
+    @Bean
+    public CommandLineRunner initDefaultBlogAnaIsabelUser(UserRepository userRepository, PasswordEncoder passwordEncoder) {
+        return args -> {
+            String email = "anaportoliveira@gmail.com";
+
+            if (userRepository.findByLogin(email).isEmpty()) {
+                String passwordHash = passwordEncoder.encode("!Admin123");
+
+                User admin = new User(email, passwordHash, UserRole.ADMIN);
+                userRepository.save(admin);
+
+                System.out.println("Usuário Ana Isabel criado com sucesso.");
+            } else {
+                System.out.println("Usuário Ana Isabel já existe.");
+            }
+        };
+    }
+
+    @Bean
+    public CommandLineRunner initDefaultBlogAnaVitoriaUser(UserRepository userRepository, PasswordEncoder passwordEncoder) {
+        return args -> {
+            String email = "anavitoriacordeiro87@gmail.com";
+
+            if (userRepository.findByLogin(email).isEmpty()) {
+                String passwordHash = passwordEncoder.encode("!Admin123");
+
+                User admin = new User(email, passwordHash, UserRole.ADMIN);
+                userRepository.save(admin);
+
+                System.out.println("Usuário Ana Vitoria criado com sucesso.");
+            } else {
+                System.out.println("Usuário Ana Vitoria já existe.");
             }
         };
     }

@@ -28,9 +28,20 @@ public class RegisterDto {
 
     private MultipartFile photo;
 
+    @NotBlank(message = "A função é obrigatória.")
+    private String role;
+
     // Getters e Setters
     public String getName() {
         return name;
+    }
+
+    public String getRole() {
+        return role;
+    }
+
+    public void setRole(String role) {
+        this.role = role;
     }
 
     public void setName(String name) {

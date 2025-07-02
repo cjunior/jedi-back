@@ -95,10 +95,10 @@ public class SecurityConfigurations {
 
 
                         .requestMatchers(HttpMethod.GET, "/blog-section/get").permitAll()
-                        .requestMatchers(HttpMethod.POST, "/blog-section/item").hasAnyRole("ADMIN", "GERENTE")
-                        .requestMatchers(HttpMethod.PUT, "/blog-section/item/{itemId}").hasAnyRole("ADMIN", "GERENTE")
+                        .requestMatchers(HttpMethod.POST, "/blog-section/item").hasAnyRole("ADMIN", "GERENTE", "BLOG")
+                        .requestMatchers(HttpMethod.PUT, "/blog-section/item/{itemId}").hasAnyRole("ADMIN", "GERENTE", "BLOG")
                         .requestMatchers(HttpMethod.GET, "/blog-section/item/{itemId}").permitAll()
-                        .requestMatchers(HttpMethod.DELETE, "/blog-section/item/{itemId}").hasAnyRole("ADMIN", "GERENTE")
+                        .requestMatchers(HttpMethod.DELETE, "/blog-section/item/{itemId}").hasAnyRole("ADMIN", "GERENTE", "BLOG")
 
                         .requestMatchers(HttpMethod.GET, "/rede-jedi").permitAll()
                         .requestMatchers(HttpMethod.POST, "/rede-jedi").hasAnyRole("ADMIN", "GERENTE")
