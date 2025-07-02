@@ -31,7 +31,7 @@ public class UserService {
     PreInscricaoRepository preInscricaoRepository;
 
     @Autowired
-    private CloudinaryService cloudinaryService;
+    private MinioService minioService;
 
     public void register(RegisterDto dto) {
         if (userRepository.findByLogin(dto.getLogin()).isPresent()) {
@@ -43,12 +43,8 @@ public class UserService {
         String photoUrl = null;
 
         if (dto.getPhoto() != null && !dto.getPhoto().isEmpty()) {
-            try {
-                Map<String, String> uploadResult = cloudinaryService.uploadImage(dto.getPhoto());
-                photoUrl = uploadResult.get("url");
-            } catch (IOException e) {
-                throw new UploadException("Erro ao fazer upload da foto no Cloudinary", e);
-            }
+            Map<String, String> uploadResult = minioService.create(dto.getPhoto());
+            photoUrl = uploadResult.get("url");
         }
 
         User newUser = new User(

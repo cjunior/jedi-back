@@ -7,7 +7,6 @@ import com.ifce.jedi.model.SecoesSite.Header.Header;
 import com.ifce.jedi.repository.HeaderRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
 import java.util.List;
@@ -18,7 +17,7 @@ public class HeaderService {
     @Autowired
     private HeaderRepository headerRepository;
     @Autowired
-    private CloudinaryService cloudinaryService;
+    private MinioService minioService;
 
     public HeaderResponseDto getHeader() {
         List<Header> headers = headerRepository.findAll();
@@ -31,12 +30,12 @@ public class HeaderService {
                 .orElseThrow(() -> new RuntimeException("Header não encontrado"));
 
         if (dto.getFile() != null && !dto.getFile().isEmpty()) {
-            if (header.getCloudinaryPublicId() != null) {
-                cloudinaryService.deleteImage(header.getCloudinaryPublicId());
+            if (header.getStorageNamefile() != null) {
+                minioService.deleteImage(header.getStorageNamefile());
             }
-            var uploadResult = cloudinaryService.uploadImage(dto.getFile());
+            var uploadResult = minioService.create(dto.getFile());
             header.setLogoUrl(uploadResult.get("url"));
-            header.setCloudinaryPublicId(uploadResult.get("public_id"));
+            header.setStorageNamefile(uploadResult.get("filename"));
         }
 
         header.setText1(dto.getText1());

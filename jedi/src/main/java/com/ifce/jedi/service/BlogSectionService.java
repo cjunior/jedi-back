@@ -25,7 +25,7 @@ public class BlogSectionService {
     private BlogSectionRepository repository;
 
     @Autowired
-    private CloudinaryService cloudinaryService;
+    private MinioService minioService;
 
     @Transactional
     public BlogSectionResponseDto get() {
@@ -89,16 +89,16 @@ public class BlogSectionService {
 
         // Upload da imagem principal (existente)
         if (dto.file() != null && !dto.file().isEmpty()) {
-            var uploadResult = cloudinaryService.uploadImage(dto.file());
+            var uploadResult = minioService.create(dto.file());
             newItem.setImageUrl(uploadResult.get("url"));
-            newItem.setCloudinaryPublicId(uploadResult.get("public_id"));
+            newItem.setStorageFilename(uploadResult.get("filename"));
         }
 
         // Upload do ícone (novo)
         if (dto.iconFile() != null && !dto.iconFile().isEmpty()) {
-            var iconUploadResult = cloudinaryService.uploadImage(dto.iconFile());
+            var iconUploadResult = minioService.create(dto.iconFile());
             newItem.setIconUrl(iconUploadResult.get("url"));
-            newItem.setIconCloudinaryPublicId(iconUploadResult.get("public_id"));
+            newItem.setIconStorageFilename(iconUploadResult.get("public_id"));
         }
 
         section.getItems().add(newItem);
@@ -127,22 +127,22 @@ public class BlogSectionService {
 
         // Atualiza imagem principal (existente)
         if (dto.file() != null && !dto.file().isEmpty()) {
-            if (item.getCloudinaryPublicId() != null) {
-                cloudinaryService.deleteImage(item.getCloudinaryPublicId());
+            if (item.getStorageFilename() != null) {
+                minioService.deleteImage(item.getIconStorageFilename());
             }
-            var uploadResult = cloudinaryService.uploadImage(dto.file());
+            var uploadResult = minioService.create(dto.file());
             item.setImageUrl(uploadResult.get("url"));
-            item.setCloudinaryPublicId(uploadResult.get("public_id"));
+            item.setStorageFilename(uploadResult.get("filename"));
         }
 
         // Atualiza ícone (novo)
         if (dto.iconFile() != null && !dto.iconFile().isEmpty()) {
-            if (item.getIconCloudinaryPublicId() != null) {
-                cloudinaryService.deleteImage(item.getIconCloudinaryPublicId());
+            if (item.getIconStorageFilename() != null) {
+                minioService.deleteImage(item.getIconStorageFilename());
             }
-            var iconUploadResult = cloudinaryService.uploadImage(dto.iconFile());
+            var iconUploadResult = minioService.create(dto.iconFile());
             item.setIconUrl(iconUploadResult.get("url"));
-            item.setIconCloudinaryPublicId(iconUploadResult.get("public_id"));
+            item.setStorageFilename(iconUploadResult.get("filename"));
         }
 
         repository.save(section);
@@ -180,14 +180,12 @@ public class BlogSectionService {
                 .findFirst()
                 .orElseThrow(() -> new RuntimeException("Item Blog não encontrado"));
 
-        // Deleta a imagem principal do Cloudinary (se existir)
-        if (item.getCloudinaryPublicId() != null) {
-            cloudinaryService.deleteImage(item.getCloudinaryPublicId());
+        if (item.getStorageFilename() != null) {
+            minioService.deleteImage(item.getStorageFilename());
         }
 
-        // Deleta o ícone do Cloudinary (se existir)
-        if (item.getIconCloudinaryPublicId() != null) {
-            cloudinaryService.deleteImage(item.getIconCloudinaryPublicId());
+        if (item.getStorageFilename()!= null) {
+            minioService.deleteImage(item.getStorageFilename());
         }
 
         // Remove o item da lista e salva a seção

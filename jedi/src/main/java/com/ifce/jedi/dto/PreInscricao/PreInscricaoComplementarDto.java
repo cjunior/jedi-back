@@ -20,12 +20,14 @@ public record PreInscricaoComplementarDto(
                 regexp = "^(\\d{3}\\.\\d{3}\\.\\d{3}-\\d{2}|\\d{11})$",
                 message = "CPF inválido. Use o formato 000.000.000-00 ou apenas números."
         )
+        @NotBlank
         String cpf,
 
         @Pattern(
                 regexp = "^(\\d{1,2}\\.\\d{3}\\.\\d{3}|\\d{5,15})$",
                 message = "RG inválido. Use um formato numérico válido."
         )
+        @NotBlank
         String rg,
 
 

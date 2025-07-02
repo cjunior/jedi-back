@@ -16,9 +16,9 @@ public class BlogItem {
     private String readingTime;
     private String imageUrl;
     private String imageDescription;
-    private String cloudinaryPublicId;
+    private String storageFilename;
     private String iconUrl;              // Novo campo
-    private String iconCloudinaryPublicId; // ID no Cloudinary (para exclusão)
+    private String iconStorageFilename; //
 
     @Lob
     private String description;          // Novo campo (texto longo)
@@ -42,15 +42,23 @@ public class BlogItem {
     public void setImageUrl(String imageUrl) { this.imageUrl = imageUrl; }
     public String getImageDescription() { return imageDescription; }
     public void setImageDescription(String imageDescription) { this.imageDescription = imageDescription; }
-    public String getCloudinaryPublicId() { return cloudinaryPublicId; }
-    public void setCloudinaryPublicId(String cloudinaryPublicId) { this.cloudinaryPublicId = cloudinaryPublicId; }
+    public String getStorageFilename() { return storageFilename; }
     public BlogSection getBlogSection() { return blogSection; }
     public void setBlogSection(BlogSection blogSection) { this.blogSection = blogSection; }
     public String getIconUrl() { return iconUrl; }
     public void setIconUrl(String iconUrl) { this.iconUrl = iconUrl; }
 
-    public String getIconCloudinaryPublicId() { return iconCloudinaryPublicId; }
-    public void setIconCloudinaryPublicId(String iconCloudinaryPublicId) { this.iconCloudinaryPublicId = iconCloudinaryPublicId; }
+    public void setStorageFilename(String storageFilename) {
+        this.storageFilename = storageFilename;
+    }
+
+    public String getIconStorageFilename() {
+        return iconStorageFilename;
+    }
+
+    public void setIconStorageFilename(String iconStorageFilename) {
+        this.iconStorageFilename = iconStorageFilename;
+    }
 
     public String getDescription() { return description; }
     public void setDescription(String description) { this.description = description; }

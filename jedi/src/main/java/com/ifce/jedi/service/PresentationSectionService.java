@@ -18,7 +18,7 @@ public class PresentationSectionService {
     private PresentationSectionRepository repository;
 
     @Autowired
-    private CloudinaryService cloudinaryService;
+    private MinioService minioService;
 
     @Transactional
     public PresentationSectionResponseDto get() {
@@ -63,13 +63,13 @@ public class PresentationSectionService {
                 .orElseThrow(() -> new RuntimeException("Presentation section not found"));
 
         if(file != null && !file.isEmpty()){
-            var uploadResult = cloudinaryService.uploadImage(file);
-            if (entity.getCloudinaryPublicId() != null) {
-                cloudinaryService.deleteImage(entity.getCloudinaryPublicId());
+            var uploadResult = minioService.create(file);
+            if (entity.getStorageFilename() != null) {
+                minioService.deleteImage(entity.getStorageFilename());
             }
 
             entity.setImgUrl(uploadResult.get("url"));
-            entity.setCloudinaryPublicId(uploadResult.get("public_id"));
+            entity.setStorageFilename(uploadResult.get("filename"));
         }
 
         PresentationSection updated = repository.save(entity);

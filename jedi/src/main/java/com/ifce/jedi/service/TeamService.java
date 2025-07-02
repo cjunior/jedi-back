@@ -18,8 +18,9 @@ public class TeamService {
 
     @Autowired
     private TeamRepository teamRepository;
+
     @Autowired
-    private CloudinaryService cloudinaryService;
+    private MinioService minioService;
 
     @Transactional
     public TeamResponseDto createTeam(TeamDto dto) {
@@ -60,12 +61,12 @@ public class TeamService {
                 .orElseThrow(() -> new RuntimeException("Membro não encontrado."));
 
         if (file != null && !file.isEmpty()) {
-            if (item.getCloudinaryPublicId() != null) {
-                cloudinaryService.deleteImage(item.getCloudinaryPublicId());
+            if (item.getStorageFilename() != null) {
+                minioService.deleteImage(item.getStorageFilename());
             }
-            var uploadResult = cloudinaryService.uploadImage(file);
+            var uploadResult = minioService.create(file);
             item.setImgUrl(uploadResult.get("url"));
-            item.setCloudinaryPublicId(uploadResult.get("public_id"));
+            item.setStorageFilename(uploadResult.get("filename"));
         }
 
         Team updated = teamRepository.save(team);
@@ -89,9 +90,9 @@ public class TeamService {
 
         for (MultipartFile file : files){
             TeamItem item = new TeamItem();
-            var uploadResult = cloudinaryService.uploadImage(file);
+            var uploadResult = minioService.create(file);
             item.setImgUrl(uploadResult.get("url"));
-            item.setCloudinaryPublicId(uploadResult.get("public_id"));
+            item.setStorageFilename(uploadResult.get("public_id"));
             item.setTeam(team);
             team.getItems().add(item);
         }
@@ -114,7 +115,7 @@ public class TeamService {
                 .findFirst()
                 .orElseThrow(() -> new RuntimeException("Membro não encontrado."));
 
-        cloudinaryService.deleteImage(itemToRemove.getCloudinaryPublicId());
+        minioService.deleteImage(itemToRemove.getStorageFilename());
         team.getItems().remove(itemToRemove);
 
         teamRepository.save(team);

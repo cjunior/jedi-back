@@ -19,10 +19,12 @@ public class BannerService {
 
     @Autowired
     private BannerRepository bannerRepository;
+
     @Autowired
     private BannerItemRepository bannerItemRepository;
+
     @Autowired
-    private CloudinaryService cloudinaryService;
+    private MinioService minioService;
 
     @Transactional
     public BannerResponseDto createBanner(BannerDto dto) {
@@ -80,16 +82,16 @@ public class BannerService {
         // Atualiza imagem (se fornecida)
         if (file != null && !file.isEmpty()) {
             // 1. Faz upload da nova imagem
-            var uploadResult = cloudinaryService.uploadImage(file);
+            var uploadResult = minioService.create(file);
 
             // 2. Deleta a antiga (se existir)
-            if (item.getCloudinaryPublicId() != null) {
-                cloudinaryService.deleteImage(item.getCloudinaryPublicId());
+            if (item.getStorageFilename() != null) {
+                minioService.deleteImage(item.getStorageFilename());
             }
 
             // 3. Atualiza campos
             item.setImgUrl(uploadResult.get("url"));
-            item.setCloudinaryPublicId(uploadResult.get("public_id"));
+            item.setStorageFilename(uploadResult.get("filename"));
         }
 
         // Salva apenas o item (não o banner inteiro)
@@ -120,9 +122,9 @@ public class BannerService {
 
 
         BannerItem item = new BannerItem();
-        var uploadResult = cloudinaryService.uploadImage(file);
+        var uploadResult = minioService.create(file);
         item.setImgUrl(uploadResult.get("url"));
-        item.setCloudinaryPublicId(uploadResult.get("public_id"));
+        item.setStorageFilename(uploadResult.get("filename"));
         item.setButtonText(dto.buttonText());
         item.setButtonUrl(dto.buttonUrl());
         item.setBanner(banner);
@@ -144,7 +146,7 @@ public class BannerService {
                 .findFirst()
                 .orElseThrow(() -> new RuntimeException("Slide não encontrado"));
 
-        cloudinaryService.deleteImage(itemToRemove.getCloudinaryPublicId());
+        minioService.deleteImage(itemToRemove.getStorageFilename());
         banner.getItems().remove(itemToRemove);
 
         bannerRepository.save(banner);

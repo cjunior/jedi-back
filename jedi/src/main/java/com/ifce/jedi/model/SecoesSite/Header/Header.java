@@ -21,16 +21,15 @@ public class Header {
     private String text3;
     private String text4;
     private String buttonText;
-    private String cloudinaryPublicId;
+    private String storageNamefile;
 
-    public String getCloudinaryPublicId() {
-        return cloudinaryPublicId;
+    public String getStorageNamefile() {
+        return storageNamefile;
     }
 
-    public void setCloudinaryPublicId(String cloudinaryPublicId) {
-        this.cloudinaryPublicId = cloudinaryPublicId;
+    public void setStorageNamefile(String storageNamefile) {
+        this.storageNamefile = storageNamefile;
     }
-
 
     public UUID getId() {
         return id;

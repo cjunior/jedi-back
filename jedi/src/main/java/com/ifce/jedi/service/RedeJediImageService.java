@@ -22,7 +22,7 @@ public class RedeJediImageService {
     private RedeJediImageRepository imageRepository;
 
     @Autowired
-    private CloudinaryService cloudinaryService;
+    private MinioService minioService;
 
     @Autowired
     private RedeJediSectionRepository sectionRepository;
@@ -34,11 +34,11 @@ public class RedeJediImageService {
                 .orElseThrow(() -> new RuntimeException("Seção Rede Jedi não encontrada"));
 
         for (MultipartFile imagem : imagens) {
-            Map<String, String> uploadResult = cloudinaryService.uploadImage(imagem);
+            Map<String, String> uploadResult = minioService.create(imagem);
 
             RedeJediImage entity = new RedeJediImage();
             entity.setUrl(uploadResult.get("url"));
-            entity.setPublicId(uploadResult.get("public_id"));
+            entity.setPublicId(uploadResult.get("filename"));
             entity.setSection(section);
 
             RedeJediImage saved = imageRepository.save(entity);
@@ -57,7 +57,7 @@ public class RedeJediImageService {
     public void delete(Long id) throws IOException {
         RedeJediImage imagem = imageRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("Imagem não encontrada"));
-        cloudinaryService.deleteImage(imagem.getPublicId());
+        minioService.deleteImage(imagem.getPublicId());
         imageRepository.delete(imagem);
     }
 
@@ -89,13 +89,13 @@ public class RedeJediImageService {
                     .orElseThrow(() -> new RuntimeException("Imagem com ID " + id + " não encontrada"));
 
             if(novaImagem != null){
-                var uploadResult = cloudinaryService.uploadImage(novaImagem);
+                var uploadResult = minioService.create(novaImagem);
 
                 if(imagemExistente.getPublicId() != null){
-                    cloudinaryService.deleteImage(imagemExistente.getPublicId());
+                    minioService.deleteImage(imagemExistente.getPublicId());
                 }
                 imagemExistente.setUrl(uploadResult.get("url"));
-                imagemExistente.setPublicId(uploadResult.get("public_id"));
+                imagemExistente.setPublicId(uploadResult.get("filename"));
 
             }
 

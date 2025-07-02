@@ -1,16 +1,8 @@
 package com.ifce.jedi.service;
 
-import com.ifce.jedi.dto.Banner.BannerDto;
-import com.ifce.jedi.dto.Banner.BannerItemDto;
-import com.ifce.jedi.dto.Banner.BannerItemResponseDto;
-import com.ifce.jedi.dto.Banner.BannerResponseDto;
 import com.ifce.jedi.dto.Contents.*;
-import com.ifce.jedi.dto.Header.HeaderResponseDto;
-import com.ifce.jedi.model.SecoesSite.Banner.Banner;
-import com.ifce.jedi.model.SecoesSite.Banner.BannerItem;
 import com.ifce.jedi.model.SecoesSite.Contents.Content;
 import com.ifce.jedi.model.SecoesSite.Contents.ContentItem;
-import com.ifce.jedi.model.SecoesSite.Header.Header;
 import com.ifce.jedi.repository.ContentRepository;
 import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -26,7 +18,7 @@ public class ContentService {
     @Autowired
     private ContentRepository contentRepository;
     @Autowired
-    private CloudinaryService cloudinaryService;
+    private MinioService minioService;
 
 
     @Transactional
@@ -75,12 +67,12 @@ public class ContentService {
 
         }
         if(dto.getMainImage() != null && !dto.getMainImage().isEmpty()){
-            if (content.getCloudinaryPublicId() != null) {
-                cloudinaryService.deleteImage(content.getCloudinaryPublicId());
+            if (content.getStorageNamefile() != null) {
+                minioService.deleteImage(content.getStorageNamefile());
             }
-            var uploadResult = cloudinaryService.uploadImage(dto.getMainImage());
+            var uploadResult = minioService.create(dto.getMainImage());
             content.setMainImageUrl(uploadResult.get("url"));
-            content.setCloudinaryPublicId(uploadResult.get("public_id"));
+            content.setStorageNamefile(uploadResult.get("filename"));
         }
 
         Content updated = contentRepository.save(content);
@@ -94,9 +86,9 @@ public class ContentService {
 
 
         ContentItem item = new ContentItem();
-        var uploadResult = cloudinaryService.uploadImage(file);
+        var uploadResult = minioService.create(file);
         item.setImgUrl(uploadResult.get("url"));
-        item.setCloudinaryPublicId(uploadResult.get("public_id"));
+        item.setStorageFilename(uploadResult.get("filename"));
         item.setImgText(dto.getImgTexts());
         item.setContent(content);
         content.getImgCarousel().add(item);
@@ -141,7 +133,7 @@ public class ContentService {
                 .findFirst()
                 .orElseThrow(() -> new RuntimeException("Slide não encontrado"));
 
-        cloudinaryService.deleteImage(itemToRemove.getCloudinaryPublicId());
+        minioService.deleteImage(itemToRemove.getStorageFilename());
         content.getImgCarousel().remove(itemToRemove);
 
         contentRepository.save(content);
@@ -164,12 +156,12 @@ public class ContentService {
         }
 
         if (file != null && !file.isEmpty()) {
-            if (item.getCloudinaryPublicId() != null) {
-                cloudinaryService.deleteImage(item.getCloudinaryPublicId());
+            if (item.getStorageFilename() != null) {
+                minioService.deleteImage(item.getStorageFilename());
             }
-            var uploadResult = cloudinaryService.uploadImage(file);
+            var uploadResult = minioService.create(file);
             item.setImgUrl(uploadResult.get("url"));
-            item.setCloudinaryPublicId(uploadResult.get("public_id"));
+            item.setStorageFilename(uploadResult.get("filename"));
         }
 
         contentRepository.save(content);

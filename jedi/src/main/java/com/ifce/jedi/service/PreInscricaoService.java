@@ -22,7 +22,7 @@ public class PreInscricaoService {
     PreInscricaoRepository preInscricaoRepository;
 
     @Autowired
-    CloudinaryService  cloudinaryService;
+    MinioService  minioService;
 
     public PreInscricao createRegistration(PreInscricaoDto preInscricaoDto) {
 
@@ -53,28 +53,21 @@ public class PreInscricaoService {
             throw new RegistrationAlreadyMadeException("Inscrição já finalizada, não é possível completar novamente.");
         }
 
-        try {
-            Map<String, String> documentUpload = cloudinaryService.uploadImage(dto.document());
-            Map<String, String> proofUpload = cloudinaryService.uploadImage(dto.proofOfAdress());
+        Map<String, String> documentUpload = minioService.create(dto.document());
+        Map<String, String> proofUpload = minioService.create(dto.proofOfAdress());
 
-            preInscricao.setBirthDate(dto.birthDate());
-            preInscricao.setMunicipality(dto.municipality());
-            preInscricao.setCpf(dto.cpf());
-            preInscricao.setRg(dto.rg());
-            preInscricao.setDocumentUrl(documentUpload.get("url"));
-            preInscricao.setProofOfAdressUrl(proofUpload.get("url"));
+        preInscricao.setBirthDate(dto.birthDate());
+        preInscricao.setMunicipality(dto.municipality());
+        preInscricao.setCpf(dto.cpf());
+        preInscricao.setRg(dto.rg());
+        preInscricao.setDocumentUrl(documentUpload.get("url"));
+        preInscricao.setProofOfAdressUrl(proofUpload.get("url"));
 
-            preInscricao.setStatus(StatusPreInscricao.COMPLETO);
+        preInscricao.setStatus(StatusPreInscricao.COMPLETO);
 
-            preInscricaoRepository.save(preInscricao);
+        preInscricaoRepository.save(preInscricao);
 
-        } catch (IOException e) {
-            throw new UploadException("Erro ao fazer uploads.", e);
-        }
     }
-
-
-
 
     public PreInscricao validateTokenOrThrow(String token) {
         PreInscricao preInscricao = findByContinuationToken(token)

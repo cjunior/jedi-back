@@ -17,7 +17,7 @@ public class Content {
     private String mainImageUrl;
     private String mainImageText;
 
-    private String CloudinaryPublicId;
+    private String storageNamefile;
 
     @OneToMany(mappedBy = "content", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<ContentItem> imgCarousel = new ArrayList<>();
@@ -70,12 +70,12 @@ public class Content {
         this.mainImageText = mainImageText;
     }
 
-    public String getCloudinaryPublicId() {
-        return CloudinaryPublicId;
+    public String getStorageNamefile() {
+        return storageNamefile;
     }
 
-    public void setCloudinaryPublicId(String cloudinaryPublicId) {
-        CloudinaryPublicId = cloudinaryPublicId;
+    public void setStorageNamefile(String storageNamefile) {
+        this.storageNamefile = storageNamefile;
     }
 
     public List<ContentItem> getImgCarousel() {
@@ -89,14 +89,13 @@ public class Content {
     public Content() {
     }
 
-    public Content(Long id, String title, String subTitle, String description, String mainImageUrl, String mainImageText, String cloudinaryPublicId, List<ContentItem> imgCarousel) {
-        this.id = id;
+    public Content(String title, String subTitle, String description, String mainImageUrl, String storageNamefile, List<ContentItem> imgCarousel, String mainImageText) {
         this.title = title;
         this.subTitle = subTitle;
         this.description = description;
         this.mainImageUrl = mainImageUrl;
-        this.mainImageText = mainImageText;
-        CloudinaryPublicId = cloudinaryPublicId;
+        this.storageNamefile = storageNamefile;
         this.imgCarousel = imgCarousel;
+        this.mainImageText = mainImageText;
     }
 }
