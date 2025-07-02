@@ -29,7 +29,7 @@ public class PreInscricaoController {
     public ResponseEntity<?> createRegistration(@Valid @RequestBody PreInscricaoDto preInscricaoDto) {
         PreInscricao preInscricao = preInscricaoService.createRegistration(preInscricaoDto);
         String token = preInscricao.getContinuationToken();
-        String link = "http://localhost:8080/pre-inscricao/continuar/" + token;
+        String link = "https://jedi-front.vercel.app/pre-inscricao/continuar/" + token;
 
         try {
             emailService.sendLink(preInscricaoDto.email(), link);
