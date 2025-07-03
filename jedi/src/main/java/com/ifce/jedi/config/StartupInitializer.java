@@ -17,6 +17,7 @@ import com.ifce.jedi.repository.RedeJediImageRepository;
 import com.ifce.jedi.repository.RedeJediSectionRepository;
 import com.ifce.jedi.repository.UserRepository;
 import com.ifce.jedi.service.*;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -26,7 +27,9 @@ import java.util.List;
 
 @Configuration
 public class StartupInitializer {
-
+    @Value("${app.base-url}")
+    private String baseUrl;
+    private LocalStorageService localStorageService;
     @Bean
     public CommandLineRunner initDefaultAdmin(UserRepository userRepository, PasswordEncoder passwordEncoder) {
         return args -> {
@@ -50,7 +53,7 @@ public class StartupInitializer {
         return args -> {
             if (headerService.getHeader() == null) {
                 HeaderUrlDto headerUrlDto = new HeaderUrlDto(
-                        "https://res.cloudinary.com/dp98r2imm/image/upload/v1749996488/d750ae3dcaf62a93289de01f9b7384e86d42784e_kmfia6.png",
+                        baseUrl+"/publicos/"+"headerInicial.png",
                         "d750ae3dcaf62a93289de01f9b7384e86d42784e_kmfia6",
                         "O Projeto",
                         "Conteúdo",

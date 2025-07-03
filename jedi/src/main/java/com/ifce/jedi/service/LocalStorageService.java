@@ -42,4 +42,8 @@ public class LocalStorageService {
     public Path carregar(String nomeArquivo) {
         return Paths.get(storagePath).resolve(nomeArquivo);
     }
+
+    public String getStoragePath() {
+        return storagePath;
+    }
 }
