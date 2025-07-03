@@ -97,14 +97,16 @@ public class BlogSectionService {
             var linkCru = baseUrl + "/publicos/" + uploadResult;
             var linkSanitizado = linkCru.replaceAll("\\s+", "_");
             newItem.setImageUrl(linkSanitizado);
-            newItem.setFileName(uploadResult);
+            newItem.setCloudinaryPublicId(uploadResult);
         }
 
         // Upload do ícone (novo)
         if (dto.iconFile() != null && !dto.iconFile().isEmpty()) {
-            var iconUploadResult = cloudinaryService.uploadImage(dto.iconFile());
-            newItem.setIconUrl(iconUploadResult.get("url"));
-            newItem.setIconCloudinaryPublicId(iconUploadResult.get("public_id"));
+            var iconUploadResult = localStorageService.salvar(dto.iconFile());
+            var linkCru = baseUrl + "/publicos/" + iconUploadResult;
+            var linkSanitizado = linkCru.replaceAll("\\s+", "_");
+            newItem.setIconUrl(linkSanitizado);
+            newItem.setIconCloudinaryPublicId(iconUploadResult);
         }
 
         section.getItems().add(newItem);
@@ -133,24 +135,26 @@ public class BlogSectionService {
 
         // Atualiza imagem principal (existente)
         if (dto.file() != null && !dto.file().isEmpty()) {
-            if (item.getFileName() != null) {
-                localStorageService.deletar(item.getFileName());
+            if (item.getCloudinaryPublicId() != null) {
+                localStorageService.deletar(item.getCloudinaryPublicId());
             }
             var uploadResult = localStorageService.salvar(dto.file());
             var linkCru = baseUrl + "/publicos/" + uploadResult;
             var linkSanitizado = linkCru.replaceAll("\\s+", "_");
             item.setImageUrl(linkSanitizado);
-            item.setFileName(uploadResult);
+            item.setCloudinaryPublicId(uploadResult);
         }
 
         // Atualiza ícone (novo)
         if (dto.iconFile() != null && !dto.iconFile().isEmpty()) {
             if (item.getIconCloudinaryPublicId() != null) {
-                cloudinaryService.deleteImage(item.getIconCloudinaryPublicId());
+                localStorageService.deletar(item.getIconCloudinaryPublicId());
             }
-            var iconUploadResult = cloudinaryService.uploadImage(dto.iconFile());
-            item.setIconUrl(iconUploadResult.get("url"));
-            item.setIconCloudinaryPublicId(iconUploadResult.get("public_id"));
+            var iconUploadResult = localStorageService.salvar(dto.iconFile());
+            var linkCru = baseUrl + "/publicos/" + iconUploadResult;
+            var linkSanitizado = linkCru.replaceAll("\\s+", "_");
+            item.setIconUrl(linkSanitizado);
+            item.setIconCloudinaryPublicId(iconUploadResult);
         }
 
         repository.save(section);
@@ -190,12 +194,12 @@ public class BlogSectionService {
 
         // Deleta a imagem principal do Cloudinary (se existir)
         if (item.getCloudinaryPublicId() != null) {
-            cloudinaryService.deleteImage(item.getCloudinaryPublicId());
+            localStorageService.deletar(item.getCloudinaryPublicId());
         }
 
         // Deleta o ícone do Cloudinary (se existir)
         if (item.getIconCloudinaryPublicId() != null) {
-            cloudinaryService.deleteImage(item.getIconCloudinaryPublicId());
+            localStorageService.deletar(item.getIconCloudinaryPublicId());
         }
 
         // Remove o item da lista e salva a seção
