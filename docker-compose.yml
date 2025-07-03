@@ -4,13 +4,10 @@ services:
     build:
       context: ./jedi
     expose:
-      - 8080:8080
+      - 8090:8080
     volumes:
       - ${HOME}/jedi-arquivos/documentos:/home/app/jedi-arquivos/documentos
     environment:
-      CLOUDINARY_CLOUD_NAME: ${CLOUDINARY_CLOUD_NAME}
-      CLOUDINARY_API_KEY: ${CLOUDINARY_API_KEY}
-      CLOUDINARY_API_SECRET: ${CLOUDINARY_API_SECRET}
       APP_BASE_URL: ${APP_BASE_URL}
     logging:
       options:
@@ -33,21 +30,6 @@ services:
     logging:
       options:
         max-size: 10m
-    networks:
-      - jedi-network
-
-  caddy_reverse_proxy:
-    image: caddy:2
-    container_name: caddy_reverse_proxy
-    ports:
-      - 80:80
-      - 443:443
-    volumes:
-      - ./Caddyfile:/etc/caddy/Caddyfile
-      - caddy_data:/data
-      - caddy_config:/config
-    depends_on:
-      - jedi
     networks:
       - jedi-network
 
