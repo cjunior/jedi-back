@@ -1,6 +1,5 @@
 package com.ifce.jedi.controllers;
 
-
 import com.ifce.jedi.dto.PreInscricao.PreInscricaoDadosDto;
 import com.ifce.jedi.dto.User.RegisterDto;
 import com.ifce.jedi.dto.User.UpdateUserDto;
@@ -19,6 +18,7 @@ import org.springframework.http.*;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
+import java.io.IOException;
 import java.util.List;
 import java.util.UUID;
 
@@ -27,19 +27,17 @@ import java.util.UUID;
 public class UserController {
 
     @Autowired
-    UserService userService;
+    private UserService userService;
 
     @Autowired
-    PdfService pdfService;
-
+    private PdfService pdfService;
 
     @PostMapping(value = "/register", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     @PreAuthorize("hasRole('ADMIN')")
-    public ResponseEntity register(@ModelAttribute @Valid RegisterDto registerDto) {
+    public ResponseEntity<?> register(@ModelAttribute @Valid RegisterDto registerDto) throws IOException {
         userService.register(registerDto);
         return ResponseEntity.status(HttpStatus.CREATED).build();
     }
-
 
     @GetMapping("/pre-inscricoes")
     @PreAuthorize("hasAnyRole('ADMIN', 'GERENTE')")
@@ -47,17 +45,14 @@ public class UserController {
             @RequestParam(required = false) String nome,
             @RequestParam(required = false) String email,
             @RequestParam(required = false) StatusPreInscricao status,
-            Pageable pageable
-    ) {
+            Pageable pageable) {
         return ResponseEntity.ok(userService.getAllPreInscricoes(nome, email, status, pageable));
     }
-
 
     @GetMapping("/relatorio/pre-inscricoes/pdf")
     @PreAuthorize("hasAnyRole('ADMIN', 'GERENTE')")
     public ResponseEntity<byte[]> gerarRelatorioPDF(
-            @RequestParam(required = false) StatusPreInscricao status
-    ) {
+            @RequestParam(required = false) StatusPreInscricao status) {
         List<PreInscricaoDadosDto> dados = userService
                 .getAllPreInscricoes(null, null, status, Pageable.unpaged())
                 .getContent();
@@ -72,32 +67,34 @@ public class UserController {
 
         return ResponseEntity.ok().headers(headers).body(pdf);
     }
+
     @GetMapping("/users")
     @PreAuthorize("hasAnyRole('ADMIN', 'GERENTE')")
     public ResponseEntity<Page<UserTableResponseDto>> getPaginatedUsers(
             @RequestParam(defaultValue = "0") int page,
             @RequestParam(defaultValue = "10") int size,
             @RequestParam(required = false) String searchTerm) {
-
         Pageable pageable = PageRequest.of(page, size, Sort.by("createdAt").descending());
         return ResponseEntity.ok(userService.getPaginatedUsers(pageable, searchTerm));
     }
+
     @GetMapping("/users/{id}")
     @PreAuthorize("hasAnyRole('ADMIN', 'GERENTE')")
     public ResponseEntity<UserResponseDto> getUserById(@PathVariable UUID id) {
         return ResponseEntity.ok(userService.getUserById(id));
     }
+
     @PutMapping(value = "/users/{id}", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     @PreAuthorize("hasAnyRole('ADMIN', 'GERENTE')")
     public ResponseEntity<UserResponseDto> updateUser(
             @PathVariable UUID id,
-            @ModelAttribute @Valid UpdateUserDto updateUserDto
-    ) {
+            @ModelAttribute @Valid UpdateUserDto updateUserDto) throws IOException {
         return ResponseEntity.ok(userService.updateUser(id, updateUserDto));
     }
+
     @DeleteMapping("/users/{id}")
-    @PreAuthorize("hasRole('ADMIN')") // Somente ADMIN pode deletar
-    public ResponseEntity<Void> deleteUser(@PathVariable UUID id) {
+    @PreAuthorize("hasRole('ADMIN')")
+    public ResponseEntity<Void> deleteUser(@PathVariable UUID id) throws IOException {
         userService.deleteUser(id);
         return ResponseEntity.noContent().build();
     }

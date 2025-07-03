@@ -1,6 +1,5 @@
 package com.ifce.jedi.service;
 
-
 import com.ifce.jedi.dto.PreInscricao.PreInscricaoDadosDto;
 import com.ifce.jedi.dto.User.RegisterDto;
 import com.ifce.jedi.dto.User.UpdateUserDto;
@@ -15,6 +14,7 @@ import com.ifce.jedi.model.User.UserRole;
 import com.ifce.jedi.repository.PreInscricaoRepository;
 import com.ifce.jedi.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
@@ -22,6 +22,7 @@ import org.springframework.data.jpa.domain.Specification;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
 import java.util.*;
@@ -30,18 +31,22 @@ import java.util.*;
 public class UserService {
 
     @Autowired
-    UserRepository userRepository;
+    private UserRepository userRepository;
 
     @Autowired
-    PreInscricaoRepository preInscricaoRepository;
+    private PreInscricaoRepository preInscricaoRepository;
 
     @Autowired
-    private CloudinaryService cloudinaryService;
+    private LocalStorageService localStorageService;
 
-    public void register(RegisterDto dto) {
+    @Value("${app.base-url}")
+    private String baseUrl;
+
+    @Transactional
+    public void register(RegisterDto dto) throws IOException {
         UserRole userRole;
         try {
-            userRole = UserRole.valueOf(dto.getRole().toUpperCase()); // Aceita string minúscula também
+            userRole = UserRole.valueOf(dto.getRole().toUpperCase());
         } catch (IllegalArgumentException e) {
             throw new IllegalArgumentException("Função inválida: " + dto.getRole());
         }
@@ -54,12 +59,8 @@ public class UserService {
         String photoUrl = null;
 
         if (dto.getPhoto() != null && !dto.getPhoto().isEmpty()) {
-            try {
-                Map<String, String> uploadResult = cloudinaryService.uploadImage(dto.getPhoto());
-                photoUrl = uploadResult.get("url");
-            } catch (IOException e) {
-                throw new UploadException("Erro ao fazer upload da foto no Cloudinary", e);
-            }
+            String uploadResult = localStorageService.salvar(dto.getPhoto());
+            photoUrl = baseUrl + "/publicos/" + uploadResult.replaceAll("\\s+", "_");
         }
 
         User newUser = new User(
@@ -72,8 +73,6 @@ public class UserService {
 
         userRepository.save(newUser);
     }
-
-
 
     public Page<PreInscricaoDadosDto> getAllPreInscricoes(
             String nome,
@@ -110,6 +109,7 @@ public class UserService {
         return preInscricaoRepository.findAll(spec, pageable)
                 .map(PreInscricaoDadosDto::fromEntity);
     }
+
     @Transactional(readOnly = true)
     public UserResponseDto getUserById(UUID userId) {
         User user = userRepository.findById(userId)
@@ -120,7 +120,6 @@ public class UserService {
 
     @Transactional(readOnly = true)
     public Page<UserTableResponseDto> getPaginatedUsers(Pageable pageable, String searchTerm) {
-        // Filtra usuários (melhorar com query JPQL para grandes volumes)
         List<User> filteredUsers = userRepository.findAll().stream()
                 .filter(user -> searchTerm == null || searchTerm.isBlank() ||
                         user.getName().toLowerCase().contains(searchTerm.toLowerCase()) ||
@@ -128,7 +127,6 @@ public class UserService {
                 .sorted(Comparator.comparing(User::getCreatedAt).reversed())
                 .toList();
 
-        // Paginação manual (igual ao seu exemplo)
         int totalItems = filteredUsers.size();
         int pageSize = pageable.getPageSize();
         int currentPage = pageable.getPageNumber();
@@ -137,24 +135,22 @@ public class UserService {
         List<User> pageUsers = startItem >= totalItems ? Collections.emptyList() :
                 filteredUsers.subList(startItem, Math.min(startItem + pageSize, totalItems));
 
-        // Converte para DTO
         List<UserTableResponseDto> dtos = pageUsers.stream()
                 .map(UserTableResponseDto::new)
                 .toList();
 
         return new PageImpl<>(dtos, pageable, totalItems);
     }
+
     @Transactional
-    public UserResponseDto updateUser(UUID userId, UpdateUserDto dto) {
+    public UserResponseDto updateUser(UUID userId, UpdateUserDto dto) throws IOException {
         User user = userRepository.findById(userId)
                 .orElseThrow(() -> new RuntimeException("Usuário não encontrado com ID: " + userId));
 
-        // Atualiza nome (se fornecido)
         if (dto.getName() != null && !dto.getName().isBlank()) {
             user.setName(dto.getName());
         }
 
-        // Atualiza email/login (se fornecido e não repetido)
         if (dto.getLogin() != null && !dto.getLogin().isBlank()) {
             if (userRepository.findByLogin(dto.getLogin()).isPresent() && !user.getLogin().equals(dto.getLogin())) {
                 throw new EmailAlreadyUsedException("Email já está em uso por outro usuário.");
@@ -162,7 +158,6 @@ public class UserService {
             user.setLogin(dto.getLogin());
         }
 
-        // Atualiza role (se fornecido e válida)
         if (dto.getRole() != null && !dto.getRole().isBlank()) {
             try {
                 UserRole userRole = UserRole.valueOf(dto.getRole().toUpperCase());
@@ -172,7 +167,6 @@ public class UserService {
             }
         }
 
-        // Atualiza senha (se fornecida e válida)
         if (dto.getPassword() != null && !dto.getPassword().isBlank()) {
             if (dto.getConfirmPassword() == null || !dto.getPassword().equals(dto.getConfirmPassword())) {
                 throw new IllegalArgumentException("Senha e confirmação não coincidem.");
@@ -181,36 +175,27 @@ public class UserService {
             user.setPassword(encryptedPassword);
         }
 
-        // Atualiza foto (se fornecida)
         if (dto.getPhoto() != null && !dto.getPhoto().isEmpty()) {
-            try {
-                // Remove foto antiga do Cloudinary (se existir)
-                if (user.getPhotoUrl() != null) {
-                    cloudinaryService.deleteImage(user.getPhotoUrl());
-                }
-                // Upload da nova foto
-                Map<String, String> uploadResult = cloudinaryService.uploadImage(dto.getPhoto());
-                user.setPhotoUrl(uploadResult.get("url"));
-            } catch (IOException e) {
-                throw new UploadException("Erro ao atualizar a foto", e);
+            if (user.getPhotoUrl() != null) {
+                String oldFileName = user.getPhotoUrl().replace(baseUrl + "/publicos/", "").replace("_", " ");
+                localStorageService.deletar(oldFileName);
             }
+            String uploadResult = localStorageService.salvar(dto.getPhoto());
+            user.setPhotoUrl(baseUrl + "/publicos/" + uploadResult.replaceAll("\\s+", "_"));
         }
 
         userRepository.save(user);
         return new UserResponseDto(user);
     }
+
     @Transactional
-    public void deleteUser(UUID userId) {
+    public void deleteUser(UUID userId) throws IOException {
         User user = userRepository.findById(userId)
                 .orElseThrow(() -> new RuntimeException("Usuário não encontrado com ID: " + userId));
 
-        // Remove a foto do Cloudinary se existir
         if (user.getPhotoUrl() != null) {
-            try {
-                cloudinaryService.deleteImage(user.getPhotoUrl());
-            } catch (IOException e) {
-                throw new UploadException("Erro ao deletar foto do usuário no Cloudinary", e);
-            }
+            String fileName = user.getPhotoUrl().replace(baseUrl + "/publicos/", "").replace("_", " ");
+            localStorageService.deletar(fileName);
         }
 
         userRepository.delete(user);
