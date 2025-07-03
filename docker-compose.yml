@@ -5,10 +5,13 @@ services:
       context: ./jedi
     expose:
       - 8080:8080
+    volumes:
+      - ${HOME}/jedi-arquivos/documentos:/home/app/jedi-arquivos/documentos
     environment:
       CLOUDINARY_CLOUD_NAME: ${CLOUDINARY_CLOUD_NAME}
       CLOUDINARY_API_KEY: ${CLOUDINARY_API_KEY}
       CLOUDINARY_API_SECRET: ${CLOUDINARY_API_SECRET}
+      APP_BASE_URL: ${APP_BASE_URL}
     logging:
       options:
         max-size: 10m

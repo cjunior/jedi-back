@@ -8,6 +8,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -25,7 +26,10 @@ public class BlogSectionService {
     private BlogSectionRepository repository;
 
     @Autowired
-    private CloudinaryService cloudinaryService;
+    private LocalStorageService localStorageService;
+
+    @Value("${app.base-url}")
+    private String baseUrl;
 
     @Transactional
     public BlogSectionResponseDto get() {
@@ -89,16 +93,20 @@ public class BlogSectionService {
 
         // Upload da imagem principal (existente)
         if (dto.file() != null && !dto.file().isEmpty()) {
-            var uploadResult = cloudinaryService.uploadImage(dto.file());
-            newItem.setImageUrl(uploadResult.get("url"));
-            newItem.setCloudinaryPublicId(uploadResult.get("public_id"));
+            var uploadResult = localStorageService.salvar(dto.file());
+            var linkCru = baseUrl + "/publicos/" + uploadResult;
+            var linkSanitizado = linkCru.replaceAll("\\s+", "_");
+            newItem.setImageUrl(linkSanitizado);
+            newItem.setCloudinaryPublicId(uploadResult);
         }
 
         // Upload do ícone (novo)
         if (dto.iconFile() != null && !dto.iconFile().isEmpty()) {
-            var iconUploadResult = cloudinaryService.uploadImage(dto.iconFile());
-            newItem.setIconUrl(iconUploadResult.get("url"));
-            newItem.setIconCloudinaryPublicId(iconUploadResult.get("public_id"));
+            var iconUploadResult = localStorageService.salvar(dto.iconFile());
+            var linkCru = baseUrl + "/publicos/" + iconUploadResult;
+            var linkSanitizado = linkCru.replaceAll("\\s+", "_");
+            newItem.setIconUrl(linkSanitizado);
+            newItem.setIconCloudinaryPublicId(iconUploadResult);
         }
 
         section.getItems().add(newItem);
@@ -128,21 +136,25 @@ public class BlogSectionService {
         // Atualiza imagem principal (existente)
         if (dto.file() != null && !dto.file().isEmpty()) {
             if (item.getCloudinaryPublicId() != null) {
-                cloudinaryService.deleteImage(item.getCloudinaryPublicId());
+                localStorageService.deletar(item.getCloudinaryPublicId());
             }
-            var uploadResult = cloudinaryService.uploadImage(dto.file());
-            item.setImageUrl(uploadResult.get("url"));
-            item.setCloudinaryPublicId(uploadResult.get("public_id"));
+            var uploadResult = localStorageService.salvar(dto.file());
+            var linkCru = baseUrl + "/publicos/" + uploadResult;
+            var linkSanitizado = linkCru.replaceAll("\\s+", "_");
+            item.setImageUrl(linkSanitizado);
+            item.setCloudinaryPublicId(uploadResult);
         }
 
         // Atualiza ícone (novo)
         if (dto.iconFile() != null && !dto.iconFile().isEmpty()) {
             if (item.getIconCloudinaryPublicId() != null) {
-                cloudinaryService.deleteImage(item.getIconCloudinaryPublicId());
+                localStorageService.deletar(item.getIconCloudinaryPublicId());
             }
-            var iconUploadResult = cloudinaryService.uploadImage(dto.iconFile());
-            item.setIconUrl(iconUploadResult.get("url"));
-            item.setIconCloudinaryPublicId(iconUploadResult.get("public_id"));
+            var iconUploadResult = localStorageService.salvar(dto.iconFile());
+            var linkCru = baseUrl + "/publicos/" + iconUploadResult;
+            var linkSanitizado = linkCru.replaceAll("\\s+", "_");
+            item.setIconUrl(linkSanitizado);
+            item.setIconCloudinaryPublicId(iconUploadResult);
         }
 
         repository.save(section);
@@ -182,12 +194,12 @@ public class BlogSectionService {
 
         // Deleta a imagem principal do Cloudinary (se existir)
         if (item.getCloudinaryPublicId() != null) {
-            cloudinaryService.deleteImage(item.getCloudinaryPublicId());
+            localStorageService.deletar(item.getCloudinaryPublicId());
         }
 
         // Deleta o ícone do Cloudinary (se existir)
         if (item.getIconCloudinaryPublicId() != null) {
-            cloudinaryService.deleteImage(item.getIconCloudinaryPublicId());
+            localStorageService.deletar(item.getIconCloudinaryPublicId());
         }
 
         // Remove o item da lista e salva a seção

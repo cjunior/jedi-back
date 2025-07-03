@@ -4,6 +4,7 @@ import com.ifce.jedi.dto.PresentationSection.*;
 import com.ifce.jedi.model.SecoesSite.PresentationSection;
 import com.ifce.jedi.repository.PresentationSectionRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -18,7 +19,10 @@ public class PresentationSectionService {
     private PresentationSectionRepository repository;
 
     @Autowired
-    private CloudinaryService cloudinaryService;
+    private LocalStorageService localStorageService;
+
+    @Value("${app.base-url}")
+    private String baseUrl;
 
     @Transactional
     public PresentationSectionResponseDto get() {
@@ -63,13 +67,14 @@ public class PresentationSectionService {
                 .orElseThrow(() -> new RuntimeException("Presentation section not found"));
 
         if(file != null && !file.isEmpty()){
-            var uploadResult = cloudinaryService.uploadImage(file);
-            if (entity.getCloudinaryPublicId() != null) {
-                cloudinaryService.deleteImage(entity.getCloudinaryPublicId());
+            var uploadResult = localStorageService.salvar(file);
+            if(entity.getFileName() != null){
+                localStorageService.deletar(entity.getFileName());
             }
-
-            entity.setImgUrl(uploadResult.get("url"));
-            entity.setCloudinaryPublicId(uploadResult.get("public_id"));
+            var linkCru = baseUrl + "/publicos/" + uploadResult;
+            var linkSanitizado = linkCru.replaceAll("\\s+", "_");
+            entity.setImgUrl(linkSanitizado);
+            entity.setFileName(uploadResult);
         }
 
         PresentationSection updated = repository.save(entity);

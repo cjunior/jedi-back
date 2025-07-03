@@ -61,6 +61,9 @@ public class SecurityConfigurations {
                         .requestMatchers(HttpMethod.DELETE, "/banner/slide/{slideId}").hasAnyRole("ADMIN", "GERENTE")
                         .requestMatchers(HttpMethod.PUT, "/banner/update").hasAnyRole("ADMIN", "GERENTE")
                         .requestMatchers(HttpMethod.GET, "/banner/get").permitAll()
+                        .requestMatchers(HttpMethod.GET, "/publicos/**").permitAll()
+                        .requestMatchers(HttpMethod.GET, "/sensiveis/**").permitAll()
+
 
                         // Equipe
                         .requestMatchers(HttpMethod.GET, "/team/get").permitAll()
