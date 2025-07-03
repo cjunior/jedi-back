@@ -95,5 +95,10 @@ public class UserController {
     ) {
         return ResponseEntity.ok(userService.updateUser(id, updateUserDto));
     }
-
+    @DeleteMapping("/users/{id}")
+    @PreAuthorize("hasRole('ADMIN')") // Somente ADMIN pode deletar
+    public ResponseEntity<Void> deleteUser(@PathVariable UUID id) {
+        userService.deleteUser(id);
+        return ResponseEntity.noContent().build();
+    }
 }

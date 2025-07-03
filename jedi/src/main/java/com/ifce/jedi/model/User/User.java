@@ -40,7 +40,7 @@ public class User implements UserDetails {
     @Column(name = "photo_url")
     private String photoUrl;
 
-    // Construtores (mantidos exatamente como estavam)
+
     public User() {
     }
 
@@ -82,7 +82,7 @@ public class User implements UserDetails {
         this.photoUrl = photoUrl;
     }
 
-    // Getters e Setters (apenas adicionei os 3 que faltavam)
+
     public String getPhotoUrl() {
         return photoUrl;
     }

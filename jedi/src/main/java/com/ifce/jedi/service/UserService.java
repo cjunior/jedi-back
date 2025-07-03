@@ -199,4 +199,20 @@ public class UserService {
         userRepository.save(user);
         return new UserResponseDto(user);
     }
+    @Transactional
+    public void deleteUser(UUID userId) {
+        User user = userRepository.findById(userId)
+                .orElseThrow(() -> new RuntimeException("Usuário não encontrado com ID: " + userId));
+
+        // Remove a foto do Cloudinary se existir
+        if (user.getPhotoUrl() != null) {
+            try {
+                cloudinaryService.deleteImage(user.getPhotoUrl());
+            } catch (IOException e) {
+                throw new UploadException("Erro ao deletar foto do usuário no Cloudinary", e);
+            }
+        }
+
+        userRepository.delete(user);
+    }
 }
