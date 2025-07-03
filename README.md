@@ -1,6 +1,6 @@
 #  Projeto Jedi Backend
 
-Este é o backend do sistema **Jedi**, uma aplicação construída com **Spring Boot**, **PostgreSQL**, **Cloudinary** e containerizada com **Docker**. Ele fornece uma API robusta para gerenciar dados e arquivos, utilizando uma arquitetura moderna e escalável.
+Este é o backend do sistema **Jedi**, uma aplicação construída com **Spring Boot**, **PostgreSQL** e containerizada com **Docker**. Ele fornece uma API robusta para gerenciar dados e arquivos, utilizando uma arquitetura moderna e escalável.
 
 ##  Tecnologias Utilizadas
 
