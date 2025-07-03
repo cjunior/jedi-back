@@ -8,7 +8,7 @@ on:
 
 jobs:
   build:
-    runs-on: ubuntu-latest, back-jedi-runner
+    runs-on: [ubuntu-latest, back-jedi-runner]
 
     steps:
       - name: Checkout código
