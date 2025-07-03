@@ -3,6 +3,8 @@ package com.ifce.jedi.service;
 
 import com.ifce.jedi.dto.PreInscricao.PreInscricaoDadosDto;
 import com.ifce.jedi.dto.User.RegisterDto;
+import com.ifce.jedi.dto.User.UserResponseDto;
+import com.ifce.jedi.dto.User.UserTableResponseDto;
 import com.ifce.jedi.exception.custom.EmailAlreadyUsedException;
 import com.ifce.jedi.exception.custom.UploadException;
 import com.ifce.jedi.model.User.PreInscricao;
@@ -13,13 +15,15 @@ import com.ifce.jedi.repository.PreInscricaoRepository;
 import com.ifce.jedi.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.io.IOException;
-import java.util.Map;
+import java.util.*;
 
 @Service
 public class UserService {
@@ -105,8 +109,38 @@ public class UserService {
         return preInscricaoRepository.findAll(spec, pageable)
                 .map(PreInscricaoDadosDto::fromEntity);
     }
+    @Transactional(readOnly = true)
+    public UserResponseDto getUserById(UUID userId) {
+        User user = userRepository.findById(userId)
+                .orElseThrow(() -> new RuntimeException("Usuário não encontrado com ID: " + userId));
 
+        return new UserResponseDto(user);
+    }
 
+    @Transactional(readOnly = true)
+    public Page<UserTableResponseDto> getPaginatedUsers(Pageable pageable, String searchTerm) {
+        // Filtra usuários (melhorar com query JPQL para grandes volumes)
+        List<User> filteredUsers = userRepository.findAll().stream()
+                .filter(user -> searchTerm == null || searchTerm.isBlank() ||
+                        user.getName().toLowerCase().contains(searchTerm.toLowerCase()) ||
+                        user.getLogin().toLowerCase().contains(searchTerm.toLowerCase()))
+                .sorted(Comparator.comparing(User::getCreatedAt).reversed())
+                .toList();
 
+        // Paginação manual (igual ao seu exemplo)
+        int totalItems = filteredUsers.size();
+        int pageSize = pageable.getPageSize();
+        int currentPage = pageable.getPageNumber();
+        int startItem = currentPage * pageSize;
 
+        List<User> pageUsers = startItem >= totalItems ? Collections.emptyList() :
+                filteredUsers.subList(startItem, Math.min(startItem + pageSize, totalItems));
+
+        // Converte para DTO
+        List<UserTableResponseDto> dtos = pageUsers.stream()
+                .map(UserTableResponseDto::new)
+                .toList();
+
+        return new PageImpl<>(dtos, pageable, totalItems);
+    }
 }

@@ -47,6 +47,8 @@ public class SecurityConfigurations {
                         .requestMatchers(HttpMethod.POST, "/management/register").hasRole("ADMIN")
                         .requestMatchers(HttpMethod.GET, "/management/pre-inscricoes").hasAnyRole("ADMIN", "GERENTE")
                         .requestMatchers(HttpMethod.GET, "/management/relatorio/pre-inscricoes/pdf").hasAnyRole("ADMIN", "GERENTE")
+                        .requestMatchers(HttpMethod.GET, "/management/users").hasAnyRole("ADMIN", "GERENTE")
+                        .requestMatchers(HttpMethod.GET, "/management/users/{id}").hasAnyRole("ADMIN", "GERENTE")
 
                         // Pré-inscrição
                         .requestMatchers(HttpMethod.POST, "/pre-inscricao/inicial").permitAll()
