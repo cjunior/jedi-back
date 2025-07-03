@@ -3,7 +3,7 @@ services:
     container_name: jedi_backend
     build:
       context: ./jedi
-    expose:
+    ports:
       - 8090:8080
     volumes:
       - ${HOME}/jedi-arquivos/documentos:/home/app/jedi-arquivos/documentos
