@@ -5,13 +5,13 @@ import com.ifce.jedi.model.User.User;
 
 import java.util.UUID;
 
-@JsonInclude(JsonInclude.Include.NON_NULL) // Opcional: ignora campos nulos
+@JsonInclude(JsonInclude.Include.NON_NULL)
 public class UserTableResponseDto {
     private UUID id;
     private String name;
     private String email;
     private String role;
-    private boolean hasPhoto;
+    private String photoUrl; // Alterado de `boolean hasPhoto` para `String photoUrl`
 
     // Construtor
     public UserTableResponseDto(User user) {
@@ -19,7 +19,7 @@ public class UserTableResponseDto {
         this.name = user.getName();
         this.email = user.getLogin();
         this.role = user.getRole().name();
-        this.hasPhoto = user.getPhotoUrl() != null;
+        this.photoUrl = user.getPhotoUrl(); // Agora retorna a URL diretamente
     }
 
     // Getters (OBRIGATÓRIOS para o Jackson)
@@ -27,5 +27,5 @@ public class UserTableResponseDto {
     public String getName() { return name; }
     public String getEmail() { return email; }
     public String getRole() { return role; }
-    public boolean isHasPhoto() { return hasPhoto; } // ou getHasPhoto()
+    public String getPhotoUrl() { return photoUrl; } // Novo getter
 }

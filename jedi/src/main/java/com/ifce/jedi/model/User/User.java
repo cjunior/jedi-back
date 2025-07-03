@@ -132,7 +132,6 @@ public class User implements UserDetails {
         this.password = password;
     }
 
-    // Métodos do UserDetails (inalterados)
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
         return List.of(new SimpleGrantedAuthority("ROLE_" + this.role.name()));
@@ -163,7 +162,7 @@ public class User implements UserDetails {
         return UserDetails.super.isEnabled();
     }
 
-    // Equals e HashCode (inalterados)
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
