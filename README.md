@@ -50,7 +50,7 @@ Siga os passos abaixo para executar o projeto em sua máquina usando Docker:
    HOME=/root/ # Seu usuário
    
    # URL base da aplicação
-   APP_BASE_URL=http://localhost:8080 # Seu dominio
+   APP_BASE_URL=http:api.banco.ltap.ifce.edu.br # Seu dominio
    ```
    
 5. **Inicie os containers com Docker Compose**:
@@ -73,11 +73,11 @@ O Caddy atua como proxy reverso e gerencia certificados TLS/SSL automaticamente.
 1. **Atualize o Caddyfile**:
    Edite o arquivo `./Caddyfile` para incluir o novo domínio. Exemplo:
    ```caddy
-   api.jedi.com {
+   api.banco.ltap.ifce.edu.br{
        reverse_proxy jedi:8080
    }
    ```
-   Substitua `api.jedi.com` pelo seu domínio.
+   Substitua `api.banco.ltap.ifce.edu.br` pelo seu domínio.
 
 
 2. **Configure o DNS**:
