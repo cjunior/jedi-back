@@ -211,7 +211,6 @@ public class StartupInitializer {
         };
     }
 
-
     @Bean
     public CommandLineRunner initDefaultBlogSection(BlogSectionService service) {
         return args -> {
