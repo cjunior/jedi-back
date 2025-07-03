@@ -3,6 +3,7 @@ package com.ifce.jedi.controllers;
 
 import com.ifce.jedi.dto.PreInscricao.PreInscricaoDadosDto;
 import com.ifce.jedi.dto.User.RegisterDto;
+import com.ifce.jedi.dto.User.UpdateUserDto;
 import com.ifce.jedi.dto.User.UserResponseDto;
 import com.ifce.jedi.dto.User.UserTableResponseDto;
 import com.ifce.jedi.model.User.StatusPreInscricao;
@@ -85,6 +86,14 @@ public class UserController {
     @PreAuthorize("hasAnyRole('ADMIN', 'GERENTE')")
     public ResponseEntity<UserResponseDto> getUserById(@PathVariable UUID id) {
         return ResponseEntity.ok(userService.getUserById(id));
+    }
+    @PutMapping(value = "/users/{id}", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+    @PreAuthorize("hasAnyRole('ADMIN', 'GERENTE')")
+    public ResponseEntity<UserResponseDto> updateUser(
+            @PathVariable UUID id,
+            @ModelAttribute @Valid UpdateUserDto updateUserDto
+    ) {
+        return ResponseEntity.ok(userService.updateUser(id, updateUserDto));
     }
 
 }

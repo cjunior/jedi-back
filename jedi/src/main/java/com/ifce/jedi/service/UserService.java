@@ -3,6 +3,7 @@ package com.ifce.jedi.service;
 
 import com.ifce.jedi.dto.PreInscricao.PreInscricaoDadosDto;
 import com.ifce.jedi.dto.User.RegisterDto;
+import com.ifce.jedi.dto.User.UpdateUserDto;
 import com.ifce.jedi.dto.User.UserResponseDto;
 import com.ifce.jedi.dto.User.UserTableResponseDto;
 import com.ifce.jedi.exception.custom.EmailAlreadyUsedException;
@@ -142,5 +143,60 @@ public class UserService {
                 .toList();
 
         return new PageImpl<>(dtos, pageable, totalItems);
+    }
+    @Transactional
+    public UserResponseDto updateUser(UUID userId, UpdateUserDto dto) {
+        User user = userRepository.findById(userId)
+                .orElseThrow(() -> new RuntimeException("Usuário não encontrado com ID: " + userId));
+
+        // Atualiza nome (se fornecido)
+        if (dto.getName() != null && !dto.getName().isBlank()) {
+            user.setName(dto.getName());
+        }
+
+        // Atualiza email/login (se fornecido e não repetido)
+        if (dto.getLogin() != null && !dto.getLogin().isBlank()) {
+            if (userRepository.findByLogin(dto.getLogin()).isPresent() && !user.getLogin().equals(dto.getLogin())) {
+                throw new EmailAlreadyUsedException("Email já está em uso por outro usuário.");
+            }
+            user.setLogin(dto.getLogin());
+        }
+
+        // Atualiza role (se fornecido e válida)
+        if (dto.getRole() != null && !dto.getRole().isBlank()) {
+            try {
+                UserRole userRole = UserRole.valueOf(dto.getRole().toUpperCase());
+                user.setRole(userRole);
+            } catch (IllegalArgumentException e) {
+                throw new IllegalArgumentException("Função inválida: " + dto.getRole());
+            }
+        }
+
+        // Atualiza senha (se fornecida e válida)
+        if (dto.getPassword() != null && !dto.getPassword().isBlank()) {
+            if (dto.getConfirmPassword() == null || !dto.getPassword().equals(dto.getConfirmPassword())) {
+                throw new IllegalArgumentException("Senha e confirmação não coincidem.");
+            }
+            String encryptedPassword = new BCryptPasswordEncoder().encode(dto.getPassword());
+            user.setPassword(encryptedPassword);
+        }
+
+        // Atualiza foto (se fornecida)
+        if (dto.getPhoto() != null && !dto.getPhoto().isEmpty()) {
+            try {
+                // Remove foto antiga do Cloudinary (se existir)
+                if (user.getPhotoUrl() != null) {
+                    cloudinaryService.deleteImage(user.getPhotoUrl());
+                }
+                // Upload da nova foto
+                Map<String, String> uploadResult = cloudinaryService.uploadImage(dto.getPhoto());
+                user.setPhotoUrl(uploadResult.get("url"));
+            } catch (IOException e) {
+                throw new UploadException("Erro ao atualizar a foto", e);
+            }
+        }
+
+        userRepository.save(user);
+        return new UserResponseDto(user);
     }
 }

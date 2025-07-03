@@ -1,6 +1,5 @@
 package com.ifce.jedi.model.User;
 
-
 import jakarta.persistence.*;
 import org.hibernate.annotations.GenericGenerator;
 import org.springframework.security.core.GrantedAuthority;
@@ -41,6 +40,7 @@ public class User implements UserDetails {
     @Column(name = "photo_url")
     private String photoUrl;
 
+    // Construtores (mantidos exatamente como estavam)
     public User() {
     }
 
@@ -74,7 +74,6 @@ public class User implements UserDetails {
         this.name = name;
     }
 
-
     public User(String name, String login, UserRole role, String password, String photoUrl) {
         this.name = name;
         this.login = login;
@@ -83,6 +82,7 @@ public class User implements UserDetails {
         this.photoUrl = photoUrl;
     }
 
+    // Getters e Setters (apenas adicionei os 3 que faltavam)
     public String getPhotoUrl() {
         return photoUrl;
     }
@@ -111,9 +111,16 @@ public class User implements UserDetails {
         return login;
     }
 
+    public void setLogin(String login) {
+        this.login = login;
+    }
 
     public UserRole getRole() {
         return role;
+    }
+
+    public void setRole(UserRole role) {
+        this.role = role;
     }
 
     @Override
@@ -121,6 +128,11 @@ public class User implements UserDetails {
         return password;
     }
 
+    public void setPassword(String password) {
+        this.password = password;
+    }
+
+    // Métodos do UserDetails (inalterados)
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
         return List.of(new SimpleGrantedAuthority("ROLE_" + this.role.name()));
@@ -151,6 +163,7 @@ public class User implements UserDetails {
         return UserDetails.super.isEnabled();
     }
 
+    // Equals e HashCode (inalterados)
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
