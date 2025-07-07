@@ -41,13 +41,27 @@ Siga os passos abaixo para executar o projeto em sua máquina usando Docker:
 4. **Configure as variáveis de ambiente**:
    Edite o arquivo `.env` com suas credenciais e configurações do banco de dados. Exemplo:
    ```bash
+   APP_NAME=jedi
+   SERVER_PORT=8080
+   STORAGE_PATH=/home/app/jedi-arquivos/documentos
+
+   DB_URL=jdbc:postgresql://psql:5432/jedi_db
+   DB_NAME=jedi_db
+   DB_USERNAME=seuusername
+   DB_PASSWORD=suasenha
+
+   JWT
+   JWT_SECRET=suasecret
+   
+   MAIL_HOST=smtp.gmail.com
+   MAIL_PORT=587
+   MAIL_USERNAME=seuemail@example.com
+   MAIL_PASSWORD=senhadoseuemail
+
    # Banco de Dados
    POSTGRES_USER=usuario
    POSTGRES_DB=db
    POSTGRES_PASSWORD=123
-   
-   # HOME
-   HOME=/root/ # Seu usuário
    
    # URL base da aplicação
    APP_BASE_URL=http:api.banco.ltap.ifce.edu.br # Seu dominio
