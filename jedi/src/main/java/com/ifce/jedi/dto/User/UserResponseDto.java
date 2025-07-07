@@ -13,7 +13,7 @@ public class UserResponseDto {
     private String photoUrl;
     private LocalDateTime createdAt;
 
-    // Construtor
+
     public UserResponseDto(User user) {
         this.id = user.getId();
         this.name = user.getName();
@@ -23,7 +23,7 @@ public class UserResponseDto {
         this.createdAt = user.getCreatedAt();
     }
 
-    // Getters (obrigatórios para serialização JSON)
+
     public UUID getId() { return id; }
     public String getName() { return name; }
     public String getEmail() { return email; }
