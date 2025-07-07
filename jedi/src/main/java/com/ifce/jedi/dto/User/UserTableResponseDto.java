@@ -11,18 +11,18 @@ public class UserTableResponseDto {
     private String name;
     private String email;
     private String role;
-    private String photoUrl; // Alterado de `boolean hasPhoto` para `String photoUrl`
+    private String photoUrl;
 
-    // Construtor
+
     public UserTableResponseDto(User user) {
         this.id = user.getId();
         this.name = user.getName();
         this.email = user.getLogin();
         this.role = user.getRole().name();
-        this.photoUrl = user.getPhotoUrl(); // Agora retorna a URL diretamente
+        this.photoUrl = user.getPhotoUrl();
     }
 
-    // Getters (OBRIGATÓRIOS para o Jackson)
+
     public UUID getId() { return id; }
     public String getName() { return name; }
     public String getEmail() { return email; }
