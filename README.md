@@ -53,6 +53,9 @@ Siga os passos abaixo para executar o projeto em sua máquina usando Docker:
    JWT
    JWT_SECRET=suasecret
    
+   #HOME
+   HOME=/home/root #seu usuario
+   
    MAIL_HOST=smtp.gmail.com
    MAIL_PORT=587
    MAIL_USERNAME=seuemail@example.com
