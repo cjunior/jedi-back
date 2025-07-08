@@ -12,8 +12,7 @@ import java.util.UUID;
 public class PreInscricao {
 
     @Id
-    @GeneratedValue(generator = "UUID")
-    @GenericGenerator(name = "UUID", strategy = "org.hibernate.id.UUIDGenerator")
+    @GeneratedValue(generator = "UUID", strategy = GenerationType.AUTO)
     private UUID id;
 
     private String completeName;
@@ -46,6 +45,9 @@ public class PreInscricao {
 
     @Enumerated(EnumType.STRING)
     private StatusPreInscricao status = StatusPreInscricao.INCOMPLETO;
+
+    @Column(name = "accepted_terms", nullable = false)
+    private Boolean acceptedTerms = false;
 
     public PreInscricao() {
 
@@ -155,5 +157,13 @@ public class PreInscricao {
 
     public void setStatus(StatusPreInscricao status) {
         this.status = status;
+    }
+
+    public Boolean getAcceptedTerms() {
+        return acceptedTerms;
+    }
+
+    public void setAcceptedTerms(Boolean acceptedTerms) {
+        this.acceptedTerms = acceptedTerms;
     }
 }

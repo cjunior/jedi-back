@@ -4,6 +4,7 @@ import com.ifce.jedi.dto.PreInscricao.PreInscricaoDadosDto;
 import com.lowagie.text.*;
 import com.lowagie.text.pdf.*;
 import org.springframework.stereotype.Service;
+
 import java.io.ByteArrayOutputStream;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
@@ -26,9 +27,9 @@ public class PdfService {
             document.add(title);
 
             // Tabela
-            PdfPTable table = new PdfPTable(6); // 6 colunas
+            PdfPTable table = new PdfPTable(7); // agora 7 colunas
             table.setWidthPercentage(100);
-            table.setWidths(new float[]{3f, 4f, 3f, 3f, 3f, 2f});
+            table.setWidths(new float[]{3f, 4f, 3f, 3f, 3f, 2f, 2f});
 
             Font headerFont = FontFactory.getFont(FontFactory.HELVETICA_BOLD, 12);
             addCell(table, "Nome Completo", headerFont);
@@ -37,6 +38,7 @@ public class PdfService {
             addCell(table, "Nascimento", headerFont);
             addCell(table, "Município", headerFont);
             addCell(table, "Status", headerFont);
+            addCell(table, "Aceitou Termos", headerFont);
 
             Font dataFont = FontFactory.getFont(FontFactory.HELVETICA, 10);
             DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy");
@@ -47,7 +49,8 @@ public class PdfService {
                 addCell(table, dto.cellPhone(), dataFont);
                 addCell(table, dto.birthDate() != null ? dto.birthDate().format(formatter) : "-", dataFont);
                 addCell(table, dto.municipality(), dataFont);
-                addCell(table, dto.status()!= null ? dto.status().name() : "-", dataFont);
+                addCell(table, dto.status() != null ? dto.status().name() : "-", dataFont);
+                addCell(table, dto.acceptedTerms() != null && dto.acceptedTerms() ? "Sim" : "Não", dataFont);
             }
 
             document.add(table);

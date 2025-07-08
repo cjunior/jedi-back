@@ -15,7 +15,8 @@ public record PreInscricaoDadosDto(
         String rg,
         String documentUrl,
         String proofOfAdressUrl,
-        StatusPreInscricao status
+        StatusPreInscricao status,
+        Boolean acceptedTerms
 ) {
     public static PreInscricaoDadosDto fromEntity(PreInscricao pre) {
         return new PreInscricaoDadosDto(
@@ -28,7 +29,8 @@ public record PreInscricaoDadosDto(
                 pre.getRg(),
                 pre.getDocumentUrl(),
                 pre.getProofOfAdressUrl(),
-                pre.getStatus()
+                pre.getStatus(),
+                pre.getAcceptedTerms()
         );
     }
 }

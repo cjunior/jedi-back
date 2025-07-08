@@ -52,7 +52,8 @@ public class PreInscricaoController {
         PreInscricaoDto resumo = new PreInscricaoDto(
                 preInscricao.getCompleteName(),
                 preInscricao.getEmail(),
-                preInscricao.getCellPhone()
+                preInscricao.getCellPhone(),
+                preInscricao.getAcceptedTerms()
         );
 
         return ResponseEntity.ok(resumo);

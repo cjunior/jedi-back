@@ -46,15 +46,20 @@ public class UserController {
             @RequestParam(required = false) String email,
             @RequestParam(required = false) StatusPreInscricao status,
             Pageable pageable) {
-        return ResponseEntity.ok(userService.getAllPreInscricoes(nome, email, status, pageable));
+
+        return ResponseEntity.ok(
+                userService.getAllPreInscricoes(nome, email, status, null, pageable)
+        );
     }
+
 
     @GetMapping("/relatorio/pre-inscricoes/pdf")
     @PreAuthorize("hasAnyRole('ADMIN', 'GERENTE')")
     public ResponseEntity<byte[]> gerarRelatorioPDF(
             @RequestParam(required = false) StatusPreInscricao status) {
+
         List<PreInscricaoDadosDto> dados = userService
-                .getAllPreInscricoes(null, null, status, Pageable.unpaged())
+                .getAllPreInscricoes(null, null, status, null, Pageable.unpaged())
                 .getContent();
 
         byte[] pdf = pdfService.gerarRelatorioPreInscricoes(dados);
@@ -65,8 +70,12 @@ public class UserController {
                 .filename("relatorio_preinscricoes.pdf")
                 .build());
 
-        return ResponseEntity.ok().headers(headers).body(pdf);
+        return ResponseEntity.ok()
+                .headers(headers)
+                .body(pdf);
     }
+
+
 
     @GetMapping("/users")
     @PreAuthorize("hasAnyRole('ADMIN', 'GERENTE')")

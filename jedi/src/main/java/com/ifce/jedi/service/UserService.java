@@ -78,6 +78,7 @@ public class UserService {
             String nome,
             String email,
             StatusPreInscricao status,
+            Boolean acceptedTerms,
             Pageable pageable
     ) {
         Specification<PreInscricao> spec = (root, query, builder) -> builder.conjunction();
@@ -104,6 +105,11 @@ public class UserService {
                 spec = spec.and((root, query, builder) ->
                         builder.equal(root.get("status"), status));
             }
+        }
+
+        if (acceptedTerms != null) {
+            spec = spec.and((root, query, builder) ->
+                    builder.equal(root.get("acceptedTerms"), acceptedTerms));
         }
 
         return preInscricaoRepository.findAll(spec, pageable)

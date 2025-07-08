@@ -3,6 +3,7 @@ package com.ifce.jedi.dto.PreInscricao;
 import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Pattern;
 
 public record PreInscricaoDto(
@@ -22,5 +23,14 @@ public record PreInscricaoDto(
         @Pattern(
                 regexp = "^(\\(\\d{2}\\)\\s?|\\d{2}\\s?)9\\d{4}-?\\d{4}$",
                 message = "Celular inválido. Use formatos como (85) 99999-1234 ou 8599991234")
-        String cellphone) {
+        String cellphone,
+
+        @Schema(
+                description = "Indica se o usuário aceitou os termos de uso.",
+                example = "true",
+                allowableValues = {"true", "false"}
+        )
+        @NotNull(message = "É obrigatório informar se os termos de uso foram aceitos.")
+        Boolean acceptedTerms
+) {
 }

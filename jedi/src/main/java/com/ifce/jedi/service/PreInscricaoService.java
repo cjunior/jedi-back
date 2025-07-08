@@ -30,6 +30,10 @@ public class PreInscricaoService {
 
     public PreInscricao createRegistration(PreInscricaoDto preInscricaoDto) {
 
+        if (preInscricaoDto.acceptedTerms() == null || !preInscricaoDto.acceptedTerms()) {
+            throw new BusinessException("É obrigatório aceitar os termos de uso.");
+        }
+
         if (preInscricaoRepository.existsByEmail(preInscricaoDto.email())) {
             throw new EmailAlreadyUsedException("E-mail já cadastrado.");
         }
@@ -40,6 +44,7 @@ public class PreInscricaoService {
                 preInscricaoDto.cellphone()
         );
 
+        preInscricao.setAcceptedTerms(preInscricaoDto.acceptedTerms());
         preInscricao.setStatus(StatusPreInscricao.INCOMPLETO);
 
         String token = UUID.randomUUID().toString();
@@ -48,6 +53,7 @@ public class PreInscricaoService {
 
         return preInscricaoRepository.save(preInscricao);
     }
+
 
 
     public void completeRegistration(String token, PreInscricaoComplementarDto dto) {
