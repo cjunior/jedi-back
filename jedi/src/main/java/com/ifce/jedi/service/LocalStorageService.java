@@ -9,6 +9,7 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.nio.file.StandardCopyOption;
+import java.util.Objects;
 import java.util.UUID;
 
 @Service
@@ -20,10 +21,14 @@ public class LocalStorageService {
     public String salvar(MultipartFile arquivo) throws IOException {
         Files.createDirectories(Paths.get(storagePath));
 
-        String nomeArquivo = UUID.randomUUID() + "_" + arquivo.getOriginalFilename();
+        String nomeOriginalSanitizado = Objects.requireNonNull(arquivo.getOriginalFilename())
+                .replaceAll("\\s+", "_")
+                .replaceAll("[^a-zA-Z0-9.\\-_]", "");
+
+        String nomeArquivo = UUID.randomUUID() + "_" + nomeOriginalSanitizado;
         Path destino = Paths.get(storagePath).resolve(nomeArquivo);
 
-        System.out.println("Salvando arquivo em: " + destino.toAbsolutePath());  // <<<<<<<<<<<
+        System.out.println("Salvando arquivo em: " + destino.toAbsolutePath());
 
         Files.copy(arquivo.getInputStream(), destino, StandardCopyOption.REPLACE_EXISTING);
 
