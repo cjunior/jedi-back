@@ -46,7 +46,7 @@ public class PreInscricao {
     @Enumerated(EnumType.STRING)
     private StatusPreInscricao status = StatusPreInscricao.INCOMPLETO;
 
-    @Column(name = "accepted_terms", nullable = false)
+    @Column(name = "accepted_terms")
     private Boolean acceptedTerms = false;
 
     public PreInscricao() {
