@@ -12,7 +12,7 @@ import java.util.UUID;
 public class PreInscricao {
 
     @Id
-    @GeneratedValue(generator = "UUID", strategy = GenerationType.AUTO)
+    @GeneratedValue(strategy = GenerationType.UUID)
     private UUID id;
 
     private String completeName;
