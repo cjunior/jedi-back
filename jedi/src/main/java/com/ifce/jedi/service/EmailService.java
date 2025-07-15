@@ -4,6 +4,7 @@ import com.ifce.jedi.dto.ContactUs.ContactFormEmailDto;
 import jakarta.mail.MessagingException;
 import jakarta.mail.internet.MimeMessage;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.core.io.ClassPathResource;
 import org.springframework.mail.SimpleMailMessage;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.mail.javamail.MimeMessageHelper;
@@ -24,32 +25,75 @@ public class EmailService {
             helper.setSubject("Continue sua pré-inscrição");
 
             String htmlContent = """
-                <!DOCTYPE html>
-                <html lang="pt-BR">
-                <head>
-                    <meta charset="UTF-8">
-                    <style>
-                        body { font-family: Arial, sans-serif; background-color: #f6f8fa; padding: 20px; color: #333; }
-                        .container { background-color: #fff; padding: 30px; border-radius: 10px; box-shadow: 0 0 10px rgba(0,0,0,0.1); max-width: 600px; margin: auto; }
-                        .button { background-color: #0056b3; color: white; padding: 15px 25px; border-radius: 5px; text-decoration: none; font-weight: bold; }
-                        .footer { margin-top: 30px; font-size: 0.9em; color: #777; text-align: center; }
-                    </style>
-                </head>
-                <body>
-                    <div class="container">
-                        <h2>Olá!</h2>
-                        <p>Recebemos sua intenção de pré-inscrição. Para continuar, clique no botão abaixo:</p>
-                        <p style="text-align: center;">
-                            <a href="%s" class="button">Continuar Pré-inscrição</a>
-                        </p>
-                        <p>Se você não iniciou esta ação, pode ignorar este e-mail.</p>
-                        <div class="footer">© 2025 IFCE - Todos os direitos reservados.</div>
+            <!DOCTYPE html>
+            <html lang="pt-BR">
+            <head>
+                <meta charset="UTF-8">
+                <style>
+                    body {
+                        font-family: Arial, sans-serif;
+                        background-color: #f6f8fa;
+                        margin: 0;
+                        padding: 0;
+                    }
+                    .container {
+                        background-color: #ffffff;
+                        max-width: 600px;
+                        margin: 0 auto;
+                        padding: 40px 30px;
+                        border-radius: 8px;
+                        box-shadow: 0 0 10px rgba(0,0,0,0.08);
+                        text-align: center;
+                    }
+                    h2 {
+                        color: #333333;
+                        font-size: 24px;
+                        margin-top: 20px;
+                        margin-bottom: 20px;
+                    }
+                    p {
+                        font-size: 16px;
+                        color: #444444;
+                        margin-bottom: 20px;
+                    }
+                    .button {
+                        display: inline-block;
+                        background-color: #1a2b1c;
+                        color: #ffffff !important;
+                        padding: 14px 24px;
+                        text-decoration: none;
+                        border-radius: 6px;
+                        font-weight: bold;
+                        font-size: 16px;
+                        margin: 20px 0;
+                    }
+                    .footer {
+                        margin-top: 40px;
+                        font-size: 12px;
+                        color: #999999;
+                    }
+                </style>
+            </head>
+            <body>
+                <div class="container">
+                    <img src="cid:logoCid" width="180" alt="Logo Jovens Empreendedores Digitais" style="margin-bottom: 10px;" />
+                    <h2>Olá!</h2>
+                    <p>Recebemos sua intenção de pré-inscrição.<br>Para continuar, clique no botão abaixo:</p>
+                    <a href="%s" class="button">Continuar Pré-inscrição</a>
+                    <p>Se você não iniciou esta ação, pode ignorar este e-mail.</p>
+                    <div class="footer">
+                        © 2025 IFCE - Todos os direitos reservados.
                     </div>
-                </body>
-                </html>
-                """.formatted(link);
+                </div>
+            </body>
+            </html>
+            """.formatted(link);
+
+
 
             helper.setText(htmlContent, true);
+            ClassPathResource image = new ClassPathResource("static/images/logo.png");
+            helper.addInline("logoCid", image);
             mailSender.send(mensagem);
         } catch (MessagingException e) {
             // log e tratamento
