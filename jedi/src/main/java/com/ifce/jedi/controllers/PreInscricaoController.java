@@ -8,6 +8,7 @@ import com.ifce.jedi.service.EmailService;
 import com.ifce.jedi.service.PreInscricaoService;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -25,14 +26,17 @@ public class PreInscricaoController {
     @Autowired
     private EmailService emailService;
 
+    @Value("${app.register-url}")
+    private String linkCru;
+
     @PostMapping("/inicial")
     public ResponseEntity<?> createRegistration(@Valid @RequestBody PreInscricaoDto preInscricaoDto) {
         PreInscricao preInscricao = preInscricaoService.createRegistration(preInscricaoDto);
         String token = preInscricao.getContinuationToken();
-        String link = "https://jedi-front.vercel.app/pre-inscricao/continuar/" + token;
+        String linkFinal = linkCru + "/pre-inscricao/continuar/" + token;
 
         try {
-            emailService.sendLink(preInscricaoDto.email(), link);
+            emailService.sendLink(preInscricaoDto.email(), linkFinal);
         } catch (Exception e) {
             throw new EmailSendingException("Erro ao enviar e-mail de continuação.", e);
         }
