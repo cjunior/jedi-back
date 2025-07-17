@@ -30,7 +30,6 @@ services:
         max-size: 10m
     networks:
       - jedi-network
-
 networks:
   jedi-network:
     driver: bridge
