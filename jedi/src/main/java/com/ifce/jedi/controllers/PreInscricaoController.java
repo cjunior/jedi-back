@@ -33,7 +33,7 @@ public class PreInscricaoController {
     public ResponseEntity<?> createRegistration(@Valid @RequestBody PreInscricaoDto preInscricaoDto) {
         PreInscricao preInscricao = preInscricaoService.createRegistration(preInscricaoDto);
         String token = preInscricao.getContinuationToken();
-        String linkFinal = linkCru + "pre-inscricao/continuar/" + token;
+        String linkFinal = linkCru + "/pre-inscricao/continuar/" + token;
 
         try {
             emailService.sendLink(preInscricaoDto.email(), linkFinal);
