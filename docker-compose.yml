@@ -15,8 +15,8 @@ services:
     networks:
       - jedi-network
 
-  psql:
-    container_name: psql
+  jedi-psql:
+    container_name: jedi-psql
     image: postgres:alpine3.19
     volumes:
       - /volumes/jedi/database/postgres-data:/var/lib/postgresql/data
