@@ -7,6 +7,8 @@ services:
       - 8090:8080
     volumes:
       - ${HOME}/jedi-arquivos/documentos:/home/app/jedi-arquivos/documentos
+    env_file:
+      - .env
     environment:
       APP_BASE_URL: ${APP_BASE_URL}
     logging:
