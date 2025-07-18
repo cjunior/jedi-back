@@ -1,4 +1,4 @@
-me: CI - Jedi Back
+name: CI - Jedi Back
 
 on:
   push:
