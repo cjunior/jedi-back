@@ -29,13 +29,18 @@ public class PreInscricaoService {
     private String baseUrl;
 
     public PreInscricao createRegistration(PreInscricaoDto preInscricaoDto) {
-
         if (preInscricaoDto.acceptedTerms() == null || !preInscricaoDto.acceptedTerms()) {
             throw new BusinessException("É obrigatório aceitar os termos de uso.");
         }
 
-        if (preInscricaoRepository.existsByEmail(preInscricaoDto.email())) {
-            throw new EmailAlreadyUsedException("E-mail já cadastrado.");
+        Optional<PreInscricao> existente = preInscricaoRepository.findByEmail(preInscricaoDto.email());
+
+        if (existente.isPresent()) {
+            if (existente.get().getStatus() == StatusPreInscricao.COMPLETO) {
+                throw new EmailAlreadyUsedException("E-mail já cadastrado.");
+            } else {
+                preInscricaoRepository.delete(existente.get());
+            }
         }
 
         PreInscricao preInscricao = new PreInscricao(
@@ -49,7 +54,7 @@ public class PreInscricaoService {
 
         String token = UUID.randomUUID().toString();
         preInscricao.setContinuationToken(token);
-        preInscricao.setTokenExpiration(LocalDateTime.now().plusHours(24));
+        preInscricao.setTokenExpiration(LocalDateTime.now().plusDays(30));
 
         return preInscricaoRepository.save(preInscricao);
     }

@@ -22,10 +22,7 @@ public record PreInscricaoComplementarDto(
         )
         String cpf,
 
-        @Pattern(
-                regexp = "^(\\d{1,2}\\.\\d{3}\\.\\d{3}|\\d{5,15})$",
-                message = "RG inválido. Use um formato numérico válido."
-        )
+        @NotBlank(message = "O RG é obrigatório.")
         String rg,
 
 
