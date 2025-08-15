@@ -57,9 +57,10 @@ public class PreInscricaoController {
                 preInscricao.getCompleteName(),
                 preInscricao.getEmail(),
                 preInscricao.getCellPhone(),
+                preInscricao.getMunicipality(),
+                preInscricao.getOtherMunicipality(),
                 preInscricao.getAcceptedTerms()
         );
-
         return ResponseEntity.ok(resumo);
     }
 

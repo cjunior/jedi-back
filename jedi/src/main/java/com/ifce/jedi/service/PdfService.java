@@ -27,9 +27,9 @@ public class PdfService {
             document.add(title);
 
             // Tabela
-            PdfPTable table = new PdfPTable(7); // agora 7 colunas
+            PdfPTable table = new PdfPTable(8);
             table.setWidthPercentage(100);
-            table.setWidths(new float[]{3f, 4f, 3f, 3f, 3f, 2f, 2f});
+            table.setWidths(new float[]{3f, 4f, 3f, 3f, 3f, 3f, 2f, 2f});
 
             Font headerFont = FontFactory.getFont(FontFactory.HELVETICA_BOLD, 12);
             addCell(table, "Nome Completo", headerFont);
@@ -37,6 +37,7 @@ public class PdfService {
             addCell(table, "Celular", headerFont);
             addCell(table, "Nascimento", headerFont);
             addCell(table, "Município", headerFont);
+            addCell(table, "Outros Municípios", headerFont);
             addCell(table, "Status", headerFont);
             addCell(table, "Aceitou Termos", headerFont);
 
@@ -49,10 +50,13 @@ public class PdfService {
                 addCell(table, dto.cellPhone(), dataFont);
                 addCell(table, dto.birthDate() != null ? dto.birthDate().format(formatter) : "-", dataFont);
                 addCell(table, dto.municipality(), dataFont);
+
+                String otherMunicipalityValue = dto.otherMunicipality() != null && !dto.otherMunicipality().isBlank() ? dto.otherMunicipality() : "-";
+                addCell(table, otherMunicipalityValue, dataFont);
+
                 addCell(table, dto.status() != null ? dto.status().name() : "-", dataFont);
                 addCell(table, dto.acceptedTerms() != null && dto.acceptedTerms() ? "Sim" : "Não", dataFont);
             }
-
             document.add(table);
         } catch (Exception e) {
             e.printStackTrace();

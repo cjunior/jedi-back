@@ -14,6 +14,7 @@ import java.io.IOException;
 import java.time.LocalDateTime;
 import java.util.Map;
 import java.util.Optional;
+import java.util.Set;
 import java.util.UUID;
 
 @Service
@@ -27,6 +28,15 @@ public class PreInscricaoService {
 
     @Value("${app.base-url}")
     private String baseUrl;
+
+    private static final Set<String> MUNICIPIOS_PERMITIDOS = Set.of(
+            "Belém", "Ananindeua", "Castanhal", "Santa Izabel do Pará", "Marituba",
+            "Benevides", "Vigia", "Portel", "Breves", "Abaetetuba", "Moju",
+            "Cametá", "Barcarena", "Tailândia", "Igarapé-Miri", "Acará",
+            "Tomé-Açu", "Baião", "Bragança", "Capanema", "Viseu", "Capitão Poço",
+            "Curuçá", "São Miguel do Guamá", "Salinópolis", "Outros"
+
+    );
 
     public PreInscricao createRegistration(PreInscricaoDto preInscricaoDto) {
         if (preInscricaoDto.acceptedTerms() == null || !preInscricaoDto.acceptedTerms()) {
@@ -43,11 +53,26 @@ public class PreInscricaoService {
             }
         }
 
+        String municipioInformado = preInscricaoDto.municipality();
+
+        if (!MUNICIPIOS_PERMITIDOS.contains(municipioInformado)) {
+            throw new BusinessException("Município inválido.");
+        }
+
         PreInscricao preInscricao = new PreInscricao(
                 preInscricaoDto.completeName(),
                 preInscricaoDto.email(),
                 preInscricaoDto.cellphone()
         );
+
+        preInscricao.setMunicipality(municipioInformado);
+
+        if ("Outros".equalsIgnoreCase(municipioInformado)) {
+            if (preInscricaoDto.otherMunicipality() == null || preInscricaoDto.otherMunicipality().isBlank()) {
+                throw new BusinessException("Informe o nome do município quando selecionar 'Outros'.");
+            }
+            preInscricao.setOtherMunicipality(preInscricaoDto.otherMunicipality());
+        }
 
         preInscricao.setAcceptedTerms(preInscricaoDto.acceptedTerms());
         preInscricao.setStatus(StatusPreInscricao.INCOMPLETO);
@@ -58,8 +83,6 @@ public class PreInscricaoService {
 
         return preInscricaoRepository.save(preInscricao);
     }
-
-
 
     public void completeRegistration(String token, PreInscricaoComplementarDto dto) {
         PreInscricao preInscricao = validateTokenOrThrow(token);
@@ -73,7 +96,6 @@ public class PreInscricaoService {
             String nomeComprovante = localStorageService.salvar(dto.proofOfAdress());
 
             preInscricao.setBirthDate(dto.birthDate());
-            preInscricao.setMunicipality(dto.municipality());
             preInscricao.setCpf(dto.cpf());
             preInscricao.setRg(dto.rg());
             var linkNomeDoc = baseUrl + "/sensiveis/" + nomeDoc;
