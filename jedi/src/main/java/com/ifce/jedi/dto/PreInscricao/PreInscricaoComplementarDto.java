@@ -13,19 +13,13 @@ public record PreInscricaoComplementarDto(
         @NotNull(message = "A data de nascimento é obrigatória.")
         LocalDate birthDate,
 
-        @NotBlank(message = "O município é obrigatório.")
-        String municipality,
-
         @Pattern(
                 regexp = "^(\\d{3}\\.\\d{3}\\.\\d{3}-\\d{2}|\\d{11})$",
                 message = "CPF inválido. Use o formato 000.000.000-00 ou apenas números."
         )
         String cpf,
 
-        @Pattern(
-                regexp = "^(\\d{1,2}\\.\\d{3}\\.\\d{3}|\\d{5,15})$",
-                message = "RG inválido. Use um formato numérico válido."
-        )
+        @NotBlank(message = "O RG é obrigatório.")
         String rg,
 
 
