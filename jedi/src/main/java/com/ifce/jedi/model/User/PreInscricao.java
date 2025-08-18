@@ -27,6 +27,8 @@ public class PreInscricao {
 
     private String municipality;
 
+    private String otherMunicipality;
+
     private String cpf;
 
     private String rg;
@@ -57,6 +59,15 @@ public class PreInscricao {
         this.completeName = completeName;
         this.email = email;
         this.cellPhone = cellPhone;
+    }
+
+
+    public String getOtherMunicipality() {
+        return otherMunicipality;
+    }
+
+    public void setOtherMunicipality(String otherMunicipality) {
+        this.otherMunicipality = otherMunicipality;
     }
 
     public String getDocumentUrl() {

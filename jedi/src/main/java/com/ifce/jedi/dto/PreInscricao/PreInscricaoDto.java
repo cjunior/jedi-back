@@ -26,6 +26,19 @@ public record PreInscricaoDto(
         String cellphone,
 
         @Schema(
+                description = "Município selecionado. Caso não esteja na lista, use 'Outros' e informe em otherMunicipality.",
+                example = "Belém"
+        )
+        @NotBlank(message = "O município é obrigatório.")
+        String municipality,
+
+        @Schema(
+                description = "Município digitado caso tenha selecionado 'Outros'.",
+                example = "Meu Município"
+        )
+        String otherMunicipality,
+
+        @Schema(
                 description = "Indica se o usuário aceitou os termos de uso.",
                 example = "true",
                 allowableValues = {"true", "false"}
