@@ -45,6 +45,7 @@ public class SecurityConfigurations {
                         .requestMatchers(HttpMethod.POST, "/auth/login").permitAll()
                         .requestMatchers(HttpMethod.POST, "/auth/forgot-password").permitAll()
                         .requestMatchers(HttpMethod.PUT, "/auth/reset-password/**").permitAll()
+                        .requestMatchers(HttpMethod.GET, "/auth/reset-password/**").permitAll()
 
                         .requestMatchers(HttpMethod.POST, "/management/register").hasRole("ADMIN")
                         .requestMatchers(HttpMethod.GET, "/management/pre-inscricoes").hasAnyRole("ADMIN", "GERENTE")

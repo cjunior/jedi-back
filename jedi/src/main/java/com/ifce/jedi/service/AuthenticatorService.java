@@ -1,6 +1,7 @@
 package com.ifce.jedi.service;
 
 import com.ifce.jedi.dto.Authenticator.AuthenticatorDto;
+import com.ifce.jedi.dto.Authenticator.TokenValidationResult;
 import com.ifce.jedi.exception.custom.TokenExpiredException;
 import com.ifce.jedi.exception.custom.TokenNotFoundException;
 import com.ifce.jedi.infra.security.TokenService;
@@ -54,13 +55,12 @@ public class AuthenticatorService {
                 .map(userDetails -> (User) userDetails);
 
         if (userOptional.isEmpty()) {
-            return; // não informa se o email existe por segurança
+            return;
         }
 
         var user = userOptional.get();
         var token = UUID.randomUUID().toString();
 
-        // Busca token existente do usuário
         var resetTokenOptional = passwordResetTokenRepository.findByUser(user);
 
         PasswordResetToken resetToken = resetTokenOptional.orElseGet(() ->
@@ -96,4 +96,20 @@ public class AuthenticatorService {
 
         passwordResetTokenRepository.delete(resetToken);
     }
+
+    public TokenValidationResult checkToken(String token) {
+        PasswordResetToken resetToken = passwordResetTokenRepository.findByToken(token)
+                .orElse(null);
+
+        if (resetToken == null) {
+            return new TokenValidationResult(false, "Token inválido ou não encontrado", null);
+        }
+
+        if (resetToken.getExpiryDate().isBefore(LocalDateTime.now())) {
+            return new TokenValidationResult(false, "Token expirado", resetToken.getExpiryDate());
+        }
+
+        return new TokenValidationResult(true, "Token válido", resetToken.getExpiryDate());
+    }
+
 }

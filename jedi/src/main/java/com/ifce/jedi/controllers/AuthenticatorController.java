@@ -1,9 +1,6 @@
 package com.ifce.jedi.controllers;
 
-import com.ifce.jedi.dto.Authenticator.AuthenticatorDto;
-import com.ifce.jedi.dto.Authenticator.ForgotPasswordRequestDto;
-import com.ifce.jedi.dto.Authenticator.LoginResponseDto;
-import com.ifce.jedi.dto.Authenticator.ResetPasswordRequestDto;
+import com.ifce.jedi.dto.Authenticator.*;
 import com.ifce.jedi.service.AuthenticatorService;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -34,5 +31,15 @@ public class AuthenticatorController {
         authenticatorService.resetPassword(token, request.newPassword());
         return ResponseEntity.ok("Senha redefinida com sucesso!");
     }
+
+    @GetMapping("/reset-password/{token}")
+    public ResponseEntity<TokenValidationResult> resetPassword(@PathVariable String token) {
+        TokenValidationResult result = authenticatorService.checkToken(token);
+        if (!result.isValid()) {
+            return ResponseEntity.badRequest().body(result);
+        }
+        return ResponseEntity.ok(result);
+    }
+
 }
 
