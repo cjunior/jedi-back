@@ -41,7 +41,7 @@ public class AuthenticatorService {
     @Autowired
     private EmailService emailService;
 
-    @Value("${app.base-url}")
+    @Value("${app.register-url}")
     private String baseUrl;
 
     public String login(AuthenticatorDto dto) {
