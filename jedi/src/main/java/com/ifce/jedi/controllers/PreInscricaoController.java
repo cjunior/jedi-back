@@ -1,6 +1,7 @@
 package com.ifce.jedi.controllers;
 
 import com.ifce.jedi.dto.PreInscricao.PreInscricaoComplementarDto;
+import com.ifce.jedi.dto.PreInscricao.PreInscricaoDeleteResponseDto;
 import com.ifce.jedi.dto.PreInscricao.PreInscricaoDto;
 import com.ifce.jedi.exception.custom.EmailSendingException;
 import com.ifce.jedi.model.User.PreInscricao;
@@ -11,10 +12,13 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
+import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.UUID;
 
 @RestController
 @RequestMapping("/pre-inscricao")
@@ -73,5 +77,16 @@ public class PreInscricaoController {
         preInscricaoService.completeRegistration(token, preInscricaoDto);
         return ResponseEntity.ok("Pré-inscrição finalizada com sucesso.");
     }
+
+
+    @PreAuthorize("hasRole('ADMIN')")
+    @DeleteMapping("/soft/{id}")
+    public ResponseEntity<PreInscricaoDeleteResponseDto> softDeletePreInscricao(
+            @PathVariable UUID id
+    ) {
+        PreInscricaoDeleteResponseDto response = preInscricaoService.softDeletePreInscricao(id);
+        return ResponseEntity.ok(response);
+    }
+
 
 }

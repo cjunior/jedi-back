@@ -59,6 +59,7 @@ public class SecurityConfigurations {
                         .requestMatchers(HttpMethod.POST, "/pre-inscricao/inicial").permitAll()
                         .requestMatchers(HttpMethod.GET, "/pre-inscricao/continuar/**").permitAll()
                         .requestMatchers(HttpMethod.PUT, "/pre-inscricao/continuar/**").permitAll()
+                        .requestMatchers(HttpMethod.DELETE, "/pre-inscricoes/**").hasRole("ADMIN")
 
                         // Header e Banner
                         .requestMatchers(HttpMethod.PUT, "/header/update").hasAnyRole("ADMIN", "GERENTE")

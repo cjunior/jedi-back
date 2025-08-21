@@ -83,6 +83,9 @@ public class UserService {
     ) {
         Specification<PreInscricao> spec = (root, query, builder) -> builder.conjunction();
 
+        spec = spec.and((root, query, builder) ->
+                builder.isTrue(root.get("ativo")));
+
         if (nome != null && !nome.isBlank()) {
             spec = spec.and((root, query, builder) ->
                     builder.like(builder.lower(root.get("completeName")), nome.toLowerCase() + "%"));
