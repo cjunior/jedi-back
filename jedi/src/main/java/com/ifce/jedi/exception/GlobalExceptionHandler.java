@@ -159,6 +159,17 @@ public class GlobalExceptionHandler {
         return buildErrorResponse(HttpStatus.BAD_REQUEST, ex.getMessage(), request);
     }
 
+    @ExceptionHandler(PreInscricaoNotFoundException.class)
+    public ResponseEntity<String> handlePreInscricaoNotFound(PreInscricaoNotFoundException ex) {
+        return ResponseEntity.status(HttpStatus.NOT_FOUND).body(ex.getMessage());
+    }
+
+    @ExceptionHandler(PreInscricaoDeletionException.class)
+    public ResponseEntity<ErrorResponse> handlePreInscricaoDeletion(PreInscricaoDeletionException ex, HttpServletRequest request) {
+        logger.error("Erro ao deletar pré-inscrição: {}", ex.getMessage());
+        return buildErrorResponse(HttpStatus.INTERNAL_SERVER_ERROR, ex.getMessage(), request);
+    }
+
     // Método utilitário para criar a resposta padronizada
     private ResponseEntity<ErrorResponse> buildErrorResponse(HttpStatus status, String message, HttpServletRequest request) {
         ErrorResponse response = new ErrorResponse(
