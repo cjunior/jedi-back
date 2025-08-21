@@ -4,8 +4,10 @@ import com.ifce.jedi.model.User.PreInscricao;
 import com.ifce.jedi.model.User.StatusPreInscricao;
 
 import java.time.LocalDate;
+import java.util.UUID;
 
 public record PreInscricaoDadosDto(
+        UUID id,
         String completeName,
         String email,
         String cellPhone,
@@ -21,6 +23,7 @@ public record PreInscricaoDadosDto(
 ) {
     public static PreInscricaoDadosDto fromEntity(PreInscricao pre) {
         return new PreInscricaoDadosDto(
+                pre.getId(),
                 pre.getCompleteName(),
                 pre.getEmail(),
                 pre.getCellPhone(),

@@ -1,6 +1,7 @@
 package com.ifce.jedi.service;
 
 import com.ifce.jedi.dto.PreInscricao.PreInscricaoComplementarDto;
+import com.ifce.jedi.dto.PreInscricao.PreInscricaoDeleteResponseDto;
 import com.ifce.jedi.dto.PreInscricao.PreInscricaoDto;
 import com.ifce.jedi.exception.custom.*;
 import com.ifce.jedi.model.User.PreInscricao;
@@ -112,6 +113,19 @@ public class PreInscricaoService {
         } catch (IOException e) {
             throw new UploadException("Erro ao fazer uploads.", e);
         }
+    }
+
+
+    public PreInscricaoDeleteResponseDto softDeletePreInscricao(UUID id) {
+        PreInscricao preInscricao = preInscricaoRepository.findById(id)
+                .orElseThrow(() -> new PreInscricaoNotFoundException(
+                        "Pré-inscrição não encontrada com ID: " + id
+                ));
+
+        preInscricao.setAtivo(false);
+        preInscricaoRepository.save(preInscricao);
+
+        return PreInscricaoDeleteResponseDto.from(preInscricao.getId());
     }
 
 

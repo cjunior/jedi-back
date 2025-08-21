@@ -51,6 +51,9 @@ public class PreInscricao {
     @Column(name = "accepted_terms")
     private Boolean acceptedTerms = false;
 
+    @Column(name = "ativo")
+    private Boolean ativo = true;
+
     public PreInscricao() {
 
     }
@@ -176,5 +179,13 @@ public class PreInscricao {
 
     public void setAcceptedTerms(Boolean acceptedTerms) {
         this.acceptedTerms = acceptedTerms;
+    }
+
+    public boolean isAtivo() {
+        return ativo;
+    }
+
+    public void setAtivo(boolean ativo) {
+        this.ativo = ativo;
     }
 }
