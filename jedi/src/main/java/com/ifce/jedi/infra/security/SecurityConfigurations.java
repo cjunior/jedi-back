@@ -139,8 +139,12 @@ public class SecurityConfigurations {
 
         // Use * se não tiver credenciais/cookies.
         // Se precisar de cookies/autenticação, coloque domínios específicos
-        configuration.setAllowedOrigins(List.of("https://empreendedoresdigitais.ifce.edu.br",
-                "https://api.banco.ltap.ifce.edu.br"
+        configuration.setAllowedOriginPatterns(List.of(
+                "https://empreendedoresdigitais.ifce.edu.br",
+                "https://jedi-front.vercel.app",
+                "http://localhost:*",
+                "https://*.ngrok.io",
+                "https://*.ngrok-free.app"
         ));
         configuration.setAllowedMethods(List.of("GET", "POST", "PUT", "DELETE", "OPTIONS"));
         configuration.setAllowedHeaders(List.of("*"));
