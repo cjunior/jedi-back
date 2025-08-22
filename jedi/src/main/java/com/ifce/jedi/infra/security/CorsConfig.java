@@ -16,8 +16,7 @@ public class CorsConfig {
             public void addCorsMappings(CorsRegistry registry) {
                 registry.addMapping("/**")
                         .allowedMethods("GET", "POST", "PUT", "DELETE", "OPTIONS")
-                        .allowedOrigins("https://empreendedoresdigitais.ifce.edu.br",
-                                "http://localhost:4200");
+                        .allowedOrigins("*");
             }
         };
     }
