@@ -32,6 +32,8 @@ public class SecurityConfigurations {
     public SecurityFilterChain securityFilterChain(HttpSecurity httpSecurity) throws Exception {
         return httpSecurity
                 .csrf(csrf -> csrf.disable())
+                .cors(cors ->
+                        cors.configurationSource(corsConfigurationSource()))
                 .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .authorizeHttpRequests(authorize -> authorize
                         .requestMatchers(HttpMethod.OPTIONS, "/**").permitAll()
@@ -131,17 +133,19 @@ public class SecurityConfigurations {
         return new BCryptPasswordEncoder();
     }
 
-    //@Bean
-    //public CorsConfigurationSource corsConfigurationSource() {
-    //CorsConfiguration configuration = new CorsConfiguration();
+    @Bean
+    public CorsConfigurationSource corsConfigurationSource() {
+        CorsConfiguration configuration = new CorsConfiguration();
 
-      //  configuration.setAllowedOriginPatterns(List.of("*"));
-        //configuration.setAllowedMethods(List.of("GET", "POST", "PUT", "DELETE", "OPTIONS"));
-        //configuration.setAllowedHeaders(List.of("*"));
-        //configuration.setAllowCredentials(true);
+        // Use * se não tiver credenciais/cookies.
+        // Se precisar de cookies/autenticação, coloque domínios específicos
+        configuration.setAllowedOrigins(List.of("https://empreendedoresdigitais.ifce.edu.br"));
+        configuration.setAllowedMethods(List.of("GET", "POST", "PUT", "DELETE", "OPTIONS"));
+        configuration.setAllowedHeaders(List.of("*"));
+        configuration.setAllowCredentials(true);
 
-        //UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
-        //source.registerCorsConfiguration("/**", configuration);
-        //return source;
-    //}
+        UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
+        source.registerCorsConfiguration("/**", configuration);
+        return source;
+    }
 }
