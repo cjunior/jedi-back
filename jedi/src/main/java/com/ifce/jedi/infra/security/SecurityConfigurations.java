@@ -55,6 +55,12 @@ public class SecurityConfigurations {
                         .requestMatchers(HttpMethod.GET, "/management/users/{id}").hasAnyRole("ADMIN", "GERENTE")
                         .requestMatchers(HttpMethod.PUT, "/management/users/**").hasAnyRole("ADMIN", "GERENTE")
                         .requestMatchers(HttpMethod.DELETE, "/management/users/**").hasRole("ADMIN")
+                        .requestMatchers(HttpMethod.PUT, "/management/ciclo/**").hasRole("ADMIN")
+                        .requestMatchers(HttpMethod.DELETE, "/management/ciclo/**").hasRole("ADMIN")
+                        .requestMatchers(HttpMethod.POST, "/management/ciclo/**").hasRole("ADMIN")
+                        .requestMatchers(HttpMethod.GET, "/management/ciclo").hasRole("ADMIN")
+                        .requestMatchers(HttpMethod.GET, "/management/ciclo/municipios-ativos").permitAll()
+
 
                         // Pré-inscrição
                         .requestMatchers(HttpMethod.POST, "/pre-inscricao/inicial").permitAll()
