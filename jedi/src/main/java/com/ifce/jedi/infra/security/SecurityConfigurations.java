@@ -55,6 +55,12 @@ public class SecurityConfigurations {
                         .requestMatchers(HttpMethod.GET, "/management/users/{id}").hasAnyRole("ADMIN", "GERENTE")
                         .requestMatchers(HttpMethod.PUT, "/management/users/**").hasAnyRole("ADMIN", "GERENTE")
                         .requestMatchers(HttpMethod.DELETE, "/management/users/**").hasRole("ADMIN")
+                        .requestMatchers(HttpMethod.PUT, "/management/ciclo/**").hasRole("ADMIN")
+                        .requestMatchers(HttpMethod.DELETE, "/management/ciclo/**").hasRole("ADMIN")
+                        .requestMatchers(HttpMethod.POST, "/management/ciclo/**").hasRole("ADMIN")
+                        .requestMatchers(HttpMethod.GET, "/management/ciclo").hasRole("ADMIN")
+                        .requestMatchers(HttpMethod.GET, "/management/ciclo/municipios-ativos").permitAll()
+
 
                         // Pré-inscrição
                         .requestMatchers(HttpMethod.POST, "/pre-inscricao/inicial").permitAll()
@@ -141,7 +147,10 @@ public class SecurityConfigurations {
         // Se precisar de cookies/autenticação, coloque domínios específicos
         configuration.setAllowedOriginPatterns(List.of(
                 "https://empreendedoresdigitais.ifce.edu.br",
-                "https://api.banco.ltap.ifce.edu.br"
+                "https://jedi-front.vercel.app",
+                "http://localhost:*",
+                "https://*.ngrok.io",
+                "https://*.ngrok-free.app"
         ));
         configuration.setAllowedMethods(List.of("GET", "POST", "PUT", "DELETE", "OPTIONS"));
         configuration.setAllowedHeaders(List.of("*"));
