@@ -27,36 +27,46 @@ public class PdfService {
             document.add(title);
 
             // Tabela
-            PdfPTable table = new PdfPTable(8);
+            PdfPTable table = new PdfPTable(9);
             table.setWidthPercentage(100);
-            table.setWidths(new float[]{3f, 4f, 3f, 3f, 3f, 3f, 2f, 2f});
+            table.setWidths(new float[]{
+                    3.5f, 2.5f, 4.5f, 2.5f, 2.5f, 2.5f, 2.5f, 2.5f, 2.5f
+            });
 
             Font headerFont = FontFactory.getFont(FontFactory.HELVETICA_BOLD, 12);
-            addCell(table, "Nome Completo", headerFont);
-            addCell(table, "Email", headerFont);
-            addCell(table, "Celular", headerFont);
-            addCell(table, "Nascimento", headerFont);
-            addCell(table, "Município", headerFont);
-            addCell(table, "Outros Municípios", headerFont);
-            addCell(table, "Status", headerFont);
-            addCell(table, "Aceitou Termos", headerFont);
+
+            // Cabeçalhos
+            addCell(table, "Nome Completo", headerFont, false);
+            addCell(table, "CPF", headerFont, true);
+            addCell(table, "Email", headerFont, false);
+            addCell(table, "Celular", headerFont, true);
+            addCell(table, "Nascimento", headerFont, true);
+            addCell(table, "Município", headerFont, false);
+            addCell(table, "Outros Municípios", headerFont, false);
+            addCell(table, "Status", headerFont, true);
+            addCell(table, "Termos", headerFont, true);
 
             Font dataFont = FontFactory.getFont(FontFactory.HELVETICA, 10);
             DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy");
 
+            // Dados
             for (PreInscricaoDadosDto dto : dados) {
-                addCell(table, dto.completeName(), dataFont);
-                addCell(table, dto.email(), dataFont);
-                addCell(table, dto.cellPhone(), dataFont);
-                addCell(table, dto.birthDate() != null ? dto.birthDate().format(formatter) : "-", dataFont);
-                addCell(table, dto.municipality(), dataFont);
+                addCell(table, dto.completeName(), dataFont, false);
+                addCell(table, dto.cpf(), dataFont, true);
+                addCell(table, dto.email(), dataFont, false);
+                addCell(table, dto.cellPhone(), dataFont, true);
+                addCell(table, dto.birthDate() != null ? dto.birthDate().format(formatter) : "-", dataFont, true);
+                addCell(table, dto.municipality(), dataFont, false);
 
-                String otherMunicipalityValue = dto.otherMunicipality() != null && !dto.otherMunicipality().isBlank() ? dto.otherMunicipality() : "-";
-                addCell(table, otherMunicipalityValue, dataFont);
+                String otherMunicipalityValue = dto.otherMunicipality() != null && !dto.otherMunicipality().isBlank()
+                        ? dto.otherMunicipality()
+                        : "-";
+                addCell(table, otherMunicipalityValue, dataFont, false);
 
-                addCell(table, dto.status() != null ? dto.status().name() : "-", dataFont);
-                addCell(table, dto.acceptedTerms() != null && dto.acceptedTerms() ? "Sim" : "Não", dataFont);
+                addCell(table, dto.status() != null ? dto.status().name() : "-", dataFont, true);
+                addCell(table, dto.acceptedTerms() != null && dto.acceptedTerms() ? "Sim" : "Não", dataFont, true);
             }
+
             document.add(table);
         } catch (Exception e) {
             e.printStackTrace();
@@ -67,9 +77,16 @@ public class PdfService {
         return outputStream.toByteArray();
     }
 
-    private void addCell(PdfPTable table, String content, Font font) {
+    private void addCell(PdfPTable table, String content, Font font, boolean noWrap) {
         PdfPCell cell = new PdfPCell(new Phrase(content != null ? content : "-", font));
         cell.setPadding(5);
+        cell.setHorizontalAlignment(Element.ALIGN_CENTER);
+        cell.setVerticalAlignment(Element.ALIGN_MIDDLE);
+
+        if (noWrap) {
+            cell.setNoWrap(true);
+        }
+
         table.addCell(cell);
     }
 }

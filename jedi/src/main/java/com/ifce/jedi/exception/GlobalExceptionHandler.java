@@ -170,6 +170,16 @@ public class GlobalExceptionHandler {
         return buildErrorResponse(HttpStatus.INTERNAL_SERVER_ERROR, ex.getMessage(), request);
     }
 
+    @ExceptionHandler(InvalidCicloDateException.class)
+    public ResponseEntity<ErrorResponse> handleInvalidCicloDate(InvalidCicloDateException ex, HttpServletRequest request) {
+        return buildErrorResponse(HttpStatus.BAD_REQUEST, ex.getMessage(), request);
+    }
+
+    @ExceptionHandler(CicloConflictException.class)
+    public ResponseEntity<ErrorResponse> handleCicloConflict(CicloConflictException ex, HttpServletRequest request) {
+        return buildErrorResponse(HttpStatus.CONFLICT, ex.getMessage(), request);
+    }
+
     // Método utilitário para criar a resposta padronizada
     private ResponseEntity<ErrorResponse> buildErrorResponse(HttpStatus status, String message, HttpServletRequest request) {
         ErrorResponse response = new ErrorResponse(
