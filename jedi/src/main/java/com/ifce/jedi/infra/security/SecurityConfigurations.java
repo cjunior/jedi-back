@@ -79,6 +79,11 @@ public class SecurityConfigurations {
                         .requestMatchers(HttpMethod.GET, "/publicos/**").permitAll()
                         .requestMatchers(HttpMethod.GET, "/sensiveis/**").permitAll()
 
+                        .requestMatchers(HttpMethod.POST, "/bannermultiplo").hasAnyRole("ADMIN", "GERENTE")
+                        .requestMatchers(HttpMethod.PUT, "/bannermultiplo/**").hasAnyRole("ADMIN", "GERENTE")
+                        .requestMatchers(HttpMethod.DELETE, "/bannermultiplo/**").hasAnyRole("ADMIN", "GERENTE")
+                        .requestMatchers(HttpMethod.GET, "/bannermultiplo/**").permitAll()
+
 
                         // Equipe
                         .requestMatchers(HttpMethod.GET, "/team/get").permitAll()
