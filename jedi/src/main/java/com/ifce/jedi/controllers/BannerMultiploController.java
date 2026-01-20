@@ -45,7 +45,6 @@ public class BannerMultiploController {
     }
 
     @PostMapping(consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
-    @PreAuthorize("hasAnyRole('ADMIN', 'GERENTE')")
     @Operation(
             summary = "Criar banners multiplos",
             description = "Faz upload de um ou mais banners com titulo e link e cria os itens no final da lista."
@@ -84,7 +83,6 @@ public class BannerMultiploController {
     }
 
     @PutMapping(value = "/{id}", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
-    @PreAuthorize("hasAnyRole('ADMIN', 'GERENTE')")
     @Operation(
             summary = "Atualizar banner multiplo",
             description = "Atualiza imagem, titulo e/ou link de um banner existente."
@@ -109,7 +107,6 @@ public class BannerMultiploController {
     }
 
     @PutMapping("/order")
-    @PreAuthorize("hasAnyRole('ADMIN', 'GERENTE')")
     @Operation(
             summary = "Atualizar ordem dos banners",
             description = "Substitui a ordem atual pela lista completa de ids informada."
@@ -128,7 +125,6 @@ public class BannerMultiploController {
     }
 
     @DeleteMapping("/{id}")
-    @PreAuthorize("hasAnyRole('ADMIN', 'GERENTE')")
     @Operation(
             summary = "Remover banner multiplo",
             description = "Remove o banner e exclui o arquivo associado."
