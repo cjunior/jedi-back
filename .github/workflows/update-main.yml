@@ -39,12 +39,12 @@ jobs:
           echo "HOME=${{ secrets.HOME }}" >> .env
       - name: Excluindo containers órfãos e rebuild
         run: |
-          docker-compose -f docker-compose.yml down --rmi all --volumes --remove-orphans
-          docker-compose -f docker-compose.yml build --no-cache
+          docker compose -f docker-compose.yml down --rmi all --volumes --remove-orphans
+          docker compose -f docker-compose.yml build --no-cache
       - name: Verificar configuração do docker-compose
-        run: docker-compose -f docker-compose.yml config
+        run: docker compose -f docker-compose.yml config
       - name: Build dos containers
-        run: docker-compose -f docker-compose.yml build
+        run: docker compose -f docker-compose.yml build
       - name: Subir os containers
-        run: docker-compose -f docker-compose.yml up -d
+        run: docker compose -f docker-compose.yml up -d
 
