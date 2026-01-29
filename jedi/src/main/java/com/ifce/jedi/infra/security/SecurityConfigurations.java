@@ -128,6 +128,16 @@ public class SecurityConfigurations {
                         .requestMatchers(HttpMethod.DELETE, "/rede-jedi/**").hasAnyRole("ADMIN", "GERENTE")
                         .requestMatchers(HttpMethod.PUT, "/rede-jedi/titulo").hasAnyRole("ADMIN", "GERENTE")
 
+                        // Pastas e arquivos (CRUD)
+                        .requestMatchers(HttpMethod.GET, "/pastas").permitAll()
+                        .requestMatchers(HttpMethod.GET, "/pastas/{pastaId}").permitAll()
+                        .requestMatchers(HttpMethod.GET, "/pastas/{pastaId}/arquivos").permitAll()
+                        .requestMatchers(HttpMethod.GET, "/pastas/arquivos/{arquivoId}").permitAll()
+                        .requestMatchers(HttpMethod.POST, "/pastas").hasAnyRole("ADMIN", "GERENTE")
+                        .requestMatchers(HttpMethod.POST, "/pastas/{pastaId}/arquivos").hasAnyRole("ADMIN", "GERENTE")
+                        .requestMatchers(HttpMethod.PUT, "/pastas/**").hasAnyRole("ADMIN", "GERENTE")
+                        .requestMatchers(HttpMethod.DELETE, "/pastas/**").hasAnyRole("ADMIN", "GERENTE")
+
                         .anyRequest().authenticated()
                 )
                 .addFilterBefore(securityFilter, UsernamePasswordAuthenticationFilter.class)
