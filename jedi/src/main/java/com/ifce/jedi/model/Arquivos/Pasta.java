@@ -3,7 +3,12 @@ package com.ifce.jedi.model.Arquivos;
 import jakarta.persistence.*;
 
 @Entity
-@Table(name = "pastas")
+@Table(
+        name = "pastas",
+        uniqueConstraints = {
+                @UniqueConstraint(columnNames = {"parent_id", "slug"})
+        }
+)
 public class Pasta {
 
     @Id
@@ -12,6 +17,12 @@ public class Pasta {
 
     @Column(nullable = false)
     private String nome;
+
+    @Column(length = 255)
+    private String descricao;
+
+    @Column(nullable = false)
+    private String slug;
 
     @Column(name = "path", nullable = false, unique = true)
     private String path;
@@ -37,6 +48,22 @@ public class Pasta {
 
     public void setNome(String nome) {
         this.nome = nome;
+    }
+
+    public String getDescricao() {
+        return descricao;
+    }
+
+    public void setDescricao(String descricao) {
+        this.descricao = descricao;
+    }
+
+    public String getSlug() {
+        return slug;
+    }
+
+    public void setSlug(String slug) {
+        this.slug = slug;
     }
 
     public String getPath() {

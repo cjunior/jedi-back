@@ -42,6 +42,13 @@ public class PastaController {
         return ResponseEntity.ok(pastaService.buscarDto(pastaId));
     }
 
+    @GetMapping("/caminho")
+    public ResponseEntity<PastaResponseDto> buscarPastaPorCaminho(
+            @RequestParam(name = "slugPath") String slugPath
+    ) {
+        return ResponseEntity.ok(pastaService.buscarPorCaminhoSlug(slugPath));
+    }
+
     @PutMapping("/{pastaId}")
     public ResponseEntity<PastaResponseDto> atualizarPasta(
             @PathVariable Long pastaId,
